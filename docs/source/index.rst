@@ -1,6 +1,11 @@
 Graphorge
 =========
 
+.. image:: ../media/logo/graphorge_logo_horizontal_white.png
+   :width: 70 %
+   :align: center
+
+
 Summary
 -------
 Insert text.

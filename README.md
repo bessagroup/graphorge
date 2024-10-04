@@ -1,3 +1,6 @@
+<p align="center">
+  <a href=""><img alt="logo" src="https://gist.github.com/user-attachments/assets/5766fccb-ec66-4a43-ae3f-196bc3cb4935.png" width="80%"></a>
+</p>
 
 # What is Graphorge?
 
