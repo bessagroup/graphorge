@@ -1,5 +1,5 @@
 <p align="center">
-  <a href=""><img alt="logo" src="https://gist.github.com/user-attachments/assets/5766fccb-ec66-4a43-ae3f-196bc3cb4935.png" width="80%"></a>
+  <a href=""><img alt="logo" src="https://github.com/user-attachments/assets/95fd5e9b-fdc2-4adc-a0a1-f47c9ccd3216" width="80%"></a>
 </p>
 
 # What is Graphorge?
