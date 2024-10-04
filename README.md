@@ -5,8 +5,6 @@
 | [**Installation**](https://)
 | [**GitHub**](https://)
 
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.05594/status.svg)](https://doi.org/10.21105/joss.05594)
-
 ### Summary
 
 _Insert text._
