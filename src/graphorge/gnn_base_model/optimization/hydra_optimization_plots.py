@@ -90,9 +90,13 @@ def plot_optimization_history(optim_history, optim_metric, is_log_metric=False,
         if not os.path.isdir(optim_dir):
             raise RuntimeError('The optimization jobs directory has not been '
                                'found:\n\n' + optim_dir)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get job files in optimization process directory                      # BUG: Not sorting as expected (must set key function)
-        directory_list = sorted(os.listdir(optim_dir))
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+        # Get job files in optimization process directory
+        directory_list = [x for x in os.listdir(optim_dir)
+                          if re.search(r'^(\d+)$', x)]
+        # Sort job files in optimization process directory
+        directory_list = sorted(directory_list,
+               key=lambda x: int(re.search(r'^(\d+)$', x).groups()[-1]))
         # Check directory
         if not directory_list:
             raise RuntimeError('No job files have been found in optimization '
