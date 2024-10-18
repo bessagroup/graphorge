@@ -395,7 +395,7 @@ def plot_kfold_cross_validation(k_fold_loss_array, loss_type=None,
     # Build folds training and validation loss data
     folds_data = {}
     folds_data['Training'] = tuple(k_fold_loss_array[:, 0])
-    folds_data['Validation'] = tuple(k_fold_loss_array[:, 1])
+    folds_data['Testing'] = tuple(k_fold_loss_array[:, 1])
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set axes labels
     x_label = None

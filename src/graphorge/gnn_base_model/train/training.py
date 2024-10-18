@@ -271,16 +271,13 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             print('\n> Initializing early stopping criterion...')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize early stopping criterion
-        early_stopper = EarlyStopper(dataset, **early_stopping_kwargs)
-        # Get available training data set (remainder is set aside for early
-        # stopping criterion validation procedures)
-        dataset = early_stopper.get_training_dataset()
+        early_stopper = EarlyStopper(**early_stopping_kwargs)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize early stopping flag
         is_stop_training = False
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
-        print(f'\n> Training data set (effective) size: {len(dataset)}')
+        print(f'\n> Training data set size: {len(dataset)}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set data loader
     if isinstance(seed, int):
@@ -1245,8 +1242,6 @@ class EarlyStopper:
             
     Methods
     -------
-    get_training_dataset(self)
-        Get Graph Neural Network model available training data set.
     get_validation_loss_history(self)
         Get validation loss history.
     is_evaluate_criterion(self, epoch)
@@ -1262,19 +1257,16 @@ class EarlyStopper:
     load_best_performance_state(self, model, optimizer)
         Load minimum validation loss model and optimizer states.
     """
-    def __init__(self, dataset, validation_size=0.2, validation_frequency=1,
-                 trigger_tolerance=1, improvement_tolerance=1e-2):
+    def __init__(self, validation_dataset, validation_frequency=1,
+                 trigger_tolerance=1, improvement_tolerance=1e-2,
+                 is_loss_normalization=True):
         """Constructor.
         
         Parameters
         ----------
-        dataset : torch.utils.data.Dataset
+        validation_dataset : torch.utils.data.Dataset
             Graph Neural Network graph data set. Each sample corresponds to a
             torch_geometric.data.Data object describing a homogeneous graph.
-        validation_size : float, default=0.2
-            Size of the validation data set for early stopping evaluation,
-            where size is a fraction of the whole data set contained between 0
-            and 1.
         validation_frequency : int, default=1
             Frequency of validation procedures, i.e., frequency with respect to
             training epochs at which model is validated to evaluate early
@@ -1285,24 +1277,22 @@ class EarlyStopper:
         improvement_tolerance : float, default=1e-2
             Minimum relative improvement required to count as a performance
             improvement.
+        is_loss_normalization : bool, default=True
+            If True, then output features are normalized for loss computation,
+            False otherwise. Ignored if model is_data_normalization is set to
+            True. The model data scalers are fitted and employed to normalize
+            the output features.
         """
-        # Set validation data set size
-        self._validation_size = validation_size
+        # Set validation data set
+        self._validation_dataset = validation_dataset
         # Set validation frequency
         self._validation_frequency = validation_frequency
         # Set early stopping trigger tolerance
         self._trigger_tolerance = trigger_tolerance
         # Set minimum relative improvement tolerance
         self._improvement_tolerance = improvement_tolerance
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set data set split sizes
-        split_sizes = {'training': (1.0 - validation_size),
-                       'validation': validation_size}
-        # Split data set
-        dataset_split = split_dataset(dataset, split_sizes)
-        # Set training and validation datasets
-        self._training_dataset = dataset_split['training']
-        self._validation_dataset = dataset_split['validation']
+        # Set loss normalization
+        self._is_loss_normalization = is_loss_normalization
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize validation training steps history
         self._validation_steps_history = []
@@ -1318,20 +1308,6 @@ class EarlyStopper:
         self._best_model_state = None
         self._best_optimizer_state = None
         self._best_training_epoch = None
-    # -------------------------------------------------------------------------
-    def get_training_dataset(self):
-        """Get Graph Neural Network model available training data set.
-        
-        Returns
-        -------
-        training_dataset : torch.utils.data.Dataset
-            Training data set.
-        """
-        # Get available training data set
-        training_dataset = self._training_dataset
-        self._training_dataset = None
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        return training_dataset
     # -------------------------------------------------------------------------
     def get_validation_loss_history(self):
         """Get validation loss history.
@@ -1500,11 +1476,15 @@ class EarlyStopper:
         # Prediction with Graph Neural Network model
         _, avg_valid_loss_sample = predict(
             self._validation_dataset, model.model_directory,
-            predict_directory=None, load_model_state=epoch,
+            model=model, predict_directory=None, load_model_state=epoch,
             loss_nature=loss_nature, loss_type=loss_type,
             loss_kwargs=loss_kwargs,
-            is_normalized_loss=model.is_data_normalization,
+            is_normalized_loss=(model.is_data_normalization or
+                                self._is_normalized_loss),
             device_type=device_type, seed=None, is_verbose=False)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set model in training mode
+        model.train()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Update validation epochs history
         self._validation_steps_history.append(epoch)

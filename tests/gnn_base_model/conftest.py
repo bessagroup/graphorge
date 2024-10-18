@@ -7,8 +7,8 @@ import pytest
 import numpy as np
 import torch
 # Local
-from src.vegapunk.gnn_base_model.data.graph_data import GraphData
-from src.vegapunk.gnn_base_model.model.gnn_model import GNNEPDBaseModel
+from src.graphorge.gnn_base_model.data.graph_data import GraphData
+from src.graphorge.gnn_base_model.model.gnn_model import GNNEPDBaseModel
 # =============================================================================
 #
 #                                                          Authorship & Credits

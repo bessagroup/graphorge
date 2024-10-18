@@ -45,7 +45,7 @@ __status__ = 'Planning'
 # =============================================================================
 #
 # =============================================================================
-def predict(dataset, model_directory, predict_directory=None,
+def predict(dataset, model_directory, model=None, predict_directory=None,
             load_model_state=None, loss_nature='node_features_out',
             loss_type='mse', loss_kwargs={}, is_normalized_loss=False,
             dataset_file_path=None, device_type='cpu', seed=None,
@@ -59,6 +59,10 @@ def predict(dataset, model_directory, predict_directory=None,
         torch_geometric.data.Data object describing a homogeneous graph.
     model_directory : str
         Directory where Graph Neural Network model is stored.
+    model : GNNEPDBaseModel, default=None
+        Graph Neural Network model. If None, then model is initialized
+        from the initialization file and the state is loaded from the state
+        file. In both cases the model is set to evaluation mode.
     predict_directory : str, default=None
         Directory where model predictions results are stored. If None, then
         all output files are supressed.
@@ -137,17 +141,19 @@ def predict(dataset, model_directory, predict_directory=None,
                            'directory has not been found:\n\n'
                            + predict_directory)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    if is_verbose:
-        print('\n> Loading Graph Neural Network model...')
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Initialize Graph Neural Network model
-    model = GNNEPDBaseModel.init_model_from_file(model_directory)
-    # Set model device
-    model.set_device(device_type)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Load Graph Neural Network model state
-    _ = model.load_model_state(load_model_state=load_model_state,
-                               is_remove_posterior=True)
+    # Initialize model and load model state if not provided
+    if model is None:
+        if is_verbose:
+            print('\n> Loading Graph Neural Network model...')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Initialize Graph Neural Network model
+        model = GNNEPDBaseModel.init_model_from_file(model_directory)
+        # Set model device
+        model.set_device(device_type)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Load Graph Neural Network model state
+        _ = model.load_model_state(load_model_state=load_model_state,
+                                   is_remove_posterior=False)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Move model to device
     model.to(device=device)
@@ -162,10 +168,11 @@ def predict(dataset, model_directory, predict_directory=None,
     # Set data loader
     if isinstance(seed, int):
         data_loader = torch_geometric.loader.dataloader.DataLoader(
-            dataset=dataset, worker_init_fn=seed_worker, generator=generator)
+            dataset=dataset, batch_size=1,
+            worker_init_fn=seed_worker, generator=generator)
     else:
-        data_loader = \
-            torch_geometric.loader.dataloader.DataLoader(dataset=dataset)
+        data_loader = torch_geometric.loader.dataloader.DataLoader(
+            dataset=dataset, batch_size=1)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Initialize loss function
     loss_function = get_pytorch_loss(loss_type, **loss_kwargs)

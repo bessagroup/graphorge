@@ -7,10 +7,10 @@ import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 # Local
-from src.vegapunk.gnn_base_model.train.training_plots import \
+from src.graphorge.gnn_base_model.train.training_plots import \
     plot_training_loss_history, plot_training_loss_and_lr_history, \
     plot_loss_convergence_test, plot_kfold_cross_validation
-from src.vegapunk.gnn_base_model.predict.prediction_plots import \
+from src.graphorge.gnn_base_model.predict.prediction_plots import \
     plot_truth_vs_prediction
 # =============================================================================
 #

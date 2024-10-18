@@ -10,12 +10,12 @@ import pytest
 import torch
 import numpy as np
 # Local
-from src.vegapunk.gnn_base_model.model.gnn_model import GNNEPDBaseModel
-from src.vegapunk.gnn_base_model.train.training import \
+from src.graphorge.gnn_base_model.model.gnn_model import GNNEPDBaseModel
+from src.graphorge.gnn_base_model.train.training import \
     get_pytorch_optimizer, get_learning_rate_scheduler, save_training_state, \
     load_training_state, save_loss_history, load_loss_history, \
     load_lr_history, seed_worker
-from src.vegapunk.gnn_base_model.train.torch_loss import get_pytorch_loss
+from src.graphorge.gnn_base_model.train.torch_loss import get_pytorch_loss
 # =============================================================================
 #
 #                                                          Authorship & Credits

@@ -30,7 +30,6 @@ import numpy as np
 from gnn_base_model.data.graph_dataset import GNNGraphDataset
 from gnn_base_model.train.training import train_model
 from gnn_base_model.predict.prediction import predict
-from gnn_base_model.train.cross_validation import kfold_cross_validation
 from gnn_base_model.optimization.hydra_optimization_template import \
     display_hydra_job_header
 from ioput.iostandard import make_directory, write_summary_file
@@ -83,7 +82,7 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
         sweeper, sweeper_optimizer, job_dir = \
             display_hydra_job_header(hydra_cfg)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set GNN-based material patch model initialization parameters
+        # Set GNN-based model initialization parameters
         model_init_args = {}
         model_init_args['n_node_in'] = cfg.n_node_in
         model_init_args['n_node_out'] = cfg.n_node_out
@@ -122,24 +121,41 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
         model_init_args['dec_global_output_activ_type'] = cfg.output_activation
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load hyperparameter optimization process data sets
-        if process in ('training', 'training-validation', 'cross-validation'):
+        if process in ('training', 'training-testing'):
             # Get training data set file path
-            dataset_file_path = dataset_paths['training']
+            train_dataset_file_path = dataset_paths['training']
             # Load training data set
-            training_dataset = GNNGraphDataset.load_dataset(dataset_file_path)
+            training_dataset = \
+                GNNGraphDataset.load_dataset(train_dataset_file_path)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Validation data set
-            if process == 'training-validation':
+            # Set early stopping
+            is_early_stopping = cfg.is_early_stopping
+            # Set early stopping parameters
+            if is_early_stopping:
                 # Get validation data set file path
-                dataset_file_path = dataset_paths['validation']
+                val_dataset_file_path = dataset_paths['validation']
                 # Load validation data set
                 validation_dataset = \
-                    GNNGraphDataset.load_dataset(dataset_file_path)
+                    GNNGraphDataset.load_dataset(val_dataset_file_path)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Get early stopping parameters
+                early_stopping_kwargs = {**cfg.early_stopping_kwargs}
+                # Add validation dataset to early stopping parameters
+                early_stopping_kwargs['validation_dataset'] = \
+                    validation_dataset
         else:
             raise RuntimeError('Unknown hyperparameter optimization process.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Training of GNN-based material patch model
-        if process in ('training', 'training-validation'):
+        # Load hyperparameter optimization process testing data set
+        if process in ('training-testing',):
+            # Get testing data set file path
+            test_dataset_file_path = dataset_paths['testing']
+            # Load testing data set
+            testing_dataset = \
+                GNNGraphDataset.load_dataset(test_dataset_file_path)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Training of GNN-based model
+        if process in ('training', 'training-testing'):
             # Set model training subdirectory
             training_subdir = os.path.join(os.path.normpath(job_dir), 'model')
             # Create model training subdirectory
@@ -159,7 +175,7 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
                 batch_size=cfg.batch_size,
                 is_sampler_shuffle=cfg.is_sampler_shuffle,
                 is_early_stopping=cfg.is_early_stopping,
-                early_stopping_kwargs=cfg.early_stopping_kwargs,
+                early_stopping_kwargs=early_stopping_kwargs,
                 device_type=device_type, is_verbose=False)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Generate plots of model training process
@@ -168,56 +184,31 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
             # Set hyperparameter optimization objective
             if process == 'training':
                 objective = best_training_loss
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Validation
-            if process == 'training-validation':
-                # Set model validation subdirectory
-                validation_subdir = os.path.join(os.path.normpath(job_dir),
-                                                 'validation')
-                # Create model validation subdirectory
-                validation_subdir = make_directory(validation_subdir,
-                                                   is_overwrite=True)
+            elif process == 'training-testing':
+                # Set model testing subdirectory
+                testing_subdir = \
+                    os.path.join(os.path.normpath(job_dir), 'testing')
+                # Create model testing subdirectory
+                testing_subdir = \
+                    make_directory(testing_subdir, is_overwrite=True)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # Validation of GNN-based material patch model
+                # Set prediction loss normalization
+                is_normalized_loss = False
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Testing of GNN-based material patch model
                 predict_subdir, avg_valid_loss_sample = predict(
-                    validation_dataset, model.model_directory,
-                    predict_directory=validation_subdir,
+                    testing_dataset, model.model_directory, model=model,
+                    predict_directory=testing_subdir,
                     load_model_state='best', loss_nature=cfg.loss_nature,
                     loss_type=cfg.loss_type, loss_kwargs=cfg.loss_kwargs,
-                    is_normalized_loss=True, device_type=device_type,
-                    is_verbose=False)
+                    is_normalized_loss=is_normalized_loss,
+                    device_type=device_type, is_verbose=False)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Generate plots of model predictions
                 generate_prediction_plots(predict_subdir)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Set hyperparameter optimization objective
                 objective = avg_valid_loss_sample
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Cross-validation of GNN-based material patch model
-        elif process == 'cross-validation':
-            # Set k-fold cross-validation subdirectory
-            validation_subdir = os.path.join(os.path.normpath(job_dir),
-                                             'cross_validation')
-            # Create k-fold cross-validation subdirectory
-            validation_subdir = make_directory(validation_subdir,
-                                               is_overwrite=True)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Set number of folds
-            n_fold = 4
-            # k-fold cross-validation
-            k_fold_loss_array = kfold_cross_validation(
-                validation_subdir, n_fold, cfg.n_max_epochs, training_dataset,
-                model_init_args, cfg.lr_init, opt_algorithm=cfg.opt_algorithm,
-                lr_scheduler_type=cfg.lr_scheduler_type,
-                lr_scheduler_kwargs=cfg.lr_scheduler_kwargs,
-                loss_nature=cfg.loss_nature,
-                loss_type=cfg.loss_type, loss_kwargs=cfg.loss_kwargs,
-                batch_size=cfg.batch_size,
-                is_sampler_shuffle=cfg.is_sampler_shuffle,
-                dataset_file_path=dataset_file_path,
-                device_type=device_type, is_verbose=False)
-            # Set hyperparameter optimization objective
-            objective = np.mean(k_fold_loss_array[:, 1])
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Display parameters
         print('\nParameters:')
@@ -248,28 +239,29 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
 # =============================================================================
 if __name__ == "__main__":
     # Set hyperparameter optimization processes
-    processes = ('training', 'training-validation', 'cross-validation')
+    processes = ('training', 'training-testing')
     # Select hyperparameter optimization process
     process = processes[1]
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set optimization process data set paths
     datasets_paths = {}
     if process == 'training':
-        datasets_paths['training'] = ('/home/bernardoferreira/Documents/brown/'
-                                      'projects/gnn_material_patch/'
-                                      'case_studies/temp/1_training_dataset/'
-                                      'material_patch_graph_dataset_n10.pkl')
-    elif process == 'training-validation':
+        datasets_paths['training'] = None
+    elif process == 'training-testing':
         datasets_paths['training'] = \
             ('/home/bernardoferreira/Documents/brown/projects/'
-             'shell_knock_down/case_studies/full/1_training_dataset/'
-             'graph_dataset_training_n5992.pkl')
+             'colaboration_guillaume/shell_knock_down/case_studies/debug_gen/'
+             '1_training_dataset/graph_dataset_n5243.pkl')
         datasets_paths['validation'] = \
             ('/home/bernardoferreira/Documents/brown/projects/'
-             'shell_knock_down/case_studies/full/1_training_dataset/'
-             'graph_dataset_testing_n1498.pkl')
+             'colaboration_guillaume/shell_knock_down/case_studies/debug_gen/'
+             '2_validation_dataset/graph_dataset_n1498.pkl')
+        datasets_paths['testing'] = \
+            ('/home/bernardoferreira/Documents/brown/projects/'
+             'colaboration_guillaume/shell_knock_down/case_studies/debug_gen/'
+             '5_testing_id_dataset/graph_dataset_n749.pkl')
     else:
-        datasets_paths['training'] = None
+        raise RuntimeError('Unknown hyperparameter optimization process.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set device type
     if torch.cuda.is_available():
