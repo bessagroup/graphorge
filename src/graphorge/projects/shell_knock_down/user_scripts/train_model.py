@@ -210,10 +210,10 @@ def perform_model_kfold_cross_validation(train_dataset_file_path,
     # Set early stopping parameters
     if is_early_stopping:
         # Set early stopping parameters
-        early_stopping_kwargs = {'validation_size': None,
-                                'validation_frequency': 1,
-                                'trigger_tolerance': 20,
-                                'improvement_tolerance':1e-2}
+        early_stopping_kwargs = {'validation_dataset': None,
+                                 'validation_frequency': 1,
+                                 'trigger_tolerance': 20,
+                                 'improvement_tolerance':1e-2}
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of folds
     n_fold = 4
