@@ -62,7 +62,7 @@ def perform_model_standard_training(train_dataset_file_path, model_directory,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set model training options:
     # Set number of epochs
-    n_max_epochs = 200
+    n_max_epochs = 250
     # Set batch size
     batch_size = 16
     # Set learning rate
@@ -383,14 +383,14 @@ def set_default_training_options():
 # =============================================================================
 if __name__ == "__main__":
     # Set computation processes
-    is_standard_training = False
-    is_cross_validation = True
+    is_standard_training = True
+    is_cross_validation = False
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
     base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
-                'colaboration_guillaume/shell_knock_down/case_studies/')
+                'colaboration_guillaume/shell_knock_down/')
     # Set case study directory
-    case_study_name = 'debug_cv'
+    case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
                                   f'{case_study_name}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

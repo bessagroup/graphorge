@@ -104,6 +104,7 @@ def generate_prediction_plots(predict_subdir):
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Plot model predictions against ground-truth
             plot_truth_vs_prediction(prediction_sets, error_bound=0.1,
+                                     is_r2_coefficient=True,
                                      is_normalize_data=False,
                                      filename=filename,
                                      save_dir=plot_dir,
@@ -140,13 +141,13 @@ def set_default_prediction_options():
 if __name__ == "__main__":
     # Set testing type
     testing_type = ('training', 'validation', 'in_distribution',
-                    'out_distribution')[2]    
+                    'out_distribution')[2]
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
     base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
-                'colaboration_guillaume/shell_knock_down/case_studies/')
+                'colaboration_guillaume/shell_knock_down/')
     # Set case study directory
-    case_study_name = 'debug_gen'
+    case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
                                   f'{case_study_name}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
