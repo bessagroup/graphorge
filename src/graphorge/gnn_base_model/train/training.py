@@ -1500,11 +1500,14 @@ class EarlyStopper:
         # Prediction with Graph Neural Network model
         _, avg_valid_loss_sample = predict(
             self._validation_dataset, model.model_directory,
-            predict_directory=None, load_model_state=epoch,
+            model=model, predict_directory=None, load_model_state=epoch,
             loss_nature=loss_nature, loss_type=loss_type,
             loss_kwargs=loss_kwargs,
             is_normalized_loss=model.is_data_normalization,
             device_type=device_type, seed=None, is_verbose=False)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set model in training mode
+        model.train()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Update validation epochs history
         self._validation_steps_history.append(epoch)
