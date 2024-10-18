@@ -9,7 +9,7 @@ import pickle
 import pytest
 import torch
 # Local
-from src.vegapunk.gnn_base_model.model.gnn_model import GNNEPDBaseModel, \
+from src.graphorge.gnn_base_model.model.gnn_model import GNNEPDBaseModel, \
     TorchStandardScaler, graph_standard_partial_fit
 # =============================================================================
 #
