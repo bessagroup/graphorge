@@ -182,10 +182,26 @@ def plot_optimization_history(optim_history, optim_metric, is_log_metric=False,
     title = 'Optimization history'
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Plot loss history
-    figure, _ = plot_xy_data(data_xy, data_labels=data_labels, x_lims=x_lims,
-                             y_lims=y_lims, title=title, x_label=x_label,
-                             y_label=y_label, y_scale=y_scale,
-                             x_tick_format='int', is_latex=is_latex)
+    figure, axes = plot_xy_data(data_xy, data_labels=data_labels,
+                                x_lims=x_lims, y_lims=y_lims, title=title,
+                                x_label=x_label, y_label=y_label,
+                                y_scale=y_scale, x_tick_format='int',
+                                is_latex=is_latex)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Build best-so-far history
+    data_min_xy = np.copy(data_xy)
+    data_min = data_xy[0, 1]
+    for i in range(data_min_xy.shape[0]):
+        if data_xy[i, 1] < data_min:
+            data_min = data_xy[i, 1]
+        data_min_xy[i, 1] = data_min
+    # Plot best-so-far history
+    axes.plot(data_min_xy[:, 0], data_min_xy[:, 1], color='#EE7733',
+              label='Best-so-far', linestyle='-')
+    # Plot best-so-far legend
+    axes.legend(loc = 'upper right', frameon=True, fancybox=True,
+                facecolor='inherit', edgecolor='inherit', fontsize=8,
+                framealpha=1.0)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Display figure
     if is_stdout_display:
