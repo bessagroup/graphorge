@@ -26,7 +26,7 @@ import tqdm
 import sklearn.preprocessing
 # Local
 from gnn_base_model.model.gnn_epd_model import EncodeProcessDecode
-from src.graphorge.utilities.data_scalers import TorchStandardScaler
+from utilities.data_scalers import TorchStandardScaler
 #
 #                                                          Authorship & Credits
 # =============================================================================
