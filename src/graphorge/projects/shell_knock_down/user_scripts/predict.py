@@ -14,7 +14,6 @@ if root_dir not in sys.path:
 import os
 # Third-party
 import torch
-import numpy as np
 # Local
 from gnn_base_model.data.graph_dataset import GNNGraphDataset
 from gnn_base_model.predict.prediction import predict
@@ -57,13 +56,17 @@ def perform_model_prediction(predict_directory, dataset_file_path,
     # Load data set
     dataset = GNNGraphDataset.load_dataset(dataset_file_path)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set prediction loss normalization
+    is_normalized_loss = False
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Prediction with GNN-based model
     predict_subdir, _ = \
         predict(dataset, model_directory, predict_directory=predict_directory,
                 load_model_state='best', loss_nature=loss_nature,
                 loss_type=loss_type, loss_kwargs=loss_kwargs,
-                is_normalized_loss=True, dataset_file_path=dataset_file_path,
-                device_type=device_type, seed=None, is_verbose=is_verbose)
+                is_normalized_loss=is_normalized_loss,
+                dataset_file_path=dataset_file_path, device_type=device_type,
+                seed=None, is_verbose=is_verbose)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Generate plots of model predictions
     generate_prediction_plots(predict_subdir)
@@ -135,14 +138,15 @@ def set_default_prediction_options():
     return loss_nature, loss_type, loss_kwargs
 # =============================================================================
 if __name__ == "__main__":
-    # Set in-distribution/out-of-distribution testing flag
-    is_in_dist_testing = True
+    # Set testing type
+    testing_type = ('training', 'validation', 'in_distribution',
+                    'out_distribution')[2]    
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
     base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
-                'shell_knock_down/case_studies/')
+                'colaboration_guillaume/shell_knock_down/case_studies/')
     # Set case study directory
-    case_study_name = 'full'
+    case_study_name = 'debug_gen'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
                                   f'{case_study_name}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,18 +156,27 @@ if __name__ == "__main__":
                            + case_study_dir)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set testing data set directory
-    if is_in_dist_testing:
-        # Set testing data set directory (in-distribution)
+    if testing_type == 'training':
+        # Set testing data set directory (training data set)
         dataset_directory = os.path.join(os.path.normpath(case_study_dir),
                                          '1_training_dataset')
-    else:
-        # Set testing data set directory (out-of-distribution)
+    elif testing_type == 'validation':
+        # Set testing data set directory (validation data set)
         dataset_directory = os.path.join(os.path.normpath(case_study_dir),
-                                         '4_testing_dataset')
+                                         '2_validation_dataset')
+    elif testing_type == 'in_distribution':
+        # Set testing data set directory (in-distribution testing data set)
+        dataset_directory = os.path.join(os.path.normpath(case_study_dir),
+                                         '5_testing_id_dataset')
+    elif testing_type == 'out_distribution':
+        # Set testing data set directory (out-of-distribution testing data set)
+        dataset_directory = os.path.join(os.path.normpath(case_study_dir),
+                                         '6_testing_od_dataset')
+    else:
+        raise RuntimeError('Unknown testing type.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get testing data set file path
-    regex = (r'^graph_dataset_testing_n[0-9]+.pkl$',
-             r'^graph_dataset_n[0-9]+.pkl$')
+    regex = (r'^graph_dataset_n[0-9]+.pkl$',)
     is_file_found, dataset_file_path = \
         find_unique_file_with_regex(dataset_directory, regex)
     # Check data set file
@@ -176,27 +189,23 @@ if __name__ == "__main__":
     GNNGraphDataset.update_dataset_file_internal_directory(
         dataset_file_path, os.path.dirname(dataset_file_path))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based model directory
+    # Set model directory
     model_directory = os.path.join(os.path.normpath(case_study_dir),
-                                   '2_model')
+                                   '3_model')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based model prediction directory
+    # Set model prediction directory
     prediction_directory = os.path.join(os.path.normpath(case_study_dir),
-                                        '5_prediction')
+                                        '7_prediction')
     # Create prediction directory
     if not os.path.isdir(prediction_directory):
         make_directory(prediction_directory)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Create prediction in-distribution/out-of-distribution subdirectory
-    if is_in_dist_testing:
-        prediction_subdir = os.path.join(
-            os.path.normpath(prediction_directory), 'in_distribution')
-    else:
-        prediction_subdir = os.path.join(
-            os.path.normpath(prediction_directory), 'out_of_distribution')
+    # Create model predictions subdirectory
+    prediction_subdir = os.path.join(
+        os.path.normpath(prediction_directory), testing_type)
     # Create prediction subdirectory
     if not os.path.isdir(prediction_subdir):
-        make_directory(prediction_subdir)  
+        make_directory(prediction_subdir)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set device type
     if torch.cuda.is_available():

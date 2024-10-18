@@ -32,27 +32,27 @@ __status__ = 'Planning'
 # =============================================================================
 #
 # =============================================================================
-def perform_model_standard_training(case_study_name, dataset_file_path,
-                                    model_directory, device_type='cpu',
-                                    is_verbose=False):
+def perform_model_standard_training(train_dataset_file_path, model_directory,
+                                    val_dataset_file_path=None,
+                                    device_type='cpu', is_verbose=False):
     """Perform standard training of GNN-based model.
     
     Parameters
     ----------
-    case_study_name : str
-        Case study.
-    dataset_file_path : str
+    train_dataset_file_path : str
         Training data set file path.
     model_directory : str
-        Directory where GNN-based model is stored.
+        Directory where model is stored.
+    val_dataset_file_path : str, default=None
+        Validation data set file path.
     device_type : {'cpu', 'cuda'}, default='cpu'
         Type of device on which torch.Tensor is allocated.
     is_verbose : bool, default=False
         If True, enable verbose output.
     """    
     # Get model initialization parameters
-    model_init_args = set_case_study_model_parameters(case_study_name,
-                                                      model_directory)
+    model_init_args = \
+        set_default_model_parameters(model_directory, device_type)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set default GNN-based model training options
     opt_algorithm, lr_init, lr_scheduler_type, lr_scheduler_kwargs, \
@@ -60,38 +60,44 @@ def perform_model_standard_training(case_study_name, dataset_file_path,
             is_early_stopping, early_stopping_kwargs = \
                 set_default_training_options()
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based model training options
-    if case_study_name in ('small', 'medium', 'full'):
-        # Set number of epochs
-        n_max_epochs = 200
-        # Set batch size
-        batch_size = 16
-        # Set learning rate
-        lr_init = 1.0e-03
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Compute exponential decay (learning rate scheduler)
-        lr_end = 1.0e-5
-        gamma = (lr_end/lr_init)**(1/n_max_epochs)
-        # Set learning rate scheduler
-        lr_scheduler_type = 'explr'
-        lr_scheduler_kwargs = {'gamma': gamma}
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set early stopping
-        is_early_stopping = True
-        early_stopping_kwargs = {'validation_size': 0.2,
+    # Set model training options:
+    # Set number of epochs
+    n_max_epochs = 200
+    # Set batch size
+    batch_size = 16
+    # Set learning rate
+    lr_init = 1.0e-03
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Compute exponential decay (learning rate scheduler)
+    lr_end = 1.0e-5
+    gamma = (lr_end/lr_init)**(1/n_max_epochs)
+    # Set learning rate scheduler
+    lr_scheduler_type = 'explr'
+    lr_scheduler_kwargs = {'gamma': gamma}
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set early stopping
+    is_early_stopping = True
+    # Set early stopping parameters
+    if is_early_stopping:
+        # Check validation data set file path
+        if val_dataset_file_path is None:
+            raise RuntimeError('The validation data set file path must be '
+                               'provided to process early stopping criterion.')
+        else:
+            # Load validation data set
+            val_dataset = GNNGraphDataset.load_dataset(val_dataset_file_path)
+        # Set early stopping parameters
+        early_stopping_kwargs = {'validation_dataset': val_dataset,
                                  'validation_frequency': 1,
                                  'trigger_tolerance': 20,
-                                 'improvement_tolerance':1e-3}
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    else:
-        raise RuntimeError('Unknown case study.')
+                                 'improvement_tolerance':1e-2}
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Load training data set
-    dataset = GNNGraphDataset.load_dataset(dataset_file_path)
+    train_dataset = GNNGraphDataset.load_dataset(train_dataset_file_path)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Training of GNN-based model
-    model, _, _ = train_model(n_max_epochs, dataset, model_init_args, lr_init,
-                              opt_algorithm=opt_algorithm,
+    model, _, _ = train_model(n_max_epochs, train_dataset, model_init_args,
+                              lr_init, opt_algorithm=opt_algorithm,
                               lr_scheduler_type=lr_scheduler_type,
                               lr_scheduler_kwargs=lr_scheduler_kwargs,
                               loss_nature=loss_nature, loss_type=loss_type,
@@ -100,7 +106,7 @@ def perform_model_standard_training(case_study_name, dataset_file_path,
                               is_early_stopping=is_early_stopping,
                               early_stopping_kwargs=early_stopping_kwargs,
                               load_model_state=None, save_every=None,
-                              dataset_file_path=dataset_file_path,
+                              dataset_file_path=train_dataset_file_path,
                               device_type=device_type, seed=None,
                               is_verbose=is_verbose)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -151,7 +157,7 @@ def generate_standard_training_plots(model_directory):
                                       save_dir=plot_dir, is_save_fig=True,
                                       is_stdout_display=False, is_latex=True)
 # =============================================================================
-def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
+def perform_model_kfold_cross_validation(train_dataset_file_path,
                                          model_directory, cross_validation_dir,
                                          device_type='cpu', is_verbose=False):
     """Perform k-fold cross validation of GNN-based model.
@@ -160,7 +166,7 @@ def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
     ----------
     case_study_name : str
         Case study.
-    dataset_file_path : str
+    train_dataset_file_path : str
         Training data set file path.
     model_directory : str
         Directory where GNN-based model is stored.
@@ -172,11 +178,11 @@ def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
         If True, enable verbose output.
     """
     # Load training data set
-    dataset = GNNGraphDataset.load_dataset(dataset_file_path)
+    dataset = GNNGraphDataset.load_dataset(train_dataset_file_path)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get model initialization parameters
-    model_init_args = set_case_study_model_parameters(
-        case_study_name, model_directory, device_type=device_type)
+    model_init_args = \
+        set_default_model_parameters(model_directory, device_type)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set default GNN-based model training options
     opt_algorithm, lr_init, lr_scheduler_type, lr_scheduler_kwargs, \
@@ -184,25 +190,30 @@ def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
             is_early_stopping, early_stopping_kwargs = \
                 set_default_training_options()
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based model training options
-    if case_study_name in ('small', 'medium', 'full'):
-        # Set number of epochs
-        n_max_epochs = 50
-        # Set batch size
-        batch_size = 16
-        # Set learning rate
-        lr_init = 1.0e-03
-        # Set learning rate scheduler        
-        lr_scheduler_type = 'explr'
-        lr_scheduler_kwargs = {'gamma': 0.995}
-        # Set early stopping
-        is_early_stopping = True
-        early_stopping_kwargs = {'validation_size': 0.2,
-                                 'validation_frequency': 1,
-                                 'trigger_tolerance': 10,
-                                 'improvement_tolerance':1e-3}
-    else:
-        raise RuntimeError('Unknown case study.')
+    # Set model training options:
+    # Set number of epochs
+    n_max_epochs = 200
+    # Set batch size
+    batch_size = 16
+    # Set learning rate
+    lr_init = 1.0e-03
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Compute exponential decay (learning rate scheduler)
+    lr_end = 1.0e-5
+    gamma = (lr_end/lr_init)**(1/n_max_epochs)
+    # Set learning rate scheduler
+    lr_scheduler_type = 'explr'
+    lr_scheduler_kwargs = {'gamma': gamma}
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set early stopping
+    is_early_stopping = True
+    # Set early stopping parameters
+    if is_early_stopping:
+        # Set early stopping parameters
+        early_stopping_kwargs = {'validation_size': None,
+                                'validation_frequency': 1,
+                                'trigger_tolerance': 20,
+                                'improvement_tolerance':1e-2}
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of folds
     n_fold = 4
@@ -217,7 +228,6 @@ def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
         is_sampler_shuffle=is_sampler_shuffle,
         is_early_stopping=is_early_stopping,
         early_stopping_kwargs=early_stopping_kwargs,
-        dataset_file_path=dataset_file_path,
         device_type=device_type, is_verbose=is_verbose)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Create plot directory
@@ -227,18 +237,14 @@ def perform_model_kfold_cross_validation(case_study_name, dataset_file_path,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     # Generate k-fold cross-validation bar plot
     plot_kfold_cross_validation(k_fold_loss_array, loss_type=loss_type.upper(),
-                                loss_scale='log', save_dir=plot_dir,
-                                is_save_fig=True, is_stdout_display=False,
-                                is_latex=True)
+                                save_dir=plot_dir, is_save_fig=True,
+                                is_stdout_display=False, is_latex=True)
 # =============================================================================
-def set_case_study_model_parameters(case_study_name, model_directory,
-                                    device_type='cpu'):
-    """Set default GNN-based model initialization parameters.
+def set_default_model_parameters(model_directory, device_type='cpu'):
+    """Set default model initialization parameters.
     
     Parameters
     ----------
-    case_study_name : str
-        Case study.
     model_directory : str
         Directory where material patch model is stored.
     device_type : {'cpu', 'cuda'}, default='cpu'
@@ -247,42 +253,37 @@ def set_case_study_model_parameters(case_study_name, model_directory,
     Returns
     -------
     model_init_args : dict
-        GNN-based model class initialization parameters (check
-        class GNNEPDBaseModel).
+        Type of device on which torch.Tensor is allocated.
     """
-    if case_study_name in ('small', 'medium', 'full'):
-        # Set GNN-based model name
-        model_name = 'shell_knock_down_model'
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set number of node input and output features
-        n_node_in = 5
-        n_node_out = 0
-        # Set number of edge input and output features
-        n_edge_in = 0
-        n_edge_out = 0
-        # Set number of global input and output features
-        n_global_in = 0
-        n_global_out = 1
-        # Set number of message-passing steps (number of processor layers)
-        n_message_steps = 2
-        # Set number of FNN hidden layers
-        enc_n_hidden_layers = 2
-        pro_n_hidden_layers = 2
-        dec_n_hidden_layers = 2
-        # Set hidden layer size
-        hidden_layer_size = 128
-        # Set (shared) hidden unit activation function
-        hidden_activation = 'tanh'
-        # Set (shared) output unit activation function
-        output_activation = 'identity'
-        # Set data normalization
-        is_data_normalization = True
-        # Set aggregation schemes
-        pro_edge_to_node_aggr = 'add'
-        pro_node_to_global_aggr = 'mean'
+    # Set GNN-based model name
+    model_name = 'shell_knock_down_model'
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    else:
-        raise RuntimeError('Unknown case study.')
+    # Set number of node input and output features
+    n_node_in = 5
+    n_node_out = 0
+    # Set number of edge input and output features
+    n_edge_in = 0
+    n_edge_out = 0
+    # Set number of global input and output features
+    n_global_in = 0
+    n_global_out = 1
+    # Set number of message-passing steps (number of processor layers)
+    n_message_steps = 2
+    # Set number of FNN hidden layers
+    enc_n_hidden_layers = 2
+    pro_n_hidden_layers = 2
+    dec_n_hidden_layers = 2
+    # Set hidden layer size
+    hidden_layer_size = 128
+    # Set (shared) hidden unit activation function
+    hidden_activation = 'tanh'
+    # Set (shared) output unit activation function
+    output_activation = 'identity'
+    # Set data normalization
+    is_data_normalization = True
+    # Set aggregation schemes
+    pro_edge_to_node_aggr = 'add'
+    pro_node_to_global_aggr = 'mean'
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build model initialization parameters
     model_init_args = {'n_node_in': n_node_in,
@@ -363,7 +364,7 @@ def set_default_training_options():
         Early stopping criterion parameters (key, str, item, value).
     """
     opt_algorithm = 'adam'
-    lr_init = 1.0e-05
+    lr_init = 1.0e-03
     lr_scheduler_type = None
     lr_scheduler_kwargs = None
     loss_nature = 'global_features_out'
@@ -371,10 +372,10 @@ def set_default_training_options():
     loss_kwargs = {}
     is_sampler_shuffle = False
     is_early_stopping = True
-    early_stopping_kwargs = {'validation_size': 0.2,
+    early_stopping_kwargs = {'validation_dataset': None,
                              'validation_frequency': 1,
-                             'trigger_tolerance': 10,
-                             'improvement_tolerance':1e-3}
+                             'trigger_tolerance': 20,
+                             'improvement_tolerance':1e-2}
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return opt_algorithm, lr_init, lr_scheduler_type, lr_scheduler_kwargs, \
         loss_nature, loss_type, loss_kwargs, is_sampler_shuffle, \
@@ -387,9 +388,9 @@ if __name__ == "__main__":
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
     base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
-                'shell_knock_down/case_studies/')
+                'colaboration_guillaume/shell_knock_down/case_studies/')
     # Set case study directory
-    case_study_name = 'full'
+    case_study_name = 'debug_gen'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
                                   f'{case_study_name}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -399,29 +400,45 @@ if __name__ == "__main__":
                            + case_study_dir)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~        
     # Set training data set directory
-    dataset_directory = os.path.join(os.path.normpath(case_study_dir),
-                                     '1_training_dataset')
+    training_dataset_dir = os.path.join(os.path.normpath(case_study_dir),
+                                        '1_training_dataset')
     # Get training data set file path
-    regex = (r'^graph_dataset_training_n[0-9]+.pkl$',
-             r'^graph_dataset_n[0-9]+.pkl$')
-    is_file_found, dataset_file_path = \
-        find_unique_file_with_regex(dataset_directory, regex)
+    regex = (r'^graph_dataset_n[0-9]+.pkl$')
+    is_file_found, train_dataset_file_path = \
+        find_unique_file_with_regex(training_dataset_dir, regex)
     # Check data set file
     if not is_file_found:
         raise RuntimeError(f'Training data set file has not been found  '
                            f'in data set directory:\n\n'
-                           f'{dataset_directory}')
+                           f'{training_dataset_dir}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Update internal directory of stored data set (if required)
     GNNGraphDataset.update_dataset_file_internal_directory(
-        dataset_file_path, os.path.dirname(dataset_file_path))
+        train_dataset_file_path, os.path.dirname(train_dataset_file_path))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based model directory
-    model_directory = os.path.join(os.path.normpath(case_study_dir), '2_model')
-    # Create GNN-based model directory
+    # Set model directory
+    model_directory = os.path.join(os.path.normpath(case_study_dir), '3_model')
+    # Create model directory
     if is_standard_training:
         # Create model directory (overwrite)
         make_directory(model_directory, is_overwrite=True)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set validation data set directory
+    val_dataset_directory = os.path.join(os.path.normpath(case_study_dir),
+                                         '2_validation_dataset')
+    # Get validation data set file path
+    regex = (r'^graph_dataset_n[0-9]+.pkl$',)
+    is_file_found, val_dataset_file_path = \
+        find_unique_file_with_regex(val_dataset_directory, regex)
+    # Check data set file
+    if not is_file_found:
+        raise RuntimeError(f'Validation data set file has not been found  '
+                           f'in data set directory:\n\n'
+                           f'{val_dataset_directory}')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Update internal directory of stored data set (if required)
+    GNNGraphDataset.update_dataset_file_internal_directory(
+        val_dataset_file_path, os.path.dirname(val_dataset_file_path))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set device type
     if torch.cuda.is_available():
@@ -432,19 +449,19 @@ if __name__ == "__main__":
     # Perform standard training of GNN-based model
     if is_standard_training:
         perform_model_standard_training(
-            case_study_name, dataset_file_path, model_directory,
+            train_dataset_file_path, model_directory,
+            val_dataset_file_path=val_dataset_file_path,
             device_type=device_type, is_verbose=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Create cross-validation directory
     if is_cross_validation:
         # Set cross-validation directory
         cross_validation_dir = os.path.join(os.path.normpath(case_study_dir),
-                                            '3_cross_validation')
-        # Create cross-validation directory
+                                            '4_cross_validation')
+        # Create cross-validation directory (overwrite)
         make_directory(cross_validation_dir, is_overwrite=True)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Perform k-fold cross validation of GNN-based model
-    if is_cross_validation:
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Perform k-fold cross validation of GNN-based model
         perform_model_kfold_cross_validation(
-            case_study_name, dataset_file_path, model_directory,
-            cross_validation_dir, device_type=device_type, is_verbose=True)
+            train_dataset_file_path, model_directory, cross_validation_dir,
+            device_type=device_type, is_verbose=True)
