@@ -182,6 +182,9 @@ def kfold_cross_validation(cross_validation_dir, n_fold, n_max_epochs,
         validation_ids = folds_indexes[fold][1]
         validation_dataset = torch.utils.data.Subset(dataset, validation_ids)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Add validation dataset to early stopping parameters
+        early_stopping_kwargs['validation_dataset'] = validation_dataset
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set model directory
         model_init_args['model_directory'] = fold_model_dir
         # Training of Graph Neural Network model
@@ -195,12 +198,15 @@ def kfold_cross_validation(cross_validation_dir, n_fold, n_max_epochs,
             early_stopping_kwargs=early_stopping_kwargs,
             device_type=device_type, seed=None, is_verbose=False)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set prediction loss normalization
+        is_normalized_loss = True
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Prediction with Graph Neural Network model
         _, avg_valid_loss_sample = predict(
-            validation_dataset, model.model_directory,
+            validation_dataset, model.model_directory, model=model,
             predict_directory=fold_validation_dir, load_model_state='best',
             loss_nature=loss_nature, loss_type=loss_type,
-            loss_kwargs=loss_kwargs, is_normalized_loss=is_data_normalization,
+            loss_kwargs=loss_kwargs, is_normalized_loss=is_normalized_loss,
             device_type=device_type, seed=None, is_verbose=False)
         # Check average validation loss
         if avg_valid_loss_sample is None:

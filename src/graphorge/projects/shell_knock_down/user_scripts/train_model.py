@@ -383,14 +383,14 @@ def set_default_training_options():
 # =============================================================================
 if __name__ == "__main__":
     # Set computation processes
-    is_standard_training = True
-    is_cross_validation = False
+    is_standard_training = False
+    is_cross_validation = True
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
     base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
                 'colaboration_guillaume/shell_knock_down/case_studies/')
     # Set case study directory
-    case_study_name = 'debug_gen'
+    case_study_name = 'debug_cv'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
                                   f'{case_study_name}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
