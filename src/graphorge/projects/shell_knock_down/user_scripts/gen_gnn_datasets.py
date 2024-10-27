@@ -136,6 +136,9 @@ def split_samples_files_randomly(dataset_samples_files, dataset_split_sizes):
         subset_samples_files = dataset_samples_files[ini_index:end_index]
         # Store subset data set samples
         dataset_samples_files_subsets[dataset_type] = subset_samples_files
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Update sample index
+        sample_index += n_sample
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return dataset_samples_files_subsets
 # =============================================================================
