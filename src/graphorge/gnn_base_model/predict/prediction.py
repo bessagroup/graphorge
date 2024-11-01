@@ -48,7 +48,7 @@ __status__ = 'Planning'
 def predict(dataset, model_directory, model=None, predict_directory=None,
             load_model_state=None, loss_nature='node_features_out',
             loss_type='mse', loss_kwargs={}, is_normalized_loss=False,
-            dataset_file_path=None, device_type='cpu', seed=None,
+            batch_size=1, dataset_file_path=None, device_type='cpu', seed=None,
             is_verbose=False):
     """Make predictions with Graph Neural Network model for given dataset.
     
@@ -94,9 +94,11 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     loss_kwargs : dict, default={}
         Arguments of torch.nn._Loss initializer.
     is_normalized_loss : bool, default=False
-        If True, then samples prediction loss are computed from the normalized
-        data, False otherwise. Normalization requires that model features data
-        scalers are fitted.
+        If True, then samples prediction loss are computed from normalized
+        output data, False otherwise. Normalization of output data requires
+        that model data scalers are available.
+    batch_size : int, default=1
+        Number of samples loaded per batch.
     dataset_file_path : str, default=None
         Graph Neural Network graph data set file path if such file exists. Only
         used for output purposes.
@@ -155,6 +157,10 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
         _ = model.load_model_state(load_model_state=load_model_state,
                                    is_remove_posterior=False)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Get model input and output features normalization
+    is_model_in_normalized = model.is_model_in_normalized
+    is_model_out_normalized = model.is_model_out_normalized
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Move model to device
     model.to(device=device)
     # Set model in evaluation mode
@@ -168,11 +174,11 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     # Set data loader
     if isinstance(seed, int):
         data_loader = torch_geometric.loader.dataloader.DataLoader(
-            dataset=dataset, batch_size=1,
+            dataset=dataset, batch_size=batch_size,
             worker_init_fn=seed_worker, generator=generator)
     else:
         data_loader = torch_geometric.loader.dataloader.DataLoader(
-            dataset=dataset, batch_size=1)
+            dataset=dataset, batch_size=batch_size)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Initialize loss function
     loss_function = get_pytorch_loss(loss_type, **loss_kwargs)
@@ -192,16 +198,44 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # Move sample to device
             pyg_graph.to(device)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get batch node assignment vector
+            if batch_size > 1:
+                batch_vector = pyg_graph.batch
+            else:
+                batch_vector = None
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get input features from input graph
+            node_features_in, edge_features_in, global_features_in, \
+                edges_indexes = model.get_input_features_from_graph(
+                    pyg_graph, is_normalized=is_model_in_normalized)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get node output features ground-truth
+            node_targets, edge_targets, global_targets = \
+                model.get_output_features_from_graph(
+                    pyg_graph, is_normalized=False)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Initialize sample results
             results = {}
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Compute output features predictions (forward propagation)
             if loss_nature == 'node_features_out':
                 # Compute node output features
-                features_out, _, _ = model.predict_output_features(pyg_graph)
+                features_out, _, _ = model(
+                    node_features_in=node_features_in,
+                    edge_features_in=edge_features_in,
+                    global_features_in=global_features_in,
+                    edges_indexes=edges_indexes, batch_vector=batch_vector)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Denormalize node output features
+                if is_model_out_normalized:
+                    # Get model data scaler
+                    features_out = model.data_scaler_transform(
+                        tensor=features_out, features_type='node_features_out',
+                        mode='denormalize')
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Get sample node output features ground-truth
                 # (None if not available)
-                targets, _, _ = model.get_output_features_from_graph(pyg_graph)
+                targets = node_targets
                 # Store sample results
                 results['node_features_out'] = features_out.detach().cpu()
                 results['node_targets'] = None
@@ -210,11 +244,23 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elif loss_nature == 'global_features_out':
                 # Compute global output features
-                _, _, features_out = model.predict_output_features(pyg_graph)
+                _, _, features_out = model(
+                    node_features_in=node_features_in,
+                    edge_features_in=edge_features_in,
+                    global_features_in=global_features_in,
+                    edges_indexes=edges_indexes, batch_vector=batch_vector)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Denormalize global output features
+                if is_model_out_normalized:
+                    # Get model data scaler
+                    features_out = model.data_scaler_transform(
+                        tensor=features_out,
+                        features_type='global_features_out',
+                        mode='denormalize')
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Get sample global output features ground-truth
                 # (None if not available)
-                _, _, targets = \
-                    model.get_output_features_from_graph(pyg_graph)
+                targets = global_targets
                 # Store sample results
                 results['global_features_out'] = features_out.detach().cpu()
                 results['global_targets'] = None
@@ -227,7 +273,7 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # Compute sample output features prediction loss
             loss = compute_sample_prediction_loss(
                 model, loss_nature, loss_function, features_out, targets,
-                is_normalized=is_normalized_loss)
+                is_normalized_loss=is_normalized_loss)
             # Store prediction loss data
             results['prediction_loss_data'] = \
                 (loss_nature, loss_type, loss, is_normalized_loss)
@@ -246,7 +292,7 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Compute average prediction loss per sample
     avg_predict_loss = None
-    if isinstance(loss_samples, list) and len(loss_samples) == len(dataset):
+    if isinstance(loss_samples, list):
         avg_predict_loss = np.mean(loss_samples)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
@@ -364,8 +410,11 @@ def load_sample_predictions(sample_prediction_path):
     return sample_results
 # =============================================================================
 def compute_sample_prediction_loss(model, loss_nature, loss_function,
-                                   features_out, targets, is_normalized=False):
+                                   features_out, targets,
+                                   is_normalized_loss=False):
     """Compute loss of sample output features prediction.
+    
+    Assumes that provided output features and targets are denormalized.
     
     Parameters
     ----------
@@ -379,9 +428,10 @@ def compute_sample_prediction_loss(model, loss_nature, loss_function,
         Predicted output features stored as a torch.Tensor(2d).
     targets : {torch.Tensor, None}
         Output features ground-truth stored as a torch.Tensor(2d).
-    is_normalized : bool, default=False
-        If True, get normalized loss according with model fitted features data
-        scalers, False otherwise.
+    is_normalized_loss : bool, default=False
+        If True, then samples prediction loss are computed from normalized
+        output data, False otherwise. Normalization of output data requires
+        that model data scalers are available.
     
     Returns
     -------
@@ -394,11 +444,8 @@ def compute_sample_prediction_loss(model, loss_nature, loss_function,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Compute sample loss
     if is_ground_truth_available:
-        if is_normalized:
-            # Check model data normalization
-            if is_normalized:
-                model.check_normalized_return()
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Normalize output features
+        if is_normalized_loss:
             # Get model data scaler
             if loss_nature == 'node_features_out':
                 scaler = model.get_fitted_data_scaler('node_features_out')
@@ -408,17 +455,14 @@ def compute_sample_prediction_loss(model, loss_nature, loss_function,
                 raise RuntimeError('Unknown loss nature.')
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Get normalized output features predictions
-            norm_features_out = scaler.transform(features_out)
+            features_out = scaler.transform(features_out)
             # Get normalized output features ground-truth
-            norm_targets = scaler.transform(targets)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Compute sample loss (normalized data)
-            loss = loss_function(norm_features_out, norm_targets)
-        else:
-            # Compute sample loss
-            loss = loss_function(features_out, targets)
+            targets = scaler.transform(targets)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Compute sample loss
+        loss = loss_function(features_out, targets)
     else:
-        # Set loss to None if ground-truth is not available
+        # Set sample loss to None if ground-truth is not available
         loss = None
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return loss

@@ -95,6 +95,9 @@ def perform_model_standard_training(train_dataset_file_path, model_directory,
     # Load training data set
     train_dataset = GNNGraphDataset.load_dataset(train_dataset_file_path)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set model state loading
+    load_model_state = None
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Training of GNN-based model
     model, _, _ = train_model(n_max_epochs, train_dataset, model_init_args,
                               lr_init, opt_algorithm=opt_algorithm,
@@ -105,7 +108,8 @@ def perform_model_standard_training(train_dataset_file_path, model_directory,
                               is_sampler_shuffle=is_sampler_shuffle,
                               is_early_stopping=is_early_stopping,
                               early_stopping_kwargs=early_stopping_kwargs,
-                              load_model_state=None, save_every=None,
+                              load_model_state=load_model_state,
+                              save_every=None,
                               dataset_file_path=train_dataset_file_path,
                               device_type=device_type, seed=None,
                               is_verbose=is_verbose)
@@ -279,8 +283,9 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
     hidden_activation = 'tanh'
     # Set (shared) output unit activation function
     output_activation = 'identity'
-    # Set data normalization
-    is_data_normalization = True
+    # Set model input and output features normalization
+    is_model_in_normalized = True
+    is_model_out_normalized = True
     # Set aggregation schemes
     pro_edge_to_node_aggr = 'add'
     pro_node_to_global_aggr = 'mean'
@@ -299,7 +304,8 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
                        'hidden_layer_size': hidden_layer_size,
                        'model_directory': model_directory,
                        'model_name': model_name,
-                       'is_data_normalization': is_data_normalization,
+                       'is_model_in_normalized': is_model_in_normalized,
+                       'is_model_out_normalized': is_model_out_normalized,
                        'pro_edge_to_node_aggr': pro_edge_to_node_aggr,
                        'pro_node_to_global_aggr': pro_node_to_global_aggr,
                        'enc_node_hidden_activ_type': hidden_activation,

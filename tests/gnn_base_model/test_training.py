@@ -220,8 +220,9 @@ def test_save_and_load_model_state(tmp_path, opt_algorithm):
                            n_message_steps=2, enc_n_hidden_layers=2,
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2, model_directory=str(tmp_path),
-                           model_name='material_patch_model',
-                           is_data_normalization=True)
+                           model_name='graph_neural_network_model',
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build GNN-based material patch model
     model = GNNEPDBaseModel(**model_init_args)

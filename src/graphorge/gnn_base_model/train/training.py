@@ -50,7 +50,6 @@ import torch
 import torch_geometric.loader
 import numpy as np
 # Local
-from gnn_base_model.data.graph_dataset import split_dataset
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel
 from gnn_base_model.train.torch_loss import get_pytorch_loss
 from gnn_base_model.predict.prediction import predict
@@ -128,7 +127,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         the underlying validation procedures.
     early_stopping_kwargs : dict, default={}
         Early stopping criterion parameters (key, str, item, value).
-    load_model_state : {'best', 'last', int, None}, default=None
+    load_model_state : {'best', 'last', 'init', int, None}, default=None
         Load available GNN-based model state from the model
         directory. Data scalers are also loaded from model initialization file.
         Options:
@@ -138,6 +137,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         'last'      : Model state corresponding to highest training epoch
         
         int         : Model state corresponding to given training epoch
+        
+        'init'      : Model state corresponding to initial state
         
         None        : Model default state file
 
@@ -180,23 +181,54 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         print('\nGraph Neural Network model training'
               '\n-----------------------------------')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Initialize Graph Neural Network model
-    model = GNNEPDBaseModel(**model_init_args)    
-    # Set model device
-    model.set_device(device_type)
+    # Initialize Graph Neural Network model state
+    if load_model_state is not None:
+        if is_verbose:
+            print('\n> Initializing model...')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Initialize Graph Neural Network model
+        # (includes loading of data scalers)
+        model = GNNEPDBaseModel.init_model_from_file(
+            model_init_args['model_directory'])
+        # Set model device
+        model.set_device(device_type)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Get model input and output features normalization
+        is_model_in_normalized = model.is_model_in_normalized
+        is_model_out_normalized = model.is_model_out_normalized
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if is_verbose:
+            print('\n> Loading model state...')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Load Graph Neural Network model state
+        _ = model.load_model_state(load_model_state=load_model_state,
+                                   is_remove_posterior=True)
+    else:
+        if is_verbose:
+            print('\n> Initializing model...')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Initialize Graph Neural Network model
+        model = GNNEPDBaseModel(**model_init_args)    
+        # Set model device
+        model.set_device(device_type)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Get model input and output features normalization
+        is_model_in_normalized = model.is_model_in_normalized
+        is_model_out_normalized = model.is_model_out_normalized
+        # Fit model data scalers  
+        if is_model_in_normalized or is_model_out_normalized:
+            model.fit_data_scalers(dataset)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    # Save model initial state
+    model.save_model_init_state()
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Get model parameters
+    model_parameters = model.parameters(recurse=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     # Move model to device
     model.to(device=device)
     # Set model in training mode
     model.train()
-    # Get model parameters
-    model_parameters = model.parameters(recurse=True)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Get model data normalization
-    is_data_normalization = model.is_data_normalization
-    # Fit model data scalers  
-    if is_data_normalization and load_model_state is None:
-        model.fit_data_scalers(dataset)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Initialize learning rate
     learning_rate = lr_init
@@ -235,34 +267,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     # Initialize number of training steps
     step = 0
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Load Graph Neural Network model state
-    if load_model_state is not None:   
-        # Initialize Graph Neural Network model
-        # (includes loading of data scalers)
-        model = GNNEPDBaseModel.init_model_from_file(
-            model_init_args['model_directory'])
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Move model to device
-        model.to(device=device)
-        # Set model in training mode
-        model.train()
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        if is_verbose:
-            print('\n> Loading model state...')
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Load Graph Neural Network model state
-        loaded_epoch = load_training_state(model, opt_algorithm, optimizer,
-                                           load_model_state)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Load loss history
-        loss_history_epochs = load_loss_history(model, loss_nature, loss_type,
-                                                epoch=loaded_epoch)
-        # Load learning rate history
-        lr_history_epochs = load_lr_history(model, epoch=loaded_epoch)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Update training epoch counter
-        epoch = int(loaded_epoch)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Initialize validation loss history
     validation_loss_history = None
     # Initialize early stopping criterion
@@ -289,8 +293,10 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             dataset=dataset, batch_size=batch_size, shuffle=is_sampler_shuffle)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
-        normalization_str = 'Yes' if is_data_normalization else 'No'
-        print(f'\n> Data normalization: {normalization_str}')
+        input_normalization_str = 'Yes' if is_model_in_normalized else 'No'
+        print(f'\n> Input data normalization: {input_normalization_str}')
+        output_normalization_str = 'Yes' if is_model_out_normalized else 'No'
+        print(f'\n> Output data normalization: {output_normalization_str}')
         print('\n\n> Starting training process...\n')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over training iterations
@@ -310,10 +316,15 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             else:
                 batch_vector = None
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get input features from input graph
+            node_features_in, edge_features_in, global_features_in, \
+                edges_indexes = model.get_input_features_from_graph(
+                    pyg_graph, is_normalized=is_model_in_normalized)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Get node output features ground-truth
             node_targets, edge_targets, global_targets = \
                 model.get_output_features_from_graph(
-                    pyg_graph, is_normalized=is_data_normalization)
+                    pyg_graph, is_normalized=is_model_out_normalized)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Compute output features predictions (forward propagation).
             # During the foward pass, PyTorch creates a computation graph for
@@ -327,8 +338,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             # graph or for tensors with the gradient flag set to False.
             if loss_nature == 'node_features_out':
                 # Get node output features
-                node_features_out, _, _ = model.predict_output_features(
-                    pyg_graph, is_normalized=is_data_normalization,
+                node_features_out, _, _ = model(
+                    node_features_in=node_features_in,
+                    edge_features_in=edge_features_in,
+                    global_features_in=global_features_in,
+                    edges_indexes=edges_indexes,
                     batch_vector=batch_vector)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Compute loss
@@ -336,8 +350,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elif loss_nature == 'global_features_out':
                 # Get global output features
-                _, _, global_features_out = model.predict_output_features(
-                    pyg_graph, is_normalized=is_data_normalization,
+                _, _, global_features_out = model(
+                    node_features_in=node_features_in,
+                    edge_features_in=edge_features_in,
+                    global_features_in=global_features_in,
+                    edges_indexes=edges_indexes,
                     batch_vector=batch_vector)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Compute loss
@@ -412,7 +429,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 is_stop_training = early_stopper.evaluate_criterion(
                     model, optimizer, epoch, loss_nature=loss_nature,
                     loss_type=loss_type, loss_kwargs=loss_kwargs,
-                    device_type=device_type)
+                    batch_size=batch_size, device_type=device_type)
             # If early stopping is triggered, save model and optimizer best
             # performance corresponding to early stopping criterion
             if is_stop_training:
@@ -461,8 +478,12 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     best_training_epoch = loss_history_epochs.index(best_loss)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
-        print('\n\n> Minimum training loss: {:.8e} | Epoch: {:d}'.format(
-              best_loss, best_training_epoch))
+        if is_model_out_normalized:
+            min_loss_str = 'Minimum training loss (normalized)'
+        else:
+            min_loss_str = 'Minimum training loss'
+        print(f'\n\n> {min_loss_str}: {best_loss:.8e} | '
+              f'Epoch: {best_training_epoch:d}')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Compute total training time and average training time per epoch
     total_time_sec = time.time() - start_time_sec
@@ -479,11 +500,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     # Write summary data file for model training process
     write_training_summary_file(
         device_type, seed, model.model_directory, load_model_state,
-        n_max_epochs, is_data_normalization, batch_size, is_sampler_shuffle,
-        loss_nature, loss_type, loss_kwargs, opt_algorithm, lr_init,
-        lr_scheduler_type, lr_scheduler_kwargs, epoch, dataset_file_path,
-        dataset, best_loss, best_training_epoch, total_time_sec,
-        avg_time_epoch)
+        n_max_epochs, is_model_in_normalized, is_model_out_normalized,
+        batch_size, is_sampler_shuffle, loss_nature, loss_type, loss_kwargs,
+        opt_algorithm, lr_init, lr_scheduler_type, lr_scheduler_kwargs, epoch,
+        dataset_file_path, dataset, best_loss, best_training_epoch,
+        total_time_sec, avg_time_epoch)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return model, best_loss, best_training_epoch
 # =============================================================================
@@ -1098,11 +1119,11 @@ def read_lr_history_from_file(loss_record_path):
 # =============================================================================
 def write_training_summary_file(
     device_type, seed, model_directory, load_model_state, n_max_epochs,
-    is_data_normalization, batch_size, is_sampler_shuffle, loss_nature,
-    loss_type, loss_kwargs, opt_algorithm, lr_init, lr_scheduler_type,
-    lr_scheduler_kwargs, n_epochs, dataset_file_path, dataset, best_loss,
-    best_training_epoch, total_time_sec, avg_time_epoch,
-    best_model_parameters=None, torchinfo_summary=None):
+    is_model_in_normalized, is_model_out_normalized, batch_size,
+    is_sampler_shuffle, loss_nature, loss_type, loss_kwargs,
+    opt_algorithm, lr_init, lr_scheduler_type, lr_scheduler_kwargs, n_epochs,
+    dataset_file_path, dataset, best_loss, best_training_epoch, total_time_sec,
+    avg_time_epoch, best_model_parameters=None, torchinfo_summary=None):
     """Write summary data file for model training process.
     
     Parameters
@@ -1120,10 +1141,12 @@ def write_training_summary_file(
         directory. Data scalers are also loaded from model initialization file.
     n_max_epochs : int
         Maximum number of training epochs.
-    is_data_normalization : bool
-        If True, then input and output features are normalized for training
-        False otherwise. Data scalers need to be fitted with fit_data_scalers()
-        and are stored as model attributes.
+    is_model_in_normalized : bool, default=False
+        If True, then model input features are assumed to be normalized
+        (normalized input data has been seen during model training).
+    is_model_out_normalized : bool, default=False
+        If True, then model output features are assumed to be normalized
+        (normalized output data has been seen during model training).
     batch_size : int
         Number of samples loaded per batch.
     is_sampler_shuffle : bool
@@ -1172,7 +1195,8 @@ def write_training_summary_file(
     summary_data['load_model_state'] = \
         load_model_state if load_model_state else None
     summary_data['n_max_epochs'] = n_max_epochs
-    summary_data['is_data_normalization'] = is_data_normalization
+    summary_data['is_model_in_normalized'] = is_model_in_normalized
+    summary_data['is_model_out_normalized'] = is_model_out_normalized
     summary_data['batch_size'] = batch_size
     summary_data['is_sampler_shuffle'] = is_sampler_shuffle
     summary_data['loss_nature'] = loss_nature
@@ -1187,7 +1211,7 @@ def write_training_summary_file(
     summary_data['Number of completed epochs'] = n_epochs
     summary_data['Training data set file'] = \
         dataset_file_path if dataset_file_path else None
-    summary_data['Training data set (effective) size'] = len(dataset)
+    summary_data['Training data set size'] = len(dataset)
     summary_data['Best loss: '] = \
         f'{best_loss:.8e} (training epoch {best_training_epoch})'
     summary_data['Total training time'] = \
@@ -1258,8 +1282,7 @@ class EarlyStopper:
         Load minimum validation loss model and optimizer states.
     """
     def __init__(self, validation_dataset, validation_frequency=1,
-                 trigger_tolerance=1, improvement_tolerance=1e-2,
-                 is_loss_normalization=True):
+                 trigger_tolerance=1, improvement_tolerance=1e-2):
         """Constructor.
         
         Parameters
@@ -1277,11 +1300,6 @@ class EarlyStopper:
         improvement_tolerance : float, default=1e-2
             Minimum relative improvement required to count as a performance
             improvement.
-        is_loss_normalization : bool, default=True
-            If True, then output features are normalized for loss computation,
-            False otherwise. Ignored if model is_data_normalization is set to
-            True. The model data scalers are fitted and employed to normalize
-            the output features.
         """
         # Set validation data set
         self._validation_dataset = validation_dataset
@@ -1291,8 +1309,6 @@ class EarlyStopper:
         self._trigger_tolerance = trigger_tolerance
         # Set minimum relative improvement tolerance
         self._improvement_tolerance = improvement_tolerance
-        # Set loss normalization
-        self._is_loss_normalization = is_loss_normalization
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize validation training steps history
         self._validation_steps_history = []
@@ -1337,7 +1353,7 @@ class EarlyStopper:
     # -------------------------------------------------------------------------
     def evaluate_criterion(self, model, optimizer, epoch,
                            loss_nature='node_features_out', loss_type='mse',
-                           loss_kwargs={}, device_type='cpu'):
+                           loss_kwargs={}, batch_size=1, device_type='cpu'):
         """Evaluate early stopping criterion.
         
         Parameters
@@ -1363,6 +1379,8 @@ class EarlyStopper:
             
         loss_kwargs : dict, default={}
             Arguments of torch.nn._Loss initializer.
+        batch_size : int, default=1
+            Number of samples loaded per batch.
         device_type : {'cpu', 'cuda'}, default='cpu'
             Type of device on which torch.Tensor is allocated.
             
@@ -1379,7 +1397,7 @@ class EarlyStopper:
         avg_valid_loss_sample = self._validate_model(
             model, optimizer, epoch, loss_nature=loss_nature,
             loss_type=loss_type, loss_kwargs=loss_kwargs,
-            device_type=device_type)
+            batch_size=batch_size, device_type=device_type)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Update minimum validation loss and performance counter
         if avg_valid_loss_sample < self._min_validation_loss:
@@ -1419,7 +1437,7 @@ class EarlyStopper:
     # -------------------------------------------------------------------------
     def _validate_model(self, model, optimizer, epoch,
                         loss_nature='node_features_out', loss_type='mse',
-                        loss_kwargs={}, device_type='cpu'):
+                        loss_kwargs={}, batch_size=1, device_type='cpu'):
         """Perform model validation.
         
         Parameters
@@ -1445,6 +1463,8 @@ class EarlyStopper:
             
         loss_kwargs : dict, default={}
             Arguments of torch.nn._Loss initializer.
+        batch_size : int, default=1
+            Number of samples loaded per batch.
         device_type : {'cpu', 'cuda'}, default='cpu'
             Type of device on which torch.Tensor is allocated.
             
@@ -1479,8 +1499,8 @@ class EarlyStopper:
             model=model, predict_directory=None, load_model_state=epoch,
             loss_nature=loss_nature, loss_type=loss_type,
             loss_kwargs=loss_kwargs,
-            is_normalized_loss=(model.is_data_normalization or
-                                self._is_normalized_loss),
+            is_normalized_loss=model.is_model_out_normalized,
+            batch_size=batch_size,
             device_type=device_type, seed=None, is_verbose=False)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set model in training mode

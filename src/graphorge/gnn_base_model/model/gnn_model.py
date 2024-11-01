@@ -153,10 +153,12 @@ class GNNEPDBaseModel(torch.nn.Module):
         Type of device on which torch.Tensor is allocated.
     _device : torch.device
         Device on which torch.Tensor is allocated.
-    is_data_normalization : bool, default=False
-        If True, then input and output features are normalized for training
-        False otherwise. Data scalers need to be fitted with fit_data_scalers()
-        and are stored as model attributes.
+    is_model_in_normalized : bool, default=False
+        If True, then model input features are assumed to be normalized
+        (normalized input data has been seen during model training).
+    is_model_out_normalized : bool, default=False
+        If True, then model output features are assumed to be normalized
+        (normalized output data has been seen during model training).
     _data_scalers : dict
         Data scaler (item, sklearn.preprocessing.StandardScaler) for each
         feature data (key, str).
@@ -169,7 +171,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         Set device on which torch.Tensor is allocated.
     get_device(self)
         Get device on which torch.Tensor is allocated.
-    forward(self)
+    forward(self, node_features_in=None, edge_features_in=None, \
+            global_features_in=None, edges_indexes=None, batch_vector=None)
         Forward propagation.
     save_model_init_file(self)
         Save model class initialization attributes.
@@ -177,10 +180,10 @@ class GNNEPDBaseModel(torch.nn.Module):
         Get input features from graph.
     get_output_features_from_graph(self, graph, is_normalized=False)
         Get output features from graph.
-    predict_node_output_features(self, input_graph)
-        Predict node output features.
     predict_output_features(self, input_graph, is_normalized=False)
         Predict output features.
+    save_model_init_state(self)
+        Save model initial state to file.
     save_model_state(self)
         Save model state to file.
     load_model_state(self)
@@ -195,6 +198,9 @@ class GNNEPDBaseModel(torch.nn.Module):
         Delete existent model best state files.
     _init_data_scalers(self)
         Initialize model data scalers.
+    set_data_scalers(self, scaler_node_in, scaler_edge_in, scaler_global_in,
+                     scaler_node_out, scaler_edge_out, scaler_global_out)
+        Set fitted model data scalers.
     fit_data_scalers(self, dataset, is_verbose=False)
         Fit model data scalers.
     get_fitted_data_scaler(self, features_type)
@@ -211,7 +217,7 @@ class GNNEPDBaseModel(torch.nn.Module):
                  enc_n_hidden_layers, pro_n_hidden_layers, dec_n_hidden_layers,
                  hidden_layer_size, model_directory,
                  model_name='gnn_epd_model',
-                 is_data_normalization=False,
+                 is_model_in_normalized=False, is_model_out_normalized=False,
                  pro_edge_to_node_aggr='add', pro_node_to_global_aggr='add',
                  enc_node_hidden_activ_type='identity',
                  enc_node_output_activ_type='identity',
@@ -267,10 +273,12 @@ class GNNEPDBaseModel(torch.nn.Module):
             Directory where model is stored.
         model_name : str, default='gnn_epd_model'
             Name of model.
-        is_data_normalization : bool, default=False
-            If True, then input and output features are normalized for
-            training, False otherwise. Data scalers need to be fitted with
-            fit_data_scalers() and are stored as model attributes.
+        is_model_in_normalized : bool, default=False
+            If True, then model input features are assumed to be normalized
+            (normalized input data has been seen during model training).
+        is_model_out_normalized : bool, default=False
+            If True, then model output features are assumed to be normalized
+            (normalized output data has been seen during model training).
         pro_edge_to_node_aggr : {'add',}, default='add'
             Processor: Edge-to-node aggregation scheme.
         pro_node_to_global_aggr : {'add',}, default='add'
@@ -401,8 +409,9 @@ class GNNEPDBaseModel(torch.nn.Module):
             raise RuntimeError('The model name must be a string.')
         else:
             self.model_name = model_name
-        # Set normalization flag
-        self.is_data_normalization = is_data_normalization
+        # Set model input and output features normalization
+        self.is_model_in_normalized = is_model_in_normalized
+        self.is_model_out_normalized = is_model_out_normalized
         # Set device
         self.set_device(device_type)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -457,9 +466,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             is_node_res_connect=False, is_edge_res_connect=False)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize data scalers
-        self._data_scalers = None
-        if self.is_data_normalization:
-            self._init_data_scalers()
+        self._init_data_scalers()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Save model initialization file
         if is_save_model_init_file:
@@ -540,16 +547,26 @@ class GNNEPDBaseModel(torch.nn.Module):
         """
         return self.device_type, self.device
     # -------------------------------------------------------------------------
-    def forward(self, graph, is_normalized=False, batch_vector=None):
+    def forward(self, node_features_in=None, edge_features_in=None,
+                global_features_in=None, edges_indexes=None,
+                batch_vector=None):
         """Forward propagation.
         
         Parameters
         ----------
-        graph : torch_geometric.data.Data
-            Homogeneous graph.
-        is_normalized : bool, default=False
-            If True, get normalized output features from graph, False
-            otherwise.
+        node_features_in : {torch.Tensor, None}, default=None
+            Nodes features input matrix stored as a torch.Tensor(2d) of shape
+            (n_nodes, n_features).
+        edge_features_in : {torch.Tensor, None}, default=None
+            Edges features input matrix stored as a torch.Tensor(2d) of shape
+            (n_edges, n_features).
+        global_features_in : {torch.Tensor, None}, default=None
+            Global features input matrix stored as a torch.Tensor(2d) of shape
+            (1, n_features).
+        edges_indexes : {torch.Tensor, None}, default=None
+            Edges indexes matrix stored as torch.Tensor(2d) with shape
+            (2, n_edges), where the i-th global is stored in
+            edges_indexes[:, i] as (start_node_index, end_node_index).
         batch_vector : torch.Tensor, default=None
             Batch vector stored as torch.Tensor(1d) of shape (n_nodes,),
             assigning each node to a specific batch subgraph. Required to
@@ -568,14 +585,34 @@ class GNNEPDBaseModel(torch.nn.Module):
             Global features output matrix stored as a torch.Tensor(2d) of shape
             (1, n_features).
         """
-        # Check input graph
-        if not isinstance(graph, torch_geometric.data.Data):
-            raise RuntimeError('Input graph is not torch_geometric.data.Data.')
+        # Check input node features
+        if node_features_in is not None:
+            if not isinstance(node_features_in, torch.Tensor):
+                raise RuntimeError('Node input features were not provided '
+                                   'as torch.Tensor.')
+        # Check input edge features
+        if edge_features_in is not None:
+            if not isinstance(edge_features_in, torch.Tensor):
+                raise RuntimeError('Edge input features were not provided '
+                                   'as torch.Tensor.')
+        # Check input global features
+        if global_features_in is not None:
+            if not isinstance(global_features_in, torch.Tensor):
+                raise RuntimeError('Global input features were not provided '
+                                   'torch.Tensor.')
+        # Check edges indexes
+        if edges_indexes is not None:
+            if not isinstance(edges_indexes, torch.Tensor):
+                raise RuntimeError('Edges indexes were not provided provided '
+                                   'as torch.Tensor.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Predict output features
         node_features_out, edge_features_out, global_features_out = \
             self.predict_output_features(
-                graph, is_normalized=is_normalized, batch_vector=batch_vector)
+                node_features_in=node_features_in,
+                edge_features_in=edge_features_in,
+                global_features_in=global_features_in,
+                edges_indexes=edges_indexes, batch_vector=batch_vector)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
@@ -655,7 +692,9 @@ class GNNEPDBaseModel(torch.nn.Module):
             self._dec_global_output_activ_type
         model_init_args['model_directory'] = self.model_directory
         model_init_args['model_name'] = self.model_name
-        model_init_args['is_data_normalization'] = self.is_data_normalization
+        model_init_args['is_model_in_normalized'] = self.is_model_in_normalized
+        model_init_args['is_model_out_normalized'] = \
+            self.is_model_out_normalized
         model_init_args['device_type'] = self._device_type
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Assemble initialization parameters
@@ -840,70 +879,26 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
-    def predict_node_output_features(self, input_graph, is_normalized=False,
-                                     batch_vector=None):
-        """Predict node output features.
-        
-        Parameters
-        ----------
-        input_graph : torch_geometric.data.Data
-            Homogeneous graph.
-        is_normalized : bool, default=False
-            If True, get normalized output features from graph, False
-            otherwise.
-        batch_vector : torch.Tensor, default=None
-            Batch vector stored as torch.Tensor(1d) of shape (n_nodes,),
-            assigning each node to a specific batch subgraph. Required to
-            process a graph holding multiple isolated subgraphs when batch
-            size is greater than 1.
-
-        Returns
-        -------
-        node_features_out : torch.Tensor
-            Nodes features output matrix stored as a torch.Tensor(2d) of shape
-            (n_nodes, n_features).
-        """
-        # Check input graph type
-        if not isinstance(input_graph, torch_geometric.data.Data):
-            raise RuntimeError('Input graph must be instance of '
-                               'torch_geometric.data.Data.')
-        # Check model data normalization
-        if is_normalized:
-            self.check_normalized_return()
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get features from input graph
-        node_features_in, edge_features_in, global_features_in, \
-            edges_indexes = self.get_input_features_from_graph(
-                input_graph, is_normalized=self.is_data_normalization)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Predict node output features
-        node_features_out, _, _ = \
-            self._gnn_epd_model(edges_indexes=edges_indexes,
-                                node_features_in=node_features_in,
-                                edge_features_in=edge_features_in,
-                                batch_vector=batch_vector)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Denormalize output features data
-        if self.is_data_normalization and not is_normalized:
-            if node_features_out is not None:
-                node_features_out = self.data_scaler_transform(
-                    tensor=node_features_out,
-                    features_type='node_features_out',
-                    mode='denormalize')
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        return node_features_out
-    # -------------------------------------------------------------------------
-    def predict_output_features(self, input_graph, is_normalized=False,
-                                batch_vector=None):
+    def predict_output_features(self, node_features_in=None,
+                                edge_features_in=None, global_features_in=None,
+                                edges_indexes=None, batch_vector=None):
         """Predict output features.
         
         Parameters
         ----------
-        input_graph : torch_geometric.data.Data
-            Homogeneous graph.
-        is_normalized : bool, default=False
-            If True, get normalized output features from graph, False
-            otherwise.
+        node_features_in : {torch.Tensor, None}, default=None
+            Nodes features input matrix stored as a torch.Tensor(2d) of shape
+            (n_nodes, n_features).
+        edge_features_in : {torch.Tensor, None}, default=None
+            Edges features input matrix stored as a torch.Tensor(2d) of shape
+            (n_edges, n_features).
+        global_features_in : {torch.Tensor, None}, default=None
+            Global features input matrix stored as a torch.Tensor(2d) of shape
+            (1, n_features).
+        edges_indexes : {torch.Tensor, None}, default=None
+            Edges indexes matrix stored as torch.Tensor(2d) with shape
+            (2, n_edges), where the i-th global is stored in
+            edges_indexes[:, i] as (start_node_index, end_node_index).
         batch_vector : torch.Tensor, default=None
             Batch vector stored as torch.Tensor(1d) of shape (n_nodes,),
             assigning each node to a specific batch subgraph. Required to
@@ -922,18 +917,26 @@ class GNNEPDBaseModel(torch.nn.Module):
             Global features output matrix stored as a torch.Tensor(2d) of shape
             (1, n_features).
         """
-        # Check input graph type
-        if not isinstance(input_graph, torch_geometric.data.Data):
-            raise RuntimeError('Input graph must be instance of '
-                               'torch_geometric.data.Data.')
-        # Check model data normalization
-        if is_normalized:
-            self.check_normalized_return()
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get features from input graph
-        node_features_in, edge_features_in, global_features_in, \
-            edges_indexes = self.get_input_features_from_graph(
-                input_graph, is_normalized=self.is_data_normalization)
+        # Check input node features
+        if node_features_in is not None:
+            if not isinstance(node_features_in, torch.Tensor):
+                raise RuntimeError('Node input features were not provided '
+                                   'as torch.Tensor.')
+        # Check input edge features
+        if edge_features_in is not None:
+            if not isinstance(edge_features_in, torch.Tensor):
+                raise RuntimeError('Edge input features were not provided '
+                                   'as torch.Tensor.')
+        # Check input global features
+        if global_features_in is not None:
+            if not isinstance(global_features_in, torch.Tensor):
+                raise RuntimeError('Global input features were not provided '
+                                   'torch.Tensor.')
+        # Check edges indexes
+        if edges_indexes is not None:
+            if not isinstance(edges_indexes, torch.Tensor):
+                raise RuntimeError('Edges indexes were not provided provided '
+                                   'as torch.Tensor.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Predict output features
         node_features_out, edge_features_out, global_features_out = \
@@ -942,24 +945,6 @@ class GNNEPDBaseModel(torch.nn.Module):
                                 edge_features_in=edge_features_in,
                                 global_features_in=global_features_in,
                                 batch_vector=batch_vector)
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Denormalize output features data
-        if self.is_data_normalization and not is_normalized:
-            if node_features_out is not None:
-                node_features_out = self.data_scaler_transform(
-                    tensor=node_features_out,
-                    features_type='node_features_out',
-                    mode='denormalize')
-            if edge_features_out is not None:
-                edge_features_out = self.data_scaler_transform(
-                    tensor=edge_features_out,
-                    features_type='edge_features_out',
-                    mode='denormalize')
-            if global_features_out is not None:
-                global_features_out = self.data_scaler_transform(
-                    tensor=global_features_out,
-                    features_type='global_features_out',
-                    mode='denormalize')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
@@ -1002,6 +987,28 @@ class GNNEPDBaseModel(torch.nn.Module):
                                f'\n\nAvailable: {available}')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return activation_function
+    # -------------------------------------------------------------------------
+    def save_model_init_state(self):
+        """Save model initial state to file.
+        
+        Model state file is stored in model_directory under the name
+        < model_name >-init.pt.
+
+        """
+        # Check model directory
+        if not os.path.isdir(self.model_directory):
+            raise RuntimeError('The model directory has not been found:\n\n'
+                               + self.model_directory)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set model state filename
+        model_state_file = self.model_name + '-init'
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set model state file path
+        model_path = os.path.join(self.model_directory,
+                                  model_state_file + '.pt')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Save model state
+        torch.save(self.state_dict(), model_path)
     # -------------------------------------------------------------------------
     def save_model_state(self, epoch=None, is_best_state=False,
                          is_remove_posterior=True):
@@ -1066,6 +1073,9 @@ class GNNEPDBaseModel(torch.nn.Module):
         model_directory under the name < model_name >-best.pt or
         < model_name >-< epoch >-best.pt if epoch if known.
         
+        Model initial state file is stored in model directory under the name
+        < model_name >-init.pt
+        
         Parameters
         ----------            
         load_model_state : {'best', 'last', int, None}, default=None
@@ -1077,6 +1087,8 @@ class GNNEPDBaseModel(torch.nn.Module):
             'last'      : Model state corresponding to highest training epoch
             
             int         : Model state corresponding to given training epoch
+            
+            'init'      : Model initial state
             
             None        : Model default state file
         
@@ -1165,6 +1177,16 @@ class GNNEPDBaseModel(torch.nn.Module):
             epoch = load_model_state
             # Set model state filename with epoch
             model_state_file = self.model_name + '-' + str(int(epoch))
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Delete model epoch state files posterior to loaded epoch
+            if is_remove_posterior:
+                self._remove_posterior_state_files(epoch)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        elif load_model_state == 'init':
+            # Set model initial state file
+            model_state_file = self.model_name + '-init'
+            # Set epoch as unknown
+            epoch = 0
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Delete model epoch state files posterior to loaded epoch
             if is_remove_posterior:
@@ -1293,6 +1315,41 @@ class GNNEPDBaseModel(torch.nn.Module):
         self._data_scalers['edge_features_out'] = None
         self._data_scalers['global_features_out'] = None
     # -------------------------------------------------------------------------
+    def set_data_scalers(self, scaler_node_in, scaler_edge_in,
+                         scaler_global_in, scaler_node_out, scaler_edge_out,
+                         scaler_global_out):
+        """Set fitted model data scalers.
+        
+        Parameters
+        ----------
+        scaler_node_in : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for input node features.
+        scaler_edge_in : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for input edge features.
+        scaler_global_in : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for input global features.
+        scaler_node_out : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for output node features.
+        scaler_edge_out : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for output edge features.
+        scaler_global_out : {TorchMinMaxScaler, TorchMinMaxScaler}
+            Data scaler for output global features.
+        """
+        # Initialize data scalers
+        self._init_data_scalers()
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set fitted data scalers
+        self._data_scalers['node_features_in'] = scaler_node_in
+        self._data_scalers['edge_features_in'] = scaler_edge_in
+        self._data_scalers['global_features_in'] = scaler_global_in
+        self._data_scalers['node_features_out'] = scaler_node_out
+        self._data_scalers['edge_features_out'] = scaler_edge_out
+        self._data_scalers['global_features_out'] = scaler_global_out
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Update model initialization file with fitted data scalers
+        if self._is_save_model_init_file:
+            self.save_model_init_file() 
+    # -------------------------------------------------------------------------
     def fit_data_scalers(self, dataset, is_verbose=False):
         """Fit model data scalers.
         
@@ -1313,8 +1370,6 @@ class GNNEPDBaseModel(torch.nn.Module):
             print('\nFitting GNN-based model data scalers'
                   '\n------------------------------------\n')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set model data normalization
-        self.is_data_normalization = True
         # Initialize data scalers
         self._init_data_scalers()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1522,16 +1577,16 @@ class GNNEPDBaseModel(torch.nn.Module):
     # -------------------------------------------------------------------------
     def check_normalized_return(self):
         """Check if model data normalization is available."""
-        if not self.is_data_normalization or self._data_scalers is None:
+        if self._data_scalers is None:
             raise RuntimeError('Data scalers for model features have not '
-                               'been fitted. Fit data scalers by calling '
-                               'method fit_data_scalers() before training '
-                               'or predicting with the model.')
+                               'been set or fitted. Call set_data_scalers() '
+                               'or fit_data_scalers() to make model '
+                               'normalization procedures available.')
         if all([x is None for x in self._data_scalers.values()]):
             raise RuntimeError('Data scalers for model features have not '
-                               'been fitted. Fit data scalers by calling '
-                               'method fit_data_scalers() before training '
-                               'or predicting with the model.')
+                               'been set or fitted. Call set_data_scalers() '
+                               'or fit_data_scalers() to make model '
+                               'normalization procedures available.')
 # =============================================================================
 def graph_standard_partial_fit(dataset, features_type, n_features,
                                is_verbose=False):

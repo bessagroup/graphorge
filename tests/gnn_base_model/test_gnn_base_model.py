@@ -26,19 +26,23 @@ __status__ = 'Planning'
     'n_node_in, n_node_out, n_edge_in, n_edge_out, n_global_in, n_global_out,'
     'n_message_steps,'
     'n_hidden_layers, hidden_layer_size, model_name,'
-    'is_data_normalization, pro_edge_to_node_aggr, pro_node_to_global_aggr,'
-    'hidden_activ_type, output_activ_type, device_type',
+    'is_model_in_normalized, is_model_out_normalized, pro_edge_to_node_aggr,'
+    'pro_node_to_global_aggr, hidden_activ_type, output_activ_type,'
+    'device_type',
     [(2, 5, 4, 3, 2, 2, 10, 2, 3,
-      'material_patch_model', True, 'add', 'add', 'relu', 'identity', 'cpu'),
+      'graph_neural_network_model', True, True, 'add', 'add', 'relu',
+      'identity', 'cpu'),
      (0, 5, 4, 0, 3, 3, 10, 2, 3,
-      'material_patch_model', True, 'add', 'add', 'relu', 'identity', 'cpu'),
+      'graph_neural_network_model', True, True, 'add', 'add', 'relu',
+      'identity', 'cpu'),
      (2, 5, 0, 0, 2, 4, 10, 2, 3,
-      'material_patch_model', True, 'add', 'add', 'relu', 'identity', 'cpu'),
+      'graph_neural_network_model', True, True, 'add', 'add', 'relu',
+      'identity', 'cpu'),
      ])
 def test_gnn_base_model_init(n_node_in, n_node_out, n_edge_in, n_edge_out,
                              n_global_in, n_global_out, n_message_steps,
                              n_hidden_layers, hidden_layer_size, model_name,
-                             is_data_normalization,
+                             is_model_in_normalized, is_model_out_normalized,
                              pro_edge_to_node_aggr, pro_node_to_global_aggr,
                              hidden_activ_type, output_activ_type, device_type,
                              tmp_path):
@@ -60,7 +64,8 @@ def test_gnn_base_model_init(n_node_in, n_node_out, n_edge_in, n_edge_out,
                            hidden_layer_size=hidden_layer_size,
                            model_directory=str(model_directory),
                            model_name=model_name,
-                           is_data_normalization=is_data_normalization,
+                           is_model_in_normalized=is_model_in_normalized,
+                           is_model_out_normalized=is_model_out_normalized,
                            pro_edge_to_node_aggr=pro_edge_to_node_aggr,
                            pro_node_to_global_aggr=pro_node_to_global_aggr,
                            enc_node_hidden_activ_type=hidden_activ_type,
@@ -98,7 +103,8 @@ def test_gnn_base_model_init(n_node_in, n_node_out, n_edge_in, n_edge_out,
                 model._hidden_layer_size == hidden_layer_size,
                 model.model_directory == str(tmp_path),
                 model.model_name == model_name,
-                model.is_data_normalization == is_data_normalization,
+                model.is_model_in_normalized == is_model_in_normalized,
+                model.is_model_out_normalized == is_model_out_normalized,
                 model._pro_edge_to_node_aggr == pro_edge_to_node_aggr,
                 model._pro_node_to_global_aggr == pro_node_to_global_aggr,
                 model._enc_node_hidden_activ_type == hidden_activ_type,
@@ -138,7 +144,7 @@ def test_gnn_base_model_init(n_node_in, n_node_out, n_edge_in, n_edge_out,
                       'torch.nn.Module.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check data scalers
-    if is_data_normalization:
+    if is_model_in_normalized or is_model_out_normalized:
         if not isinstance(model._data_scalers, dict):
             errors.append('GNN-based Encoder-Process-Decoder model data '
                           'scalers were not initialized.')
@@ -153,13 +159,13 @@ def test_gnn_base_model_init(n_node_in, n_node_out, n_edge_in, n_edge_out,
 @pytest.mark.parametrize(
     'n_node_in, n_node_out, n_edge_in, n_edge_out, n_global_in, n_global_out,'
     'n_message_steps, n_hidden_layers, hidden_layer_size, model_name,'
-    'is_data_normalization, device_type',
-    [(2, 5, 4, 3, 1, 2, 10, 2, 3, 'material_patch_model', True, 'cpu'),
-     ])
+    'is_model_in_normalized, is_model_out_normalized, device_type',
+    [(2, 5, 4, 3, 1, 2, 10, 2, 3, 'graph_neural_network_model', True, True,
+      'cpu'),])
 def test_gnn_base_model_init_invalid(
     n_node_in, n_node_out, n_edge_in, n_edge_out, n_global_in, n_global_out,
     n_message_steps, n_hidden_layers, hidden_layer_size, model_name,
-    is_data_normalization, device_type, tmp_path):
+    is_model_in_normalized, is_model_out_normalized, device_type, tmp_path):
     """Test detection of invalid GNN-based EPD model constructor."""
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set model directory
@@ -176,7 +182,8 @@ def test_gnn_base_model_init_invalid(
                            hidden_layer_size=hidden_layer_size,
                            model_directory=model_directory,
                            model_name=model_name,
-                           is_data_normalization=is_data_normalization,
+                           is_model_in_normalized=is_model_in_normalized,
+                           is_model_out_normalized=is_model_out_normalized,
                            device_type=device_type)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
     with pytest.raises(RuntimeError):
@@ -294,7 +301,8 @@ def test_get_input_features_from_graph(graph_patch_data_2d, tmp_path):
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=False)
+                           is_model_in_normalized=False,
+                           is_model_out_normalized=False)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get input features from material patch graph
@@ -350,7 +358,8 @@ def test_get_input_features_from_graph_invalid(graph_patch_data_2d, tmp_path):
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=False)
+                           is_model_in_normalized=False,
+                           is_model_out_normalized=False)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     with pytest.raises(RuntimeError):
         # Test invalid input graph
@@ -403,7 +412,8 @@ def test_get_output_features_from_graph(graph_patch_data_2d, tmp_path):
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=False)
+                           is_model_in_normalized=False,
+                           is_model_out_normalized=False)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get input features from material patch graph
@@ -455,7 +465,8 @@ def test_get_output_features_from_graph_invalid(graph_patch_data_2d, tmp_path):
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=False)
+                           is_model_in_normalized=False,
+                           is_model_out_normalized=False)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     with pytest.raises(RuntimeError):
         # Test invalid output graph
@@ -492,7 +503,8 @@ def test_fit_data_scalers(batch_graph_patch_data_2d, tmp_path):
                            enc_n_hidden_layers=2, pro_n_hidden_layers=3,
                            dec_n_hidden_layers=4, hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=True)
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build dataset
@@ -686,7 +698,8 @@ def test_get_input_features_from_graph_norm(batch_graph_patch_data_2d,
                            enc_n_hidden_layers=2, pro_n_hidden_layers=3,
                            dec_n_hidden_layers=4, hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=True)
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build dataset
@@ -765,7 +778,8 @@ def test_get_output_features_from_graph_norm(batch_graph_patch_data_2d,
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=True)
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build dataset
@@ -821,8 +835,9 @@ def test_save_and_load_model_state(tmp_path):
                            n_message_steps=2, enc_n_hidden_layers=2,
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2, model_directory=str(tmp_path),
-                           model_name='material_patch_model',
-                           is_data_normalization=True)
+                           model_name='graph_neural_network_model',
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build GNN-based EPD model
     model = GNNEPDBaseModel(**model_init_args)
@@ -948,8 +963,9 @@ def test_save_and_load_model_state_invalid(tmp_path):
                            n_message_steps=2, enc_n_hidden_layers=2,
                            pro_n_hidden_layers=3, dec_n_hidden_layers=4,
                            hidden_layer_size=2, model_directory=str(tmp_path),
-                           model_name='material_patch_model',
-                           is_data_normalization=True)
+                           model_name='graph_neural_network_model',
+                           is_model_in_normalized=True,
+                           is_model_out_normalized=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Build GNN-based EPD model
     model = GNNEPDBaseModel(**model_init_args)
@@ -982,11 +998,12 @@ def test_save_and_load_model_state_invalid(tmp_path):
         model.model_directory = 'unknown_dir'
         _ = model.load_model_state()
 # -----------------------------------------------------------------------------
-@pytest.mark.parametrize('is_data_normalization, is_normalized,',
-                         [(False, False), (True, True), (True, False)
-                          ])
+@pytest.mark.parametrize('is_model_in_normalized, is_model_out_normalized,',
+                         [(False, False), (True, True), (True, False),
+                          (False, True)])
 def test_model_forward_propagation(batch_graph_patch_data_2d, tmp_path,
-                                   is_data_normalization, is_normalized):
+                                   is_model_in_normalized,
+                                   is_model_out_normalized):
     """Test GNN-based EPD model forward propagation."""
     # Initialize errors
     errors = []
@@ -1017,7 +1034,8 @@ def test_model_forward_propagation(batch_graph_patch_data_2d, tmp_path,
                            enc_n_hidden_layers=2, pro_n_hidden_layers=3,
                            dec_n_hidden_layers=4, hidden_layer_size=2,
                            model_directory=str(tmp_path),
-                           is_data_normalization=is_data_normalization)
+                           is_model_in_normalized=is_model_in_normalized,
+                           is_model_out_normalized=is_model_out_normalized)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get PyG homogeneous graph data object
     pyg_graph = graph_data.get_torch_data_object()
@@ -1026,7 +1044,7 @@ def test_model_forward_propagation(batch_graph_patch_data_2d, tmp_path,
     model = GNNEPDBaseModel(**model_init_args)    
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Data features normalization
-    if is_data_normalization:
+    if is_model_in_normalized or is_model_out_normalized:
         # Build dataset
         dataset = [gnn_patch_data.get_torch_data_object()
                    for gnn_patch_data in batch_graph_patch_data_2d]
@@ -1034,8 +1052,22 @@ def test_model_forward_propagation(batch_graph_patch_data_2d, tmp_path,
         # Fit model data scalers
         model.fit_data_scalers(dataset)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Get input features from input graph
+    node_features_in, edge_features_in, global_features_in, \
+        edges_indexes = model.get_input_features_from_graph(
+            pyg_graph, is_normalized=is_model_in_normalized)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Predict node output features
-    node_features_out, _, _ = model(pyg_graph, is_normalized=is_normalized)
+    node_features_out, _, _ = model(
+        node_features_in=node_features_in, edge_features_in=edge_features_in,
+        global_features_in=global_features_in, edges_indexes=edges_indexes)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Denormalize node output features
+    if is_model_out_normalized:
+        # Get model data scaler
+        node_features_out = model.data_scaler_transform(
+            tensor=node_features_out, features_type='node_features_out',
+            mode='denormalize')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check nodes features output matrix
     if not isinstance(node_features_out, torch.Tensor):
@@ -1047,64 +1079,6 @@ def test_model_forward_propagation(batch_graph_patch_data_2d, tmp_path,
                       'of shape (n_nodes, n_features).') 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     assert not errors, "Errors:\n{}".format("\n".join(errors))
-# -----------------------------------------------------------------------------
-@pytest.mark.parametrize('is_data_normalization, is_normalized,',
-                         [(False, True)
-                          ])
-def test_model_forward_propagation_invalid(batch_graph_patch_data_2d, tmp_path,
-                                           is_data_normalization,
-                                           is_normalized):
-    """Test GNN-based EPD model forward invalid requests."""
-    # Pick material patch graph data
-    graph_data = batch_graph_patch_data_2d[0]
-    # Get material patch graph input features matrices
-    node_features_in = graph_data.get_node_features_matrix()
-    edge_features_in = graph_data.get_edge_features_matrix()
-    global_features_in = graph_data.get_global_features_matrix()
-    # Get number of nodes
-    n_nodes = node_features_in.shape[0]
-    # Get number of node input and output features
-    n_node_in = node_features_in.shape[1]
-    n_node_out = graph_data.get_node_targets_matrix().shape[1]
-    # Get number of edge input and output features
-    n_edge_in = edge_features_in.shape[1]
-    n_edge_out = graph_data.get_edge_targets_matrix().shape[1]
-    # Get number of global input and output features
-    n_global_in = global_features_in.shape[1]
-    n_global_out = graph_data.get_global_targets_matrix().shape[1]
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set GNN-based EPD model initialization parameters
-    model_init_args = dict(n_node_in=n_node_in, n_node_out=n_node_out,
-                           n_edge_in=n_edge_in, n_edge_out=n_edge_out,
-                           n_global_in=n_global_in, n_global_out=n_global_out,
-                           n_message_steps=2,
-                           enc_n_hidden_layers=2, pro_n_hidden_layers=3,
-                           dec_n_hidden_layers=4, hidden_layer_size=2,
-                           model_directory=str(tmp_path),
-                           is_data_normalization=is_data_normalization)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Get PyG homogeneous graph data object
-    pyg_graph = graph_data.get_torch_data_object()
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Build GNN-based EPD model
-    model = GNNEPDBaseModel(**model_init_args)    
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Data features normalization
-    if is_data_normalization:
-        # Build dataset
-        dataset = [gnn_patch_data.get_torch_data_object()
-                   for gnn_patch_data in batch_graph_patch_data_2d]
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Fit model data scalers
-        model.fit_data_scalers(dataset)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    with pytest.raises(RuntimeError):
-        # Requesting normalized output when model data scalars have not been
-        # fitted
-        _ = model(pyg_graph, is_normalized=is_normalized)
-    with pytest.raises(RuntimeError):
-        # Invalid input graph
-        _ = model('invalid_input_graph', is_normalized=is_normalized)
 # -----------------------------------------------------------------------------
 @pytest.mark.parametrize('n_features, mean, std',
                          [(5, None, None),

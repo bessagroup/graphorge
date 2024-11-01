@@ -278,8 +278,7 @@ class GNNGraphDataset(torch.utils.data.Dataset):
         """Save Graph Neural Network graph data set to file.
         
         Graph Neural Network graph data set is stored in dataset_directory as a
-        pickle file named material_patch_graph_dataset.pkl or
-        material_patch_graph_dataset_n< n_sample >.pkl.
+        pickle file named graph_dataset.pkl or graph_dataset_n< n_sample >.pkl.
         
         Parameters
         ----------

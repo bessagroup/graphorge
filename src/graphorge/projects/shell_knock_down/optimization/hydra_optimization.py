@@ -96,8 +96,9 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
         model_init_args['dec_n_hidden_layers'] = cfg.n_hidden_layers
         model_init_args['hidden_layer_size'] = cfg.hidden_layer_size
         model_init_args['model_directory'] = job_dir
-        model_init_args['model_name'] = 'material_patch_model'
-        model_init_args['is_data_normalization'] = True
+        model_init_args['model_name'] = 'graph_neural_networ_model'
+        model_init_args['is_model_in_normalized'] = True
+        model_init_args['is_model_out_normalized'] = True
         model_init_args['pro_edge_to_node_aggr'] = cfg.pro_edge_to_node_aggr
         model_init_args['pro_node_to_global_aggr'] = \
             cfg.pro_node_to_global_aggr
@@ -194,6 +195,8 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Set prediction loss normalization
                 is_normalized_loss = False
+                # Set prediction batch size
+                batch_size = len(testing_dataset)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Testing of GNN-based material patch model
                 predict_subdir, avg_valid_loss_sample = predict(
@@ -202,7 +205,8 @@ def hydra_wrapper(process, dataset_paths, device_type='cpu'):
                     load_model_state='best', loss_nature=cfg.loss_nature,
                     loss_type=cfg.loss_type, loss_kwargs=cfg.loss_kwargs,
                     is_normalized_loss=is_normalized_loss,
-                    device_type=device_type, is_verbose=False)
+                    batch_size=batch_size, device_type=device_type, 
+                    is_verbose=False)
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Generate plots of model predictions
                 generate_prediction_plots(predict_subdir)

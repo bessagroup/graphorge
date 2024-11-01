@@ -198,8 +198,11 @@ class TorchMinMaxScaler:
         """
         # Check features tensor
         self._check_tensor(tensor)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store input tensor shape
         input_shape = tensor.shape
+        # Get input tensor device
+        input_device = tensor.device
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Concatenate sequential data
         if len(input_shape) == 3:
@@ -208,12 +211,12 @@ class TorchMinMaxScaler:
         # Get number of samples
         n_samples = tensor.shape[0]
         # Build minimum and maximum tensors for normalization
-        minimum = torch.tile(self._minimum, (n_samples, 1)).to(self._device)
-        maximum = torch.tile(self._maximum, (n_samples, 1)).to(self._device)
+        minimum = torch.tile(self._minimum, (n_samples, 1)).to(input_device)
+        maximum = torch.tile(self._maximum, (n_samples, 1)).to(input_device)
         # Normalization features tensor
         transformed_tensor = \
-            -1.0*torch.ones_like(tensor, device=self._device) \
-            + torch.div(2.0*torch.ones_like(tensor, device=self._device),
+            -1.0*torch.ones_like(tensor, device=input_device) \
+            + torch.div(2.0*torch.ones_like(tensor, device=input_device),
                         maximum - minimum)*(tensor - minimum)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Revert concatenation of sequential data
@@ -257,8 +260,11 @@ class TorchMinMaxScaler:
         """
         # Check features tensor
         self._check_tensor(tensor)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store input tensor shape
         input_shape = tensor.shape
+        # Get input tensor device
+        input_device = tensor.device
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Concatenate sequential data
         if len(input_shape) == 3:
@@ -267,13 +273,13 @@ class TorchMinMaxScaler:
         # Get number of samples
         n_samples = tensor.shape[0]
         # Build minimum and maximum tensors for normalization
-        minimum = torch.tile(self._minimum, (n_samples, 1)).to(self._device)
-        maximum = torch.tile(self._maximum, (n_samples, 1)).to(self._device)
+        minimum = torch.tile(self._minimum, (n_samples, 1)).to(input_device)
+        maximum = torch.tile(self._maximum, (n_samples, 1)).to(input_device)
         # Denormalize features tensor
         transformed_tensor = minimum \
             + torch.div(maximum - minimum,
-                        2.0*torch.ones_like(tensor, device=self._device))*(
-                tensor + torch.ones_like(tensor, device=self._device))
+                        2.0*torch.ones_like(tensor, device=input_device))*(
+                tensor + torch.ones_like(tensor, device=input_device))
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Revert concatenation of sequential data
         if len(input_shape) == 3:
@@ -539,8 +545,11 @@ class TorchStandardScaler:
         """
         # Check features tensor
         self._check_tensor(tensor)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store input tensor shape
         input_shape = tensor.shape
+        # Get input tensor device
+        input_device = tensor.device
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Concatenate sequential data
         if len(input_shape) == 3:
@@ -549,8 +558,8 @@ class TorchStandardScaler:
         # Get number of samples
         n_samples = tensor.shape[0]
         # Build mean and standard deviation tensors for standardization
-        mean = torch.tile(self._mean, (n_samples, 1)).to(self._device)
-        std = torch.tile(self._std, (n_samples, 1)).to(self._device)
+        mean = torch.tile(self._mean, (n_samples, 1)).to(input_device)
+        std = torch.tile(self._std, (n_samples, 1)).to(input_device)
         # Set non-null standard deviation mask
         non_null_mask = (std != 0)
         # Standardize features tensor
@@ -599,8 +608,11 @@ class TorchStandardScaler:
         """
         # Check features tensor
         self._check_tensor(tensor)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store input tensor shape
         input_shape = tensor.shape
+        # Get input tensor device
+        input_device = tensor.device
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Concatenate sequential data
         if len(input_shape) == 3:
@@ -609,8 +621,8 @@ class TorchStandardScaler:
         # Get number of samples
         n_samples = tensor.shape[0]
         # Build mean and standard deviation tensors for standardization
-        mean = torch.tile(self._mean, (n_samples, 1)).to(self._device)
-        std = torch.tile(self._std, (n_samples, 1)).to(self._device)
+        mean = torch.tile(self._mean, (n_samples, 1)).to(input_device)
+        std = torch.tile(self._std, (n_samples, 1)).to(input_device)
         # Destandardize features tensor
         transformed_tensor = torch.mul(tensor, std) + mean
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
