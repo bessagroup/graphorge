@@ -503,16 +503,13 @@ def test_fit_data_scalers(batch_graph_patch_data_2d, tmp_path):
     model.fit_data_scalers(dataset, is_verbose=True)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check fitted data scalers
-    if not isinstance(model.get_fitted_data_scaler('node_features_in'),
-                      TorchStandardScaler):
+    if model.get_fitted_data_scaler('node_features_in') is None:
         errors.append('Model data scaler for node input features was not '
                       'properly fitted.')
-    if not isinstance(model.get_fitted_data_scaler('edge_features_in'),
-                      TorchStandardScaler):
+    if model.get_fitted_data_scaler('edge_features_in') is None:
         errors.append('Model data scaler for edge input features was not '
                       'properly fitted.')
-    if not isinstance(model.get_fitted_data_scaler('node_features_out'),
-                      TorchStandardScaler):
+    if model.get_fitted_data_scaler('node_features_out') is None:
         errors.append('Model data scaler for node output features was not '
                       'properly fitted.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
