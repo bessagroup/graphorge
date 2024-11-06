@@ -1,4 +1,4 @@
 #
 #                                                                       Modules
 # =============================================================================
-from projects.bottle_buckling.gnn_model_tools import gen_gnn_datasets
+from projects.bottle_buckling.user_scripts import gen_gnn_datasets
