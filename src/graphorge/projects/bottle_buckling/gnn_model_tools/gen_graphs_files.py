@@ -40,7 +40,7 @@ from gnn_base_model.data.graph_data import GraphData
 from gnn_base_model.data.graph_dataset import \
     write_graph_dataset_summary_file
 from ioput.plots import plot_histogram, save_figure
-from projects.abaqus_datasets.gnn_model_tools.features import \
+from projects.bottle_buckling.gnn_model_tools.features import \
     FEMMeshFeaturesGenerator
 #
 #                                                          Authorship & Credits
