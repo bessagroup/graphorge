@@ -91,6 +91,85 @@ def build_fnn(input_size, output_size,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return fnn
 # =============================================================================
+def build_rnn(input_size,
+              output_size,
+              rnn_cell='GRU',
+              # output_activation=torch.nn.Identity(),
+              hidden_layer_sizes=[],
+              bias=True): #,
+              # hidden_activation=torch.nn.Identity()):
+    """Build multilayer recurrent neural network.
+
+    Parameters
+    ----------
+    input_size : int
+        Number of neurons of input layer.
+    output_size : int
+        Number of neurons of output layer.
+    rnn_cell : str, default='GRU'
+        RNN architecture cell.
+        Currently on 'GRU', 'LSTM' are supported. Defaults to GRU.
+    hidden_layer_sizes : list[int], default=[]
+        Number of neurons of hidden layers.
+    bias : bool, default=True
+        Whether to use bias within the RNN cell. Defaults to True.
+
+    Returns
+    -------
+    rnn : torch.nn.Sequential
+        Multilayer recurrent neural network with linear output layer.
+    """
+    # Check input and output size
+    if int(input_size) < 1 or int(output_size) < 1:
+        raise RuntimeError(f'Number of input ({int(input_size)}) and output '
+                           f'({output_size}) features must be at least 1.')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Check cells
+    if rnn_cell == 'GRU':
+        torch.nn.GRU()
+    elif rnn_cell == 'LSTM':
+        torch.nn.LSTM()
+    else:
+        raise RuntimeError(f'Unknown optimization algorithm'
+                            f'({rnn_cell}) is not a recognized RNN cell.')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set number of neurons of each layer
+    layer_sizes = []
+    layer_sizes.append(input_size)
+    layer_sizes += hidden_layer_sizes
+    layer_sizes.append(output_size)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set number of layers of adaptive weights
+    # n_layer counts all layer from the input to before the output layer
+    n_layer = len(layer_sizes) - 1
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Create multilayer recurrent neural network:
+    # Initialize neural network
+    rnn = torch.nn.Sequential()
+    # Loop over neural network layers
+    for i in range(n_layer-1):
+        # Set multi-layer RNN cell - indices from (0) to (n_layer-2)
+        if rnn_cell == 'GRU':
+            rnn.add_module("Layer-" + str(i),
+                           torch.nn.GRU(input_size=layer_sizes[i],
+                                        hidden_size=layer_sizes[i + 1],
+                                        bias=bias)
+                           )
+        elif rnn_cell == 'LSTM':
+            rnn.add_module("Layer-" + str(i),
+                           torch.nn.LSTM(input_size=layer_sizes[i],
+                                        hidden_size=layer_sizes[i + 1],
+                                        bias=bias)
+                           )
+    # Set output linear layer - index (n-layer-1)
+    rnn.add_module("Layer-" + str(n_layer-1),
+                   torch.nn.Linear(input_size=layer_sizes[n_layer-1],
+                                   output_size=layer_sizes[n_layer],
+                                   bias=bias)
+                   )
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    return rnn
+# =============================================================================
 class GraphIndependentNetwork(torch.nn.Module):
     """Graph Independent Network.
     
