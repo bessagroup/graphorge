@@ -14,6 +14,7 @@ graph_standard_partial_fit
 #                                                                       Modules
 # =============================================================================
 # Standard
+import copy
 import os
 import re
 import pickle
@@ -878,6 +879,31 @@ class GNNEPDBaseModel(torch.nn.Module):
                     mode='normalize')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
+    # -------------------------------------------------------------------------
+    def get_metadata_from_graph(self, graph):
+        """Get metadata from graph.
+
+        Parameters
+        ----------
+        graph : torch_geometric.data.Data
+            Homogeneous graph.
+
+        Returns
+        -------
+        metadata : dict
+            Metadata dictionary.
+        """
+        # Check input graph
+        if not isinstance(graph, torch_geometric.data.Data):
+            raise RuntimeError('Input graph is not torch_geometric.data.Data.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Get metadata from graph
+        if 'metadata' in graph.keys():
+            metadata = copy.deepcopy(graph.metadata)
+        else:
+            metadata = {}
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        return metadata
     # -------------------------------------------------------------------------
     def predict_output_features(self, node_features_in=None,
                                 edge_features_in=None, global_features_in=None,
