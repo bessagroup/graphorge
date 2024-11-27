@@ -181,6 +181,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         Get input features from graph.
     get_output_features_from_graph(self, graph, is_normalized=False)
         Get output features from graph.
+    get_metadata_from_graph(self, graph)
+        Get metadata from graph.
     predict_output_features(self, input_graph, is_normalized=False)
         Predict output features.
     save_model_init_state(self)
