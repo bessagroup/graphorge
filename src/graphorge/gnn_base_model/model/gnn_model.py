@@ -901,7 +901,14 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Get metadata from graph
         if 'metadata' in graph.keys():
-            metadata = copy.deepcopy(graph.metadata)
+            metadata = {}
+            # Iterate over metadata items
+            for key, value in graph.metadata.items():
+                if isinstance(value, torch.Tensor):
+                    metadata[key] = value.clone()
+                else:
+                    raise RuntimeError('Metadata values should be'
+                                       ' torch.Tensor.')
         else:
             metadata = {}
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
