@@ -11,7 +11,6 @@ GraphData
 # Standard
 import os
 import copy
-from typing import Any
 # Third-party
 import numpy as np
 import scipy.spatial
@@ -112,7 +111,7 @@ class GraphData:
         Get global targets matrix.
     set_metadata(self, metadata)
         Set metadata information.
-    add_metadata(self, metadata)
+    add_metadata(self, key, value)
         Add metadata information.
     get_metadata(self)
         Get metadata information.
@@ -125,12 +124,6 @@ class GraphData:
         Get set of undirected unique edges indexes.
     _check_edges_indexes_matrix(edges_indexes)
         Check if given edges indexes matrix is valid.
-
-    Note
-    ----
-    `metadata` is a dictionary that won't be moved to the GPU when using
-    ``.to(device)``. Avoid retrieving information from it inside your
-    a model.
     """
     def __init__(self, n_dim, nodes_coords):
         """Constructor.
@@ -220,7 +213,7 @@ class GraphData:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set metadata
         metadata = {}
-        if self._metadata:
+        if isinstance(self._metadata, dict):
             metadata = copy.deepcopy(self._metadata)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Instantiate PyG homogeneous graph data object
@@ -656,7 +649,7 @@ class GraphData:
         """
         return copy.deepcopy(self._global_targets_matrix)
     # -------------------------------------------------------------------------
-    def set_metadata(self, metadata: dict) -> None:
+    def set_metadata(self, metadata) -> None:
         """Set metadata information.
         
         Parameters
@@ -669,10 +662,21 @@ class GraphData:
         Metadata information is useful to store any additional information that
         is not related to the graph data itself but that is relevant for further
         processing or analysis, e,g., sample id, time step, etc. 
+
+   
+        `metadata` is a dictionary that won't be moved to the GPU when using
+        ``.to(device)``. Avoid retrieving information from it inside your
+        a model.
         """
+        # Check metadata information
+        if not isinstance(metadata, dict):
+            raise RuntimeError('Metadata information must be provided as a '
+                               'dictionary.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set metadata information
         self._metadata = metadata
     # -------------------------------------------------------------------------
-    def add_metadata(self, key: str, value: Any) -> None:
+    def add_metadata(self, key, value) -> None:
         """Add metadata information.
         
         Parameters
@@ -682,6 +686,14 @@ class GraphData:
         value : Any
             Value of metadata information.
         """
+        # Check metadata
+        if not isinstance(self._metadata, dict):
+            raise RuntimeError('Metadata information must be a dictionary.')
+        # Check key
+        if not isinstance(key, str):
+            raise RuntimeError('Key of metadata information must be a string.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Add metadata information
         self._metadata[key] = value
     # -------------------------------------------------------------------------
     def get_metadata(self) -> dict:
