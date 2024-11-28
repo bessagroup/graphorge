@@ -46,10 +46,10 @@ __status__ = 'Planning'
 #
 # =============================================================================
 def predict(dataset, model_directory, model=None, predict_directory=None,
-            load_model_state=None, loss_nature='node_features_out',
-            loss_type='mse', loss_kwargs={}, is_normalized_loss=False,
-            batch_size=1, dataset_file_path=None, device_type='cpu', seed=None,
-            is_verbose=False):
+            file_name_pattern=None, load_model_state=None,
+            loss_nature='node_features_out', loss_type='mse', loss_kwargs={},
+            is_normalized_loss=False, batch_size=1, dataset_file_path=None,
+            device_type='cpu', seed=None, is_verbose=False):
     """Make predictions with Graph Neural Network model for given dataset.
     
     Parameters
@@ -66,6 +66,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     predict_directory : str, default=None
         Directory where model predictions results are stored. If None, then
         all output files are supressed.
+    file_name_pattern : str, default=None
+        A f-string pattern for the file name used to save prediction results.
     load_model_state : {'best', 'last', int, None}, default=None
         Load available Graph Neural Network model state from the model
         directory. Options:
@@ -175,10 +177,10 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     if isinstance(seed, int):
         data_loader = torch_geometric.loader.dataloader.DataLoader(
             dataset=dataset, batch_size=batch_size,
-            worker_init_fn=seed_worker, generator=generator)
+            worker_init_fn=seed_worker, generator=generator, shuffle=False)
     else:
         data_loader = torch_geometric.loader.dataloader.DataLoader(
-            dataset=dataset, batch_size=batch_size)
+            dataset=dataset, batch_size=batch_size, shuffle=False)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Initialize loss function
     loss_function = get_pytorch_loss(loss_type, **loss_kwargs)
@@ -216,6 +218,15 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Initialize sample results
             results = {}
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get metadata
+            metadata = model.get_metadata_from_graph(pyg_graph)
+            # Store metadata
+            results['metadata'] = {}
+            if isinstance(metadata, dict):
+                # Iterate over metadata items
+                for key, value in metadata.items():
+                    results['metadata'][key] = value.detach().cpu()
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Compute output features predictions (forward propagation)
             if loss_nature == 'node_features_out':
@@ -285,7 +296,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # Save sample predictions results
             if predict_directory is not None:
                 save_sample_predictions(predictions_dir=predict_subdir,
-                                        sample_id=i, sample_results=results)
+                                        prediction_id=i, sample_results=results,
+                                        file_name_pattern=file_name_pattern)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
         print('\n> Finished prediction process!\n')
@@ -360,27 +372,37 @@ def make_predictions_subdir(predict_directory):
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return predict_subdir
 # =============================================================================
-def save_sample_predictions(predictions_dir, sample_id, sample_results):
+def save_sample_predictions(predictions_dir, prediction_id, sample_results,
+                            file_name_pattern = None):
     """Save model prediction results for given sample.
     
     Parameters
     ----------
     predictions_dir : str
         Directory where sample prediction results are stored.
-    sample_id : int
+    prediction_id : int
         Sample ID. Sample ID is appended to sample prediction results file
         name.
     sample_results : dict
         Sample prediction results.
+    file_name_pattern: str, default=None
+        A f-string pattern for the file name. The pattern will be evaluated
+        when saving the predictions and has access to `prediction_id` and
+        all the `sample_results['metadata']` content. If None, the pattern
+        ``'prediction_sample_{prediction_id}'`` is used.
     """
     # Check prediction results directory
     if not os.path.exists(predictions_dir):
         raise RuntimeError('The prediction results directory has not been '
                            'found:\n\n' + predictions_dir)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Generate file name
+    if file_name_pattern is None:
+        file_name_pattern = 'prediction_sample_{prediction_id}'
+    file_name = file_name_pattern.format(**sample_results['metadata'],
+                                         prediction_id=prediction_id)
     # Set sample prediction results file path
-    sample_path = os.path.join(predictions_dir,
-                               'prediction_sample_'+ str(sample_id) + '.pkl')
+    sample_path = os.path.join(predictions_dir, file_name + '.pkl')
     # Save sample prediction results
     with open(sample_path, 'wb') as sample_file:
         pickle.dump(sample_results, sample_file)
