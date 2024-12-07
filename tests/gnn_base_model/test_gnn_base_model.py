@@ -397,6 +397,8 @@ def test_get_output_features_from_graph(graph_patch_data_2d, tmp_path):
     node_targets_matrix = graph_patch_data_2d.get_node_targets_matrix()
     edge_targets_matrix = graph_patch_data_2d.get_edge_targets_matrix()
     global_targets_matrix = graph_patch_data_2d.get_global_targets_matrix()
+    # Get metadata
+    metadata = graph_patch_data_2d.get_metadata()
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get PyG homogeneous graph data object
     pyg_graph = graph_patch_data_2d.get_torch_data_object()
@@ -416,10 +418,12 @@ def test_get_output_features_from_graph(graph_patch_data_2d, tmp_path):
                            is_model_out_normalized=False)
     model = GNNEPDBaseModel(**model_init_args)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Get input features from material patch graph
+    # Get output features from material patch graph
     test_node_features_out, test_edge_features_out, \
         test_global_features_out = model.get_output_features_from_graph(
             pyg_graph, is_normalized=False)
+    # Get metadata from material patch graph
+    test_metadata = model.get_metadata_from_graph(pyg_graph)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check features output matrices
     if not torch.allclose(test_node_features_out,
@@ -437,6 +441,9 @@ def test_get_output_features_from_graph(graph_patch_data_2d, tmp_path):
                                        dtype=torch.float)):
         errors.append('Extracted global features output matrix does not '
                       'match graph global features output matrix.')
+    # Check metadata
+    if test_metadata != metadata:
+        errors.append('Extracted metadata does not match graph metadata.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     assert not errors, "Errors:\n{}".format("\n".join(errors))
 # -----------------------------------------------------------------------------
