@@ -651,7 +651,7 @@ class GraphData:
         """
         return copy.deepcopy(self._global_targets_matrix)
     # -------------------------------------------------------------------------
-    def set_metadata(self, metadata) -> None:
+    def set_metadata(self, metadata):
         """Set metadata information.
         
         Parameters
@@ -678,7 +678,7 @@ class GraphData:
         # Set metadata information
         self._metadata = metadata
     # -------------------------------------------------------------------------
-    def add_metadata(self, key, value) -> None:
+    def add_metadata(self, key, value):
         """Add metadata information.
         
         Parameters
@@ -698,7 +698,7 @@ class GraphData:
         # Add metadata information
         self._metadata[key] = value
     # -------------------------------------------------------------------------
-    def get_metadata(self) -> dict:
+    def get_metadata(self):
         """Get metadata information.
         
         Returns
