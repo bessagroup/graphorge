@@ -296,7 +296,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # Save sample predictions results
             if predict_directory is not None:
                 save_sample_predictions(predictions_dir=predict_subdir,
-                                        prediction_id=i, sample_results=results,
+                                        prediction_id=i,
+                                        sample_results=results,
                                         file_name_pattern=file_name_pattern)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
