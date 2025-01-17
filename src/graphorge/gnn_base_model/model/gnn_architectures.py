@@ -12,6 +12,8 @@ Functions
 build_fnn
     Build multilayer feed-forward neural network.
 """
+from inspect import GEN_RUNNING
+
 #
 #                                                                       Modules
 # =============================================================================
@@ -91,6 +93,99 @@ def build_fnn(input_size, output_size,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return fnn
 # =============================================================================
+def build_rnn(input_size,
+              output_size,
+              rnn_cell='GRU',
+              # output_activation=torch.nn.Identity(),
+              hidden_layer_sizes=[],
+              bias=True): #,
+              # hidden_activation=torch.nn.Identity()):
+    """Build multilayer recurrent neural network.
+
+    Parameters
+    ----------
+    input_size : int
+        Number of neurons of input layer.
+    output_size : int
+        Number of neurons of output layer.
+    rnn_cell : str, default='GRU'
+        RNN architecture cell.
+        Currently on 'GRU', 'LSTM' are supported. Defaults to GRU.
+    hidden_layer_sizes : list[int], default=[]
+        Number of neurons of hidden layers.
+    bias : bool, default=True
+        Whether to use bias within the RNN cell. Defaults to True.
+
+    Returns
+    -------
+    rnn : torch.nn.Sequential
+        Multilayer recurrent neural network with linear output layer.
+    """
+    # Check input and output size
+    if int(input_size) < 1 or int(output_size) < 1:
+        raise RuntimeError(f'Number of input ({int(input_size)}) and output '
+                           f'({output_size}) features must be at least 1.')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Check cells
+    if rnn_cell == 'GRU':
+        torch.nn.GRU()
+    # elif rnn_cell == 'LSTM':
+    #     torch.nn.LSTM()
+    else:
+        raise RuntimeError(f'Unknown optimization algorithm'
+                            f'({rnn_cell}) is not a recognized RNN cell.')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set number of neurons of each layer
+    layer_sizes = []
+    layer_sizes.append(input_size)
+    layer_sizes += hidden_layer_sizes
+    layer_sizes.append(output_size)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set number of layers of adaptive weights
+    # n_layer counts all layer from the input to before the output layer
+    n_layer = len(layer_sizes) - 1
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Create multilayer recurrent neural network:
+    # Initialize neural network
+    rnn = torch.nn.Sequential()
+    # Loop over neural network layers
+    for i in range(n_layer-1):
+        # Set multi-layer RNN cell - indices from (0) to (n_layer-2)
+        if rnn_cell == 'GRU':
+            rnn.add_module("Layer-" + str(i),
+                           torch.nn.GRU(input_size=layer_sizes[i],
+                                        hidden_size=layer_sizes[i + 1],
+                                        bias=bias)
+                           )
+        # elif rnn_cell == 'LSTM':
+        #     rnn.add_module("Layer-" + str(i),
+        #                    torch.nn.LSTM(input_size=layer_sizes[i],
+        #                                 hidden_size=layer_sizes[i + 1],
+        #                                 bias=bias)
+        #                    )
+    # Set output linear layer - index (n-layer-1)
+    rnn.add_module("Layer-" + str(n_layer-1),
+                   torch.nn.Linear(input_size=layer_sizes[n_layer-1],
+                                   output_size=layer_sizes[n_layer],
+                                   bias=bias)
+                   )
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    return rnn
+# =============================================================================
+def build_identity():
+    """Build identity neural network.
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+    torch.nn.Identity() : torch.nn.Sequential
+       A placeholder identity operator that is argument-insensitive -
+         input is the same as the output.
+    """
+    return torch.nn.Identity()
+# =============================================================================
 class GraphIndependentNetwork(torch.nn.Module):
     """Graph Independent Network.
     
@@ -119,6 +214,15 @@ class GraphIndependentNetwork(torch.nn.Module):
         Number of global input features.
     _n_global_out : int
         Number of global output features.
+    _is_time_series_nodes : bool, default=False
+        If True, then nodal input features a time dimension and
+        message passing layers are RNNs.
+    _is_time_series_edges : bool, default=False
+        If True, then edge input features a time dimension and
+        message passing layers are RNNs.
+    _is_time_series_global : bool, default=False
+        If True, then global input features a time dimension and
+        message passing layers are RNNs.
     _is_norm_layer : bool, default=False
         If True, then add normalization layer to node, edge and global
         update functions.
@@ -132,15 +236,19 @@ class GraphIndependentNetwork(torch.nn.Module):
             global_features_in)
         Forward propagation.
     """
-    def __init__(self, n_hidden_layers, hidden_layer_size, n_node_in=0,
-                 n_node_out=0, n_edge_in=0, n_edge_out=0, n_global_in=0,
-                 n_global_out=0,
+    def __init__(self, n_hidden_layers, hidden_layer_size,
+                 n_node_in=0, n_node_out=0,
+                 n_edge_in=0, n_edge_out=0,
+                 n_global_in=0, n_global_out=0,
                  node_hidden_activation=torch.nn.Identity(),
                  node_output_activation=torch.nn.Identity(),
                  edge_hidden_activation=torch.nn.Identity(),
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
+                 is_time_series_nodes=False,
+                 is_time_series_edges=False,
+                 is_time_series_global=False,
                  is_norm_layer=False,
                  is_skip_unset_update=False):
         """Constructor.
@@ -195,6 +303,15 @@ class GraphIndependentNetwork(torch.nn.Module):
             Output unit activation function of global update function
             (multilayer feed-forward neural network). Defaults to identity
             (linear) unit activation function.
+        is_time_series_nodes : bool, default=False
+            If True, then nodal input features a time dimension and
+            message passing layers are RNNs.
+        is_time_series_edges : bool, default=False
+            If True, then edge input features a time dimension and
+            message passing layers are RNNs.
+        is_time_series_global : bool, default=False
+            If True, then global input features a time dimension and
+            message passing layers are RNNs.
         is_norm_layer : bool, default=False
             If True, then add normalization layer to node, edge and global
             update functions.
@@ -214,80 +331,115 @@ class GraphIndependentNetwork(torch.nn.Module):
         self._n_global_in = int(n_global_in)
         self._n_global_out = int(n_global_out)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set input with time dimension
+        self._is_time_series_nodes = is_time_series_nodes
+        self._is_time_series_edges = is_time_series_edges
+        self._is_time_series_global = is_time_series_global
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set normalization layer
         self._is_norm_layer = is_norm_layer
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set node update function as multilayer feed-forward neural network
+        # or recurrent neural network
         # with layer normalization
         if self._n_node_in > 0 and self._n_node_out > 0:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                input_size=self._n_node_in,
-                output_size=self._n_node_out,
-                output_activation=node_output_activation,
-                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                hidden_activation=node_hidden_activation)
+            # SELECT WHICH KIND OF CELL FOR ALL OPERATIONS HERE,
+            # EITHER FNN OR RNN:
             # Set node update function
             self._node_fn = torch.nn.Sequential()
-            self._node_fn.add_module('FNN', fnn)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Add normalization layer (per-feature) to node update function
-            if is_norm_layer:
-                norm_layer = torch.nn.BatchNorm1d(
-                    num_features=self._n_node_out, affine=True)
-                self._node_fn.add_module('Norm-Layer', norm_layer)
+            if self._is_time_series_nodes:
+                rnn = build_rnn(input_size=self._n_node_in,
+                          output_size=self._n_node_out,
+                          rnn_cell='GRU',
+                          hidden_layer_sizes=n_hidden_layers * \
+                            [hidden_layer_size, ],
+                          bias=True)
+                self._node_fn.add_module('RNN', rnn)
+            else:
+                # Build multilayer feed-forward neural network
+                fnn = build_fnn(
+                    input_size=self._n_node_in,
+                    output_size=self._n_node_out,
+                    output_activation=node_output_activation,
+                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                    hidden_activation=node_hidden_activation)
+                self._node_fn.add_module('FNN', fnn)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Add normalization layer (per-feature) to node update function
+                if is_norm_layer:
+                    norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_node_out, affine=True)
+                    self._node_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._node_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set edge update function as multilayer feed-forward neural network
         # with layer normalization:
         if self._n_edge_in > 0 and self._n_edge_out > 0:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                input_size=self._n_edge_in,
-                output_size=self._n_edge_out,
-                output_activation=edge_output_activation,
-                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                hidden_activation=edge_hidden_activation)
             # Set edge update function
             self._edge_fn = torch.nn.Sequential()
-            self._edge_fn.add_module('FNN', fnn)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Add normalization layer (per-feature) to edge update function
-            if is_norm_layer:
-                norm_layer = torch.nn.BatchNorm1d(
-                    num_features=self._n_edge_out, affine=True)
-                self._edge_fn.add_module('Norm-Layer', norm_layer) 
+            if self._is_time_series_edges:
+                rnn = build_rnn(input_size=self._n_edge_in,
+                          output_size=self._n_edge_out,
+                          rnn_cell='GRU',
+                          hidden_layer_sizes=n_hidden_layers * \
+                            [hidden_layer_size, ],
+                          bias=True)
+                self._edge_fn.add_module('RNN', rnn)
+            else:
+                # Build multilayer feed-forward neural network
+                fnn = build_fnn(
+                    input_size=self._n_edge_in,
+                    output_size=self._n_edge_out,
+                    output_activation=edge_output_activation,
+                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                    hidden_activation=edge_hidden_activation)
+                self._edge_fn.add_module('FNN', fnn)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Add normalization layer (per-feature) to edge update function
+                if is_norm_layer:
+                    norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_edge_out, affine=True)
+                    self._edge_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._edge_fn = None        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set global update function as multilayer feed-forward neural network
         # with layer normalization:
         if self._n_global_in > 0 and self._n_global_out > 0:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                input_size=self._n_global_in,
-                output_size=self._n_global_out,
-                output_activation=global_output_activation,
-                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                hidden_activation=global_hidden_activation)
             # Set global update function
             self._global_fn = torch.nn.Sequential()
-            self._global_fn.add_module('FNN', fnn)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Add normalization layer (per-element) to global update function
-            if is_norm_layer:
-                if self._n_global_in < 2:
-                    raise RuntimeError(f'Number of global features '
-                                       f'({self._n_global_in}) must be '
-                                       f'greater than 1 to compute standard '
-                                       f'deviation in the corresponding '
-                                       f'update function normalization layer.')
-                else:
-                    norm_layer = torch.nn.LayerNorm(
-                        normalized_shape=self._n_global_out,
-                        elementwise_affine=True)
-                    self._global_fn.add_module('Norm-Layer', norm_layer)
+            if self._is_time_series_global:
+                rnn = build_rnn(input_size=self._n_global_in,
+                                output_size=self._n_global_out,
+                                rnn_cell='GRU',
+                                hidden_layer_sizes=n_hidden_layers * 
+                                  [hidden_layer_size, ],
+                                bias=True)
+                self._global_fn.add_module('RNN', rnn)
+            else:
+                # Build multilayer feed-forward neural network
+                fnn = build_fnn(
+                    input_size=self._n_global_in,
+                    output_size=self._n_global_out,
+                    output_activation=global_output_activation,
+                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                    hidden_activation=global_hidden_activation)
+                self._global_fn.add_module('FNN', fnn)
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Add normalization layer (per-element) to global update function
+                if is_norm_layer:
+                    if self._n_global_in < 2:
+                        raise RuntimeError(f'Number of global features '
+                                           f'({self._n_global_in}) must be '
+                                           f'greater than 1 to compute standard '
+                                           f'deviation in the corresponding '
+                                           f'update function normalization layer.')
+                    else:
+                        norm_layer = torch.nn.LayerNorm(
+                            normalized_shape=self._n_global_out,
+                            elementwise_affine=True)
+                        self._global_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._global_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -409,9 +561,9 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
     """Graph Interaction Network.
     
     A Graph Network block with (1) distinct update functions for node, edge and
-    global features implemented as multilayer feed-forward neural networks with
-    layer normalization and (2) edge-to-node and node-to-global aggregation
-    functions.
+    global features implemented as multilayer feed-forward or recurrent 
+    neural networks with layer normalization and (2) edge-to-node and 
+    node-to-global aggregation functions.
     
     Attributes
     ----------
@@ -433,6 +585,15 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         Number of global input features.
     _n_global_out : int
         Number of global output features.
+    _is_time_series_nodes : bool, default=False
+        If True, then nodal input features a time dimension and
+        message passing layers are RNNs.
+    _is_time_series_edges : bool, default=False
+        If True, then edge input features a time dimension and
+        message passing layers are RNNs.
+    _is_time_series_global : bool, default=False
+        If True, then global input features a time dimension and
+        message passing layers are RNNs.
     _is_norm_layer : bool, default=False
         If True, then add normalization layer to node, edge and global
         update functions.
@@ -457,6 +618,9 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
+                 is_time_series_nodes=False,
+                 is_time_series_edges=False,
+                 is_time_series_global=False,
                  is_norm_layer=False):
         """Constructor.
         
@@ -508,6 +672,15 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             Output unit activation function of global update function
             (multilayer feed-forward neural network). Defaults to identity
             (linear) unit activation function.
+        is_time_series_nodes : bool, default=False
+            If True, then nodal input features a time dimension and
+            message passing layers are RNNs.
+        is_time_series_edges : bool, default=False
+            If True, then edge input features a time dimension and
+            message passing layers are RNNs.
+        is_time_series_global : bool, default=False
+            If True, then global input features a time dimension and
+            message passing layers are RNNs.
         is_norm_layer : bool, default=False
             If True, then add normalization layer to node, edge and global
             update functions.
@@ -539,6 +712,11 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         self._n_global_in = int(n_global_in)
         self._n_global_out = int(n_global_out)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set input with time dimension
+        self._is_time_series_nodes = is_time_series_nodes
+        self._is_time_series_edges = is_time_series_edges
+        self._is_time_series_global = is_time_series_global
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set normalization layer
         self._is_norm_layer = is_norm_layer
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -555,18 +733,28 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                                f'edge ({self._n_edge_out}) output features '
                                f'must be greater than 0.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set node update function as multilayer feed-forward neural network
-        # with layer normalization:
-        # Build multilayer feed-forward neural network
-        fnn = build_fnn(
-            input_size=self._n_node_in+self._n_edge_out,
-            output_size=self._n_node_out,
-            output_activation=node_output_activation,
-            hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-            hidden_activation=node_hidden_activation)
+        # Set node update function as multilayer feed-forward/recurrent neural
+        # network with layer normalization:
         # Set node update function
         self._node_fn = torch.nn.Sequential()
-        self._node_fn.add_module('FNN', fnn)
+        if self._is_time_series_nodes:
+            rnn = build_rnn(input_size=self._n_node_in+self._n_edge_out,
+                      output_size=self._n_node_out,
+                      rnn_cell='GRU',
+                      hidden_layer_sizes=n_hidden_layers * 
+                        [hidden_layer_size, ],
+                      bias=True)
+            self._node_fn.add_module('RNN', rnn)
+        else:
+            # Build multilayer feed-forward neural network
+            fnn = build_fnn(
+                input_size=self._n_node_in+self._n_edge_out,
+                output_size=self._n_node_out,
+                output_activation=node_output_activation,
+                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                hidden_activation=node_hidden_activation)
+            # Set node update function
+            self._node_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to node update function
         if is_norm_layer:
@@ -576,16 +764,26 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set edge update function as multilayer feed-forward neural network
         # with layer normalization:
-        # Build multilayer feed-forward neural network
-        fnn = build_fnn(
-            input_size=self._n_edge_in+2*self._n_node_in,
-            output_size=self._n_edge_out,
-            output_activation=edge_output_activation,
-            hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-            hidden_activation=edge_hidden_activation)
         # Set edge update function
         self._edge_fn = torch.nn.Sequential()
-        self._edge_fn.add_module('FNN', fnn)
+        if self._is_time_series_edges:
+            rnn = build_rnn(input_size=self._n_edge_in+2*self._n_node_in,
+                      output_size=self._n_edge_out,
+                      rnn_cell='GRU',
+                      hidden_layer_sizes=n_hidden_layers * 
+                         [hidden_layer_size, ],
+                      bias=True)
+            self._edge_fn.add_module('RNN', rnn)
+        else:
+            # Build multilayer feed-forward neural network
+            fnn = build_fnn(
+                input_size=self._n_edge_in+2*self._n_node_in,
+                output_size=self._n_edge_out,
+                output_activation=edge_output_activation,
+                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                hidden_activation=edge_hidden_activation)
+            # Set edge update function
+            self._edge_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to edge update function
         if is_norm_layer:
@@ -596,16 +794,25 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         # Set global update function as multilayer feed-forward neural network
         # with layer normalization:
         if self._n_global_out > 0:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                input_size=self._n_global_in+self._n_node_out,
-                output_size=self._n_global_out,
-                output_activation=global_output_activation,
-                hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                hidden_activation=global_hidden_activation)
             # Set global update function
             self._global_fn = torch.nn.Sequential()
-            self._global_fn.add_module('FNN', fnn)
+            if self._is_time_series_global:
+                rnn = build_rnn(input_size=self._n_global_in+self._n_node_out,
+                                output_size=self._n_global_out,
+                                rnn_cell='GRU',
+                                hidden_layer_sizes=n_hidden_layers * 
+                                   [hidden_layer_size, ],
+                                bias=True)
+                self._global_fn.add_module('RNN', rnn)
+            else:
+                # Build multilayer feed-forward neural network
+                fnn = build_fnn(
+                    input_size=self._n_global_in+self._n_node_out,
+                    output_size=self._n_global_out,
+                    output_activation=global_output_activation,
+                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                    hidden_activation=global_hidden_activation)
+                self._global_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-element) to global update function
             if is_norm_layer:
