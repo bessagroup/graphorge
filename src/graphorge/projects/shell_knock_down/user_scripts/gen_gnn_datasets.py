@@ -13,7 +13,6 @@ if root_dir not in sys.path:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
 import shutil
-import numpy as np
 import random
 # Local
 from gnn_base_model.data.graph_dataset import GNNGraphDataset
@@ -87,7 +86,6 @@ def generate_datasets(dataset_csv_file_path, dataset_split_sizes,
         dataset = GNNGraphDataset(subset_directory, subset_samples_files,
                                   dataset_basename='graph_dataset',
                                   is_store_dataset=False)
-        # print('len: ', np.shape(dataset.__getitem__(0).x))
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Save GNN-based data set to file
         _ = dataset.save_dataset(is_append_n_sample=True)
@@ -168,12 +166,12 @@ if __name__ == "__main__":
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set data set file path (shells .csv file)
     dataset_csv_file_path = \
-        ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
-         'graphorge/projects/shell_knock_down/0_datasets_files/shells.csv')
+        ('/home/bernardoferreira/Documents/brown/projects/'
+         'colaboration_guillaume/shell_knock_down/0_datasets_files/shells.csv')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
-    base_dir = ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
-         'graphorge/projects/shell_knock_down/')
+    base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
+                'colaboration_guillaume/shell_knock_down/')
     # Set case study directory
     case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),

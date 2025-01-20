@@ -14,7 +14,6 @@ if root_dir not in sys.path:
 import os
 # Third-party
 import torch
-import numpy as np
 # Local
 from gnn_base_model.data.graph_dataset import GNNGraphDataset
 from gnn_base_model.train.training import train_model, \
@@ -95,7 +94,6 @@ def perform_model_standard_training(train_dataset_file_path, model_directory,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Load training data set
     train_dataset = GNNGraphDataset.load_dataset(train_dataset_file_path)
-    # print(train_dataset.__getitem__(2))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set model state loading
     load_model_state = None
@@ -273,13 +271,9 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
     # Set number of global input and output features
     n_global_in = 0
     n_global_out = 1
-    # Set number of global input and output features
-    is_time_series_nodes = False
-    is_time_series_edges = False
-    is_time_series_global = False
     # Set number of message-passing steps (number of processor layers)
     n_message_steps = 2
-    # Set number of FNN/RNN hidden layers
+    # Set number of FNN hidden layers
     enc_n_hidden_layers = 2
     pro_n_hidden_layers = 2
     dec_n_hidden_layers = 2
@@ -303,9 +297,6 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
                        'n_edge_out': n_edge_out,
                        'n_global_in': n_global_in,
                        'n_global_out': n_global_out,
-                       'is_time_series_nodes': is_time_series_nodes,
-                       'is_time_series_edges': is_time_series_edges,
-                       'is_time_series_global': is_time_series_global,
                        'n_message_steps': n_message_steps,
                        'enc_n_hidden_layers': enc_n_hidden_layers,
                        'pro_n_hidden_layers': pro_n_hidden_layers,
@@ -402,8 +393,8 @@ if __name__ == "__main__":
     is_cross_validation = False
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
-    base_dir = ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
-         'graphorge/projects/shell_knock_down/')
+    base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
+                'colaboration_guillaume/shell_knock_down/')
     # Set case study directory
     case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
