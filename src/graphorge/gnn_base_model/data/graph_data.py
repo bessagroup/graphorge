@@ -65,6 +65,8 @@ class GraphData:
         Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
         (num_edges, 2), where the i-th edge is stored in
         edges_indexes[i, :] as (start_node_index, end_node_index).
+    _metadata : dict
+        A dictionary containing any metadata information.
     
     Methods
     -------
@@ -107,6 +109,12 @@ class GraphData:
         Set global targets matrix.
     get_global_targets_matrix(self)
         Get global targets matrix.
+    set_metadata(self, metadata)
+        Set metadata information.
+    add_metadata(self, key, value)
+        Add metadata information.
+    get_metadata(self)
+        Get metadata information.
     plot_graph(self, is_show_plot=False, is_save_plot=False, \
                save_directory=None, plot_name=None, is_overwrite_file=False)
         Generate plot of graph.
@@ -142,6 +150,8 @@ class GraphData:
         self._node_targets_matrix = None
         self._edge_targets_matrix = None
         self._global_targets_matrix = None
+        # Initialize metadata
+        self._metadata = {}
     # -------------------------------------------------------------------------  
     def get_torch_data_object(self):
         """Get PyG homogeneous graph data object.
@@ -159,8 +169,7 @@ class GraphData:
         if self._node_features_matrix is not None:
             x = torch.tensor(copy.deepcopy(self._node_features_matrix),
                              dtype=torch.float)
-            # x = torch.randn(10, x.shape[0], x.shape[1]) 
-            # Set PyG graph connectivity
+        # Set PyG graph connectivity
         edge_index = None
         if self._edges_indexes is not None:
             edge_index = torch.tensor(
@@ -202,22 +211,21 @@ class GraphData:
                 torch.tensor(copy.deepcopy(self._global_targets_matrix),
                              dtype=torch.float)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set metadata
+        metadata = {}
+        if isinstance(self._metadata, dict):
+            # Iterate over metadata items
+            for key, value in self._metadata.items():
+                    metadata[key] = torch.tensor(copy.deepcopy(value))
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Instantiate PyG homogeneous graph data object
-        # if _is_time_series:
-        #     pyg_graph = torch_geometric.data.Data(
-        #         x=x, edge_index=edge_index, edge_attr=edge_attr, y=y,
-        #         pos=pos, num_nodes=num_nodes,
-        #         edge_targets_matrix=edge_targets_matrix,
-        #         global_features_matrix=global_features_matrix,
-        #         global_targets_matrix=global_targets_matrix)
-        # else:
-        # print(x.shape)
         pyg_graph = torch_geometric.data.Data(
             x=x, edge_index=edge_index, edge_attr=edge_attr, y=y,
             pos=pos, num_nodes=num_nodes,
             edge_targets_matrix=edge_targets_matrix,
             global_features_matrix=global_features_matrix,
-            global_targets_matrix=global_targets_matrix)
+            global_targets_matrix=global_targets_matrix,
+            metadata=metadata)
         # Validate graph data object
         pyg_graph.validate(raise_on_error=True)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,7 +258,7 @@ class GraphData:
             ('n_dim', 'n_node', 'n_edge', 'nodes_coords', 'edge_indexes',
              'node_features_matrix', 'edge_features_matrix',
              'global_features_matrix', 'node_targets_matrix',
-             'edge_targets_matrix', 'global_targets_matrix')
+             'edge_targets_matrix', 'global_targets_matrix', 'metadata')
         
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize extracted attributes data
@@ -281,6 +289,8 @@ class GraphData:
                 data = pyg_graph.edge_targets_matrix.numpy()
             elif attribute == 'global_targets_matrix':
                 data = pyg_graph.global_targets_matrix.numpy()
+            elif attribute == 'metadata':
+                data = pyg_graph.metadata
             else:
                 raise RuntimeError(f'The attribute {attribute} is not '
                                    f'available. Available attributes:\n\n'
@@ -641,6 +651,62 @@ class GraphData:
         """
         return copy.deepcopy(self._global_targets_matrix)
     # -------------------------------------------------------------------------
+    def set_metadata(self, metadata):
+        """Set metadata information.
+        
+        Parameters
+        ----------
+        metadata : dict
+            Any metadata information stored as a dictionary.
+
+        Note
+        ----
+        Metadata information is useful to store any additional information that
+        is not related to the graph data itself but that is relevant for further
+        processing or analysis, e,g., sample id, time step, etc. 
+
+   
+        `metadata` is a dictionary that won't be moved to the GPU when using
+        ``.to(device)``. Avoid retrieving information from it inside your
+        a model.
+        """
+        # Check metadata information
+        if not isinstance(metadata, dict):
+            raise RuntimeError('Metadata information must be provided as a '
+                               'dictionary.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set metadata information
+        self._metadata = metadata
+    # -------------------------------------------------------------------------
+    def add_metadata(self, key, value):
+        """Add metadata information.
+        
+        Parameters
+        ----------
+        key : str
+            Key of metadata information.
+        value : Any
+            Value of metadata information.
+        """
+        # Check metadata
+        if not isinstance(self._metadata, dict):
+            raise RuntimeError('Metadata information must be a dictionary.')
+        # Check key
+        if not isinstance(key, str):
+            raise RuntimeError('Key of metadata information must be a string.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Add metadata information
+        self._metadata[key] = value
+    # -------------------------------------------------------------------------
+    def get_metadata(self):
+        """Get metadata information.
+        
+        Returns
+        -------
+        metadata : dict
+            Metadata information stored as a dictionary.
+        """
+        return copy.deepcopy(self._metadata)
     def plot_graph(self, is_show_plot=False, is_save_plot=False,
                    save_directory=None, plot_name=None,
                    is_overwrite_file=False):

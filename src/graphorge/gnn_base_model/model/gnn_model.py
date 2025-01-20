@@ -14,6 +14,7 @@ graph_standard_partial_fit
 #                                                                       Modules
 # =============================================================================
 # Standard
+import copy
 import os
 import re
 import pickle
@@ -180,6 +181,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         Get input features from graph.
     get_output_features_from_graph(self, graph, is_normalized=False)
         Get output features from graph.
+    get_metadata_from_graph(self, graph)
+        Get metadata from graph.
     predict_output_features(self, input_graph, is_normalized=False)
         Predict output features.
     save_model_init_state(self)
@@ -237,9 +240,6 @@ class GNNEPDBaseModel(torch.nn.Module):
                  dec_edge_output_activ_type='identity',
                  dec_global_hidden_activ_type='identity',
                  dec_global_output_activ_type='identity',
-                 is_time_series_nodes=False,
-                 is_time_series_edges=False,
-                 is_time_series_global=False,
                  is_save_model_init_file=True,
                  device_type='cpu'):
         """Constructor.
@@ -370,13 +370,6 @@ class GNNEPDBaseModel(torch.nn.Module):
         # Initialize from base class
         super(GNNEPDBaseModel, self).__init__()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set time attributes
-        # self._n_time_incs = 10 # n_time_incs : read from somewhere
-        # self._n_time_node_incs
-        # self._n_time_edge_incs
-        self._is_time_series_nodes = is_time_series_nodes
-        self._is_time_series_edges = is_time_series_edges
-        self._is_time_series_global = is_time_series_global
         # Set number of features
         self._n_node_in = n_node_in
         self._n_node_out = n_node_out
@@ -473,9 +466,6 @@ class GNNEPDBaseModel(torch.nn.Module):
                 self._dec_global_hidden_activ_type),
             dec_global_output_activation=type(self).get_pytorch_activation(
                 self._dec_global_output_activ_type),
-            is_time_series_nodes=self._is_time_series_nodes,
-            is_time_series_edges=self._is_time_series_edges,
-            is_time_series_global=self._is_time_series_global,
             is_node_res_connect=False, is_edge_res_connect=False)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize data scalers
@@ -585,19 +575,6 @@ class GNNEPDBaseModel(torch.nn.Module):
             assigning each node to a specific batch subgraph. Required to
             process a graph holding multiple isolated subgraphs when batch
             size is greater than 1.
-
-            
-
-        is_time_series_nodes: {bool}, default=False
-            Node features input matrix stored as a torch.Tensor(3d) of shape
-            (sequence_length, n_nodes, n_features).
-        is_time_series_edges: {bool}, default=False
-            Edge features input matrix stored as a torch.Tensor(3d) of shape
-            (sequence_length, n_edges, n_features).
-        is_time_series_global: {bool}, default=False
-            Global features input matrix stored as a torch.Tensor(3d) of shape
-            (1, n_features).
-
             
         Returns
         -------
@@ -718,9 +695,6 @@ class GNNEPDBaseModel(torch.nn.Module):
             self._dec_global_output_activ_type
         model_init_args['model_directory'] = self.model_directory
         model_init_args['model_name'] = self.model_name
-        model_init_args['is_time_series_nodes'] = self._is_time_series_nodes
-        model_init_args['is_time_series_edges'] = self._is_time_series_edges
-        model_init_args['is_time_series_global'] = self._is_time_series_global
         model_init_args['is_model_in_normalized'] = self.is_model_in_normalized
         model_init_args['is_model_out_normalized'] = \
             self.is_model_out_normalized
@@ -738,8 +712,7 @@ class GNNEPDBaseModel(torch.nn.Module):
         with open(model_init_file_path, 'wb') as init_file:
             pickle.dump(model_init_attributes, init_file)
     # -------------------------------------------------------------------------
-    def get_input_features_from_graph(self, graph,
-                                      is_normalized=False):
+    def get_input_features_from_graph(self, graph, is_normalized=False):
         """Get input features from graph.
         
         Parameters
@@ -873,18 +846,18 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check consistency with simulator
         if (node_features_out is not None
-                and node_features_out.shape[-1] != self._n_node_out):
-            raise RuntimeError(f'Input graph ({node_features_out.shape[-1]}) '
+                and node_features_out.shape[1] != self._n_node_out):
+            raise RuntimeError(f'Input graph ({node_features_out.shape[1]}) '
                                f'and simulator ({self._n_node_out}) number of '
                                f'output node features are not consistent.')
         if (edge_features_out is not None
-                and edge_features_out.shape[-1] != self._n_edge_out):
-            raise RuntimeError(f'Input graph ({edge_features_out.shape[-1]}) '
+                and edge_features_out.shape[1] != self._n_edge_out):
+            raise RuntimeError(f'Input graph ({edge_features_out.shape[1]}) '
                                f'and simulator ({self._n_edge_out}) number of '
                                f'output edge features are not consistent.')
         if (global_features_out is not None
-                and global_features_out.shape[-1] != self._n_global_out):
-            raise RuntimeError(f'Input graph ({global_features_out.shape[-1]}) '
+                and global_features_out.shape[1] != self._n_global_out):
+            raise RuntimeError(f'Input graph ({global_features_out.shape[1]}) '
                                f'and simulator ({self._n_global_out}) number '
                                f'of output global features are not '
                                f'consistent.')
@@ -908,6 +881,38 @@ class GNNEPDBaseModel(torch.nn.Module):
                     mode='normalize')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
+    # -------------------------------------------------------------------------
+    def get_metadata_from_graph(self, graph):
+        """Get metadata from graph.
+
+        Parameters
+        ----------
+        graph : torch_geometric.data.Data
+            Homogeneous graph.
+
+        Returns
+        -------
+        metadata : dict
+            Metadata dictionary.
+        """
+        # Check input graph
+        if not isinstance(graph, torch_geometric.data.Data):
+            raise RuntimeError('Input graph is not torch_geometric.data.Data.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Get metadata from graph
+        if 'metadata' in graph.keys():
+            metadata = {}
+            # Iterate over metadata items
+            for key, value in graph.metadata.items():
+                if isinstance(value, torch.Tensor):
+                    metadata[key] = value.clone()
+                else:
+                    raise RuntimeError('Metadata values should be'
+                                       ' torch.Tensor.')
+        else:
+            metadata = {}
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        return metadata
     # -------------------------------------------------------------------------
     def predict_output_features(self, node_features_in=None,
                                 edge_features_in=None, global_features_in=None,
@@ -1002,7 +1007,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             PyTorch unit activation function.
         """
         # Set available unit activation function types
-        available = ('identity', 'relu', 'tanh')
+        available = ('identity', 'relu')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Get unit activation function
         if activation_type == 'identity':
@@ -1709,28 +1714,14 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
         # Process sample to fit data scaler
         if isinstance(features_tensor, torch.Tensor):
             # Check number of features
-            if features_tensor.shape[-1] != n_features:
+            if features_tensor.shape[1] != n_features:
                 raise RuntimeError(f'Mismatch between input graph '
-                                   f'({features_tensor.shape[-1]}) and '
+                                   f'({features_tensor.shape[1]}) and '
                                    f'model ({n_features}) number of '
                                    f'features for features type: '
                                    f'{features_type}')
-            # Check if it is a time series [sequence_length, ... , ...]
-             #print(features_tensor.shape)
-            if len(features_tensor.shape) == 3:
-                is_time_series_=True
-                # If it is a time series, reshape
-                sequence_length, n_nodes, n_node_features = features_tensor.shape
-                # print(features_tensor.shape)
-                features_tensor_copy = features_tensor.\
-                    reshape(n_nodes, sequence_length * n_node_features)
-                # print(new_features_tensor.shape)
-            else:
-                is_time_series=False
-                features_tensor_copy = features_tensor
-                
             # Process sample
-            data_scaler.partial_fit(features_tensor_copy.clone())
+            data_scaler.partial_fit(features_tensor.clone())
         else:
             raise RuntimeError('Sample features tensor is not torch.Tensor.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1742,23 +1733,16 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
     if not isinstance(mean, torch.Tensor):
         raise RuntimeError('Features standardization mean tensor is not a '
                            'torch.Tensor.')
-    elif len(mean) != features_tensor.shape[-1]:# and not is_time_series:
+    elif len(mean) != features_tensor.shape[1]:
         raise RuntimeError('Features standardization mean tensor is not a '
                            'torch.Tensor(1d) with shape (n_features,).')
-    # elif len(mean) != features_tensor_copy.shape[-1] and is_time_series:
-    #     raise RuntimeError('Features standardization mean tensor is not a '
-    #                        'torch.Tensor(1d) with shape (n_features,).')
     # Check features standardization standard deviation tensor
     if not isinstance(std, torch.Tensor):
         raise RuntimeError('Features standardization standard deviation '
                             'tensor is not a torch.Tensor.')
-    elif len(std) != features_tensor.shape[-1]:# and not is_time_series:
+    elif len(std) != features_tensor.shape[1]:
         raise RuntimeError('Features standardization standard deviation '
                            'tensor is not a torch.Tensor(1d) with shape '
                            '(n_features,).')
-    # elif len(std) != features_tensor_copy.shape[-1] and is_time_series:
-    #     raise RuntimeError('Features standardization standard deviation '
-    #                        'tensor is not a torch.Tensor(1d) with shape '
-    #                        '(n_features,).')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return mean, std

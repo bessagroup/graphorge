@@ -102,16 +102,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
 
     lr_scheduler_kwargs : dict, default={}
         Arguments of torch.optim.lr_scheduler.LRScheduler initializer.
-    
-    loss_nature : {'node_features_out', \
-                   'edge_features_out', \
-                   'global_features_out'}, \
+    loss_nature : {'node_features_out', 'global_features_out'}, \
                   default='node_features_out'
         Loss nature:
         
         'node_features_out' : Based on node output features
-
-        'edge_features_out' : Based on edge output features
 
         'global_features_out' : Based on global output features
 
@@ -304,7 +299,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         print(f'\n> Output data normalization: {output_normalization_str}')
         print('\n\n> Starting training process...\n')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    print(dataset.__getitem__(0).x.shape)
     # Loop over training iterations
     while is_keep_training:
         # Store epoch initial training step
@@ -353,18 +347,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Compute loss
                 loss = loss_function(node_features_out, node_targets)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            elif loss_nature == 'edge_features_out':
-                # Get global output features
-                _, edge_features_out, _ = model(
-                    node_features_in=node_features_in,
-                    edge_features_in=edge_features_in,
-                    global_features_in=global_features_in,
-                    edges_indexes=edges_indexes,
-                    batch_vector=batch_vector)
-                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # Compute loss
-                loss = loss_function(edge_features_out, edge_targets)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elif loss_nature == 'global_features_out':
                 # Get global output features

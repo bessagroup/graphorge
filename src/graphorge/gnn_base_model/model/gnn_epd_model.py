@@ -19,7 +19,7 @@ import torch
 import torch_geometric.nn
 # Local
 from gnn_base_model.model.gnn_architectures import build_fnn, \
-    build_rnn, GraphIndependentNetwork, GraphInteractionNetwork
+    GraphIndependentNetwork, GraphInteractionNetwork
 #
 #                                                          Authorship & Credits
 # =============================================================================
@@ -48,15 +48,6 @@ class EncodeProcessDecode(torch.nn.Module):
         Number of edge output features.
     _n_global_out : int
         Number of node output features.
-    _is_time_series_nodes : bool, default=False
-        If True, then nodal input features a time dimension and
-        message passing layers are RNNs.
-    _is_time_series_edges : bool, default=False
-        If True, then edge input features a time dimension and
-        message passing layers are RNNs.
-    _is_time_series_global : bool, default=False
-        If True, then global input features a time dimension and
-        message passing layers are RNNs.
     
     Methods
     -------
@@ -87,11 +78,7 @@ class EncodeProcessDecode(torch.nn.Module):
                  dec_edge_output_activation=torch.nn.Identity(),
                  dec_global_hidden_activation=torch.nn.Identity(),
                  dec_global_output_activation=torch.nn.Identity(),
-                 is_time_series_nodes=False,
-                 is_time_series_edges=False,
-                 is_time_series_global=False,
-                 is_node_res_connect=False,
-                 is_edge_res_connect=False,
+                 is_node_res_connect=False, is_edge_res_connect=False,
                  is_global_res_connect=False):
         """Constructor.
         
@@ -108,17 +95,17 @@ class EncodeProcessDecode(torch.nn.Module):
         n_global_out : int
             Number of node output features.
         enc_n_hidden_layers : int
-            Encoder: Number of hidden layers of multilayer feed-forward/recurrent
-            neural network update functions.
+            Encoder: Number of hidden layers of multilayer feed-forward neural
+            network update functions.
         pro_n_hidden_layers : int
-            Processor: Number of hidden layers of multilayer feed-forward/
-            recurrent neural network update functions.
-        dec_n_hidden_layers : int
-            Decoder: Number of hidden layers of multilayer feed-forward/recurrent
+            Processor: Number of hidden layers of multilayer feed-forward
             neural network update functions.
+        dec_n_hidden_layers : int
+            Decoder: Number of hidden layers of multilayer feed-forward neural
+            network update functions.
         hidden_layer_size : int
-            Number of neurons of hidden layers of multilayer feed-forward/
-            recurrent neural network update functions.
+            Number of neurons of hidden layers of multilayer feed-forward
+            neural network update functions.
         n_node_in : int, default=0
             Number of node input features.
         n_edge_in : int, default=0
@@ -207,15 +194,6 @@ class EncodeProcessDecode(torch.nn.Module):
             Decoder: Output unit activation function of global update function
             (multilayer feed-forward neural network). Defaults to identity
             (linear) unit activation function.
-        is_time_series_nodes : bool, default=False
-            If True, then nodal input features include a time dimension and
-            message passing layers are RNNs.
-        is_time_series_edges : bool, default=False
-            If True, then edge input features include a time dimension and
-            message passing layers are RNNs.
-        is_time_series_global : bool, default=False
-            If True, then global input features include a time dimension and
-            message passing layers are RNNs.
         is_node_res_connect : bool, default=False
             Processor: Add residual connections between nodes input and
             output features if True, False otherwise. Number of input and
@@ -309,9 +287,6 @@ class EncodeProcessDecode(torch.nn.Module):
                     edge_output_activation=enc_edge_output_activation,
                     global_hidden_activation=enc_global_hidden_activation,
                     global_output_activation=enc_global_output_activation,
-                    is_time_series_nodes=is_time_series_nodes,
-                    is_time_series_edges=is_time_series_edges,
-                    is_time_series_global=is_time_series_global,
                     is_norm_layer=is_enc_norm_layer, is_skip_unset_update=True)
         # Set model processor if positive number of message-passing steps
         if self._n_message_steps > 0:
@@ -335,9 +310,6 @@ class EncodeProcessDecode(torch.nn.Module):
                               pro_global_hidden_activation,
                           global_output_activation=\
                               pro_global_output_activation,
-                          is_time_series_nodes=is_time_series_nodes,
-                          is_time_series_edges=is_time_series_edges,
-                          is_time_series_global=is_time_series_global,
                           is_norm_layer=is_pro_norm_layer,
                           is_node_res_connect=is_node_res_connect,
                           is_edge_res_connect=is_edge_res_connect,
@@ -357,9 +329,6 @@ class EncodeProcessDecode(torch.nn.Module):
                     edge_output_activation=dec_edge_output_activation,
                     global_hidden_activation=dec_global_hidden_activation,
                     global_output_activation=dec_global_output_activation,
-                    is_time_series_nodes=is_time_series_nodes,
-                    is_time_series_edges=is_time_series_edges,
-                    is_time_series_global=is_time_series_global,
                     is_norm_layer=is_dec_norm_layer, is_skip_unset_update=True)
     # -------------------------------------------------------------------------
     def forward(self, edges_indexes, node_features_in=None,
@@ -480,15 +449,6 @@ class Processor(torch_geometric.nn.MessagePassing):
         Number of global input features.
     _n_global_out : int
         Number of global output features.
-    _is_time_series_nodes : bool, default=False
-        If True, then nodal input features a time dimension and
-        message passing layers are RNNs.
-    _is_time_series_edges : bool, default=False
-        If True, then edge input features a time dimension and
-        message passing layers are RNNs.
-    _is_time_series_global : bool, default=False
-        If True, then global input features a time dimension and
-        message passing layers are RNNs.
         
     Methods
     -------
@@ -505,9 +465,6 @@ class Processor(torch_geometric.nn.MessagePassing):
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
-                 is_time_series_nodes=False,
-                 is_time_series_edges=False,
-                 is_time_series_global=False,
                  is_norm_layer = False, is_node_res_connect=False,
                  is_edge_res_connect=False, is_global_res_connect=False):
         """Constructor.
@@ -562,15 +519,6 @@ class Processor(torch_geometric.nn.MessagePassing):
             Output unit activation function of global update function
             (multilayer feed-forward neural network). Defaults to identity
             (linear) unit activation function.
-        is_time_series_nodes : bool, default=False
-            If True, then nodal input features a time dimension and
-            message passing layers are RNNs.
-        is_time_series_edges : bool, default=False
-            If True, then edge input features a time dimension and
-            message passing layers are RNNs.
-        is_time_series_global : bool, default=False
-            If True, then global input features a time dimension and
-            message passing layers are RNNs.
         is_norm_layer : bool, default=False
             If True, then add normalization layer to node, edge and global
             update functions.
@@ -597,11 +545,6 @@ class Processor(torch_geometric.nn.MessagePassing):
         self._n_edge_out = int(n_edge_out)
         self._n_global_in = int(n_global_in)
         self._n_global_out = int(n_global_out)
-         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set input with time dimension
-        self._is_time_series_nodes = is_time_series_nodes
-        self._is_time_series_edges = is_time_series_edges
-        self._is_time_series_global = is_time_series_global
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check number of input features
         if (self._n_node_in < 1 and self._n_edge_in < 1
@@ -663,9 +606,6 @@ class Processor(torch_geometric.nn.MessagePassing):
                 node_output_activation=node_output_activation,
                 edge_hidden_activation=edge_hidden_activation,
                 edge_output_activation=edge_output_activation,
-                is_time_series_nodes = is_time_series_nodes,
-                is_time_series_edges = is_time_series_edges,
-                is_time_series_global = is_time_series_global,
                 is_norm_layer=is_norm_layer,
                 global_hidden_activation=global_hidden_activation,
                 global_output_activation=global_output_activation)
@@ -712,19 +652,19 @@ class Processor(torch_geometric.nn.MessagePassing):
             Global features output matrix stored as a torch.Tensor(2d) of shape
             (1, n_features).
         """
-        # Check number of nodal, edge and global features
+        # Check number of nodes and edges features
         if node_features_in is not None and node_features_in.numel() > 0 \
-                and node_features_in.shape[-1] != self._n_node_in:
+                and node_features_in.shape[1] != self._n_node_in:
             raise RuntimeError(f'Mismatch of number of node features of model '
                                f'({self._n_node_in}) and nodes input features '
                                f'matrix ({node_features_in.shape[1]}).')
         elif edge_features_in is not None \
-                and edge_features_in.shape[-1] != self._n_edge_in:
+                and edge_features_in.shape[1] != self._n_edge_in:
             raise RuntimeError(f'Mismatch of number of edge features of model '
                                f'({self._n_edge_in}) and edges input features '
                                f'matrix ({edge_features_in.shape[1]}).')
         elif global_features_in is not None \
-                and global_features_in.shape[-1] != self._n_global_in:
+                and global_features_in.shape[1] != self._n_global_in:
             raise RuntimeError(f'Mismatch of number of global features of '
                                f'model ({self._n_global_in}) and global input '
                                f'features matrix '
@@ -734,7 +674,7 @@ class Processor(torch_geometric.nn.MessagePassing):
         # edge-to-node aggregation when number of node input features is zero
         n_nodes = None
         if self._n_node_in < 1 and node_features_in is not None:
-            n_nodes = node_features_in.shape[-2]
+            n_nodes = node_features_in.shape[0]
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize residual update node features
         node_features_out = None
@@ -800,7 +740,7 @@ class Decoder(GraphIndependentNetwork):
     
     Decodes latent graph into output graph by means of a Graph Independent
     Network. Node, edge and global features update functions are implemented as
-    multilayer feed-forward or recurrent neural networks and are independent
+    multilayer feed-forward neural networks and are independent
     (no aggregation).
     """
     pass
