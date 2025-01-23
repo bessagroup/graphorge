@@ -1018,7 +1018,7 @@ class GNNEPDBaseModel(torch.nn.Module):
                                f'activation function: \'{activation_type}\'.'
                                f'\n\nAvailable: {available}')
         # Get unit activation name
-        activation_name = torch.nn.modules.activation._all_[idx]
+        activation_name = torch.nn.modules.activation.__all__[idx]
         # Get unit activation function
         activation_function = getattr(torch.nn.modules.activation,
                                        activation_name)(**kwargs)
