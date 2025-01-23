@@ -1019,7 +1019,7 @@ class GNNEPDBaseModel(torch.nn.Module):
         except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
                                f'activation function: \'{activation_type}\'.\n'
-                               f'\nAvailable: {available.append('identity')}.')
+                               f'\nAvailable: {available.append("identity")}.')
         # Get unit activation name
         activation_name = torch.nn.modules.activation.__all__[idx]
         # Get unit activation function
