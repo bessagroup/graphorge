@@ -224,12 +224,19 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             if isinstance(metadata, dict):
                 # Iterate over metadata items
                 for key, value in metadata.items():
-                    # If there is only one element, store it as a scalar
-                    if value.numel() == 1:
-                        results['metadata'][key] = value.detach().cpu().item()
-                    # Otherwise, store it as a numpy array
+                    # Process tensor metadata
+                    if isinstance(value, torch.Tensor):
+                        # If there is only one element, store it as a scalar
+                        if value.numel() == 1:
+                            results['metadata'][key] = (
+                                value.detach().cpu().item())
+                        # Otherwise, store it as a numpy array
+                        else:
+                            results['metadata'][key] = (
+                                value.detach().cpu().numpy())
+                    # Process non-tensor metadata
                     else:
-                        results['metadata'][key] = value.detach().cpu().numpy()
+                        results['metadata'][key] = value
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Compute output features predictions (forward propagation)
             if loss_nature == 'node_features_out':
