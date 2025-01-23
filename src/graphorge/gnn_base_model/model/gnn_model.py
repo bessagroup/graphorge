@@ -1007,19 +1007,21 @@ class GNNEPDBaseModel(torch.nn.Module):
             PyTorch unit activation function.
         """
         # Set available unit activation function types
-        available = ('identity', 'relu')
+        available = [str(name).lower()
+                     for name in torch.nn.modules.activation.__all__]
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get unit activation function
-        if activation_type == 'identity':
-            activation_function = torch.nn.Identity(**kwargs)
-        elif activation_type == 'relu':
-            activation_function = torch.nn.ReLU(**kwargs)
-        elif activation_type == 'tanh':
-            activation_function = torch.nn.Tanh(**kwargs)
-        else:
+        # Check unit activation function index among available
+        try:
+            idx = available.index(activation_type.lower())
+        except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
                                f'activation function: \'{activation_type}\'.'
                                f'\n\nAvailable: {available}')
+        # Get unit activation name
+        activation_name = torch.nn.modules.activation._all_[idx]
+        # Get unit activation function
+        activation_function = getattr(torch.nn.modules.activation,
+                                       activation_name)(**kwargs)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return activation_function
     # -------------------------------------------------------------------------
