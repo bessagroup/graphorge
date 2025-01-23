@@ -907,8 +907,7 @@ class GNNEPDBaseModel(torch.nn.Module):
                 if isinstance(value, torch.Tensor):
                     metadata[key] = value.clone()
                 else:
-                    raise RuntimeError('Metadata values should be'
-                                       ' torch.Tensor.')
+                    metadata[key] = copy.deepcopy(value)
         else:
             metadata = {}
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
