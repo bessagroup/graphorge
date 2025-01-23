@@ -163,6 +163,8 @@ class GNNEPDBaseModel(torch.nn.Module):
     _data_scalers : dict
         Data scaler (item, sklearn.preprocessing.StandardScaler) for each
         feature data (key, str).
+    _available_activ_fn : dict
+        Available activation function types and their corresponding class.
 
     Methods
     -------
@@ -215,6 +217,13 @@ class GNNEPDBaseModel(torch.nn.Module):
     check_normalized_return(self)
         Check if model data normalization is available.
     """
+    # Set available unit activation function types
+    _available_activ_fn = {
+        str(name).lower(): getattr(torch.nn.modules.activation, name)
+        for name in torch.nn.modules.activation.__all__}
+    # Add identity which is not available in torch.nn.modules.activation
+    _available_activ_fn['identity'] = torch.nn.Identity
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, n_node_in, n_node_out, n_edge_in, n_edge_out,
                  n_global_in, n_global_out, n_message_steps,
                  enc_n_hidden_layers, pro_n_hidden_layers, dec_n_hidden_layers,
@@ -983,8 +992,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
-    @staticmethod
-    def get_pytorch_activation(activation_type, **kwargs):
+    @classmethod
+    def get_pytorch_activation(cls, activation_type, **kwargs):
         """Get PyTorch unit activation function.
     
         Parameters
@@ -1006,27 +1015,19 @@ class GNNEPDBaseModel(torch.nn.Module):
         activation_function : torch.nn._Module
             PyTorch unit activation function.
         """
-        # Set available unit activation function types
-        available = [str(name).lower()
-                     for name in torch.nn.modules.activation.__all__]
+        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Handle identity request (not a PyTorch activation function)
-        if activation_type == 'identity':
-            return torch.nn.Identity(**kwargs)
-        # Check unit activation function index among available
+        # Get activation function class
         try:
-            idx = available.index(activation_type.lower())
+            activation_function = cls._available_activ_fn[activation_type]
         except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
-                               f'activation function: \'{activation_type}\'.\n'
-                               f'\nAvailable: {available.append("identity")}.')
-        # Get unit activation name
-        activation_name = torch.nn.modules.activation.__all__[idx]
-        # Get unit activation function
-        activation_function = getattr(torch.nn.modules.activation,
-                                       activation_name)(**kwargs)
+                               f'activation function: \'{activation_type}\'.'
+                               '\n\nAvailable: '
+                               f'{cls._available_activ_fn.keys()}.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        return activation_function
+        # Initialize activation function
+        return activation_function(**kwargs)
     # -------------------------------------------------------------------------
     def save_model_init_state(self):
         """Save model initial state to file.
