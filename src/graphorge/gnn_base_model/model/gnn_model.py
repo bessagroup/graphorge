@@ -1010,13 +1010,16 @@ class GNNEPDBaseModel(torch.nn.Module):
         available = [str(name).lower()
                      for name in torch.nn.modules.activation.__all__]
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Handle identity request (not a PyTorch activation function)
+        if activation_type == 'identity':
+            return torch.nn.Identity(**kwargs)
         # Check unit activation function index among available
         try:
             idx = available.index(activation_type.lower())
         except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
-                               f'activation function: \'{activation_type}\'.'
-                               f'\n\nAvailable: {available}')
+                               f'activation function: \'{activation_type}\'.\n'
+                               f'\nAvailable: {available.append('identity')}.')
         # Get unit activation name
         activation_name = torch.nn.modules.activation.__all__[idx]
         # Get unit activation function
