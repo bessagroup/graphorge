@@ -216,7 +216,12 @@ class GraphData:
         if isinstance(self._metadata, dict):
             # Iterate over metadata items
             for key, value in self._metadata.items():
-                    metadata[key] = torch.tensor(copy.deepcopy(value))
+                    # Cast to a tensor if possible
+                    try:
+                        metadata[key] = torch.tensor(copy.deepcopy(value))
+                    # If not, copy the value (e.g., strings)
+                    except:
+                        metadata[key] = copy.deepcopy(value)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Instantiate PyG homogeneous graph data object
         pyg_graph = torch_geometric.data.Data(
