@@ -164,7 +164,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         Data scaler (item, sklearn.preprocessing.StandardScaler) for each
         feature data (key, str).
     _available_activ_fn : dict
-        Available activation function types and their corresponding class.
+        For each available activation function type (key, str), store the
+        corresponding PyTorch unit activation function (item, torch.nn.Module).
 
     Methods
     -------
@@ -1019,7 +1020,7 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Get activation function class
         try:
-            activation_function = cls._available_activ_fn[activation_type]
+            activation_function_cls = cls._available_activ_fn[activation_type]
         except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
                                f'activation function: \'{activation_type}\'.'
@@ -1027,7 +1028,10 @@ class GNNEPDBaseModel(torch.nn.Module):
                                f'{cls._available_activ_fn.keys()}.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize activation function
-        return activation_function(**kwargs)
+        activation_function = activation_function_cls(**kwargs)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Return activation function
+        return activation_function
     # -------------------------------------------------------------------------
     def save_model_init_state(self):
         """Save model initial state to file.
