@@ -317,23 +317,10 @@ class GraphData:
             where the i-th edge is stored in edges_indexes[i, :] as
             (start_node_index, end_node_index).
         is_unique : bool, default=True
-            Remove any existent duplicated edges if `True`.
-
-        Note
-        ----
-        If `is_unique` is set to `True`, then any duplicated edges are removed
-        and edge indexes are sorted in ascending order, according to
-        `numpy.unique`. In such a case, edge features and targets generated in
-        a previous step should be updated accordingly using `unique_indices`
-        returned by this method. It contains the indices of the unique edges
-        in the original edges indexes matrix. sorted according to the unique
-        edges order.
-
-        Returns
-        -------
-        unique_indices : numpy.ndarray(1d), default=None
-            Indices of unique edges in the original edges indexes matrix,
-            sorted according to the unique edges order.
+            Remove any existent duplicated edges if `True`. Resulting unique 
+            edges are sorted by ascending order of the corresponding indexes,
+            according to 'numpy.unique' output. If `False`, edges are kept
+            unmodified.
         """
         # Initialize edges indexes
         edges_indexes = np.empty((0, 2), dtype=int)
@@ -356,8 +343,7 @@ class GraphData:
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Remove any existent duplicated edges
         if is_unique:
-            edges_indexes, unique_indices = np.unique(edges_indexes, axis=0,
-                                                       return_index=True)
+            edges_indexes =np.unique(edges_indexes, axis=0)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set number of edges
         self._n_edge = edges_indexes.shape[0]
@@ -367,10 +353,6 @@ class GraphData:
         # Initialize edges input features and targets matrices
         self._edge_features_matrix = None
         self._edge_targets_matrix = None
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Returns unique indices if edge uniqueness was requested
-        if is_unique:
-            return unique_indices
     # -------------------------------------------------------------------------
     def get_nodes_coords(self):
         """Get graph node coordinates.

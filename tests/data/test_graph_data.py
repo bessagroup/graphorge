@@ -2,8 +2,6 @@
 #
 #                                                                       Modules
 # =============================================================================
-# Standard
-
 # Third-party
 import numpy as np
 import pytest
@@ -41,9 +39,6 @@ def test_graph_data_set_graph_edges_indexes_unique(graph_data):
     # Assert edge indices are unique
     _, unique_counts = np.unique(unique_indices, return_counts=True)
     assert (unique_counts == 1).all()
-    # Assert edge indices can be reconstructed from the unique indices
-    assert (graph_data.get_graph_edges_indexes()
-            == edge_indices[unique_indices]).all()
 # -----------------------------------------------------------------------------
 def test_graph_data_set_graph_edges_indexes_non_unique(graph_data):
     """Test setting non-unique graph edges indexes."""
