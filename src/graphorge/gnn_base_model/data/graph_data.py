@@ -72,8 +72,6 @@ class GraphData:
     -------
     get_torch_data_object(self)
         Get PyG homogeneous graph data object.
-    set_graph_edges_indexes(self, connect_radius=None, edges_indexes_mesh=None)
-        Set graph edges indexes and number of edges.
     get_nodes_coords(self)
         Get graph node coordinates.
     get_n_node(self)
@@ -81,7 +79,7 @@ class GraphData:
     get_n_edge(self)
         Get graph number of edges.
     set_graph_edges_indexes(self, connect_radius=None, \
-                            edges_indexes_mesh=None)
+                            edges_indexes_mesh=None, is_unique=True)
         Set graph edges indexes.
     get_graph_edges_indexes(self)
         Get graph edges indexes.
@@ -306,7 +304,7 @@ class GraphData:
         return tuple(attributes_data)
     # -------------------------------------------------------------------------
     def set_graph_edges_indexes(self, connect_radius=None,
-                                edges_indexes_mesh=None):
+                                edges_indexes_mesh=None, is_unique=True):
         """Set graph edges indexes and number of edges.
         
         Sets existing edges input features and targets matrices to None.
@@ -323,6 +321,11 @@ class GraphData:
             matrix stored as numpy.ndarray[int](2d) with shape (n_edges, 2),
             where the i-th edge is stored in edges_indexes[i, :] as
             (start_node_index, end_node_index).
+        is_unique : bool, default=True
+            Remove any existent duplicated edges if `True`. Resulting unique 
+            edges are sorted by ascending order of the corresponding indexes,
+            according to 'numpy.unique' output. If `False`, edges are kept
+            unmodified.
         """
         # Initialize edges indexes
         edges_indexes = np.empty((0, 2), dtype=int)
@@ -344,7 +347,8 @@ class GraphData:
                                            axis=0)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Remove any existent duplicated edges
-        edges_indexes = np.unique(edges_indexes, axis=0)
+        if is_unique:
+            edges_indexes =np.unique(edges_indexes, axis=0)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set number of edges
         self._n_edge = edges_indexes.shape[0]
