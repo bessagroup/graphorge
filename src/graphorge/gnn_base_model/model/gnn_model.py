@@ -14,6 +14,7 @@ graph_standard_partial_fit
 #                                                                       Modules
 # =============================================================================
 # Standard
+import copy
 import os
 import re
 import pickle
@@ -162,6 +163,9 @@ class GNNEPDBaseModel(torch.nn.Module):
     _data_scalers : dict
         Data scaler (item, sklearn.preprocessing.StandardScaler) for each
         feature data (key, str).
+    _available_activ_fn : dict
+        For each available activation function type (key, str), store the
+        corresponding PyTorch unit activation function (item, torch.nn.Module).
 
     Methods
     -------
@@ -180,6 +184,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         Get input features from graph.
     get_output_features_from_graph(self, graph, is_normalized=False)
         Get output features from graph.
+    get_metadata_from_graph(self, graph)
+        Get metadata from graph.
     predict_output_features(self, input_graph, is_normalized=False)
         Predict output features.
     save_model_init_state(self)
@@ -212,6 +218,13 @@ class GNNEPDBaseModel(torch.nn.Module):
     check_normalized_return(self)
         Check if model data normalization is available.
     """
+    # Set available unit activation function types
+    _available_activ_fn = {
+        str(name).lower(): getattr(torch.nn.modules.activation, name)
+        for name in torch.nn.modules.activation.__all__}
+    # Add identity which is not available in torch.nn.modules.activation
+    _available_activ_fn['identity'] = torch.nn.Identity
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, n_node_in, n_node_out, n_edge_in, n_edge_out,
                  n_global_in, n_global_out, n_message_steps,
                  enc_n_hidden_layers, pro_n_hidden_layers, dec_n_hidden_layers,
@@ -929,6 +942,37 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
+    def get_metadata_from_graph(self, graph):
+        """Get metadata from graph.
+
+        Parameters
+        ----------
+        graph : torch_geometric.data.Data
+            Homogeneous graph.
+
+        Returns
+        -------
+        metadata : dict
+            Metadata dictionary.
+        """
+        # Check input graph
+        if not isinstance(graph, torch_geometric.data.Data):
+            raise RuntimeError('Input graph is not torch_geometric.data.Data.')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Get metadata from graph
+        if 'metadata' in graph.keys():
+            metadata = {}
+            # Iterate over metadata items
+            for key, value in graph.metadata.items():
+                if isinstance(value, torch.Tensor):
+                    metadata[key] = value.clone()
+                else:
+                    metadata[key] = copy.deepcopy(value)
+        else:
+            metadata = {}
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        return metadata
+    # -------------------------------------------------------------------------
     def predict_output_features(self, node_features_in=None,
                                 edge_features_in=None, global_features_in=None,
                                 edges_indexes=None, batch_vector=None):
@@ -998,8 +1042,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out, edge_features_out, global_features_out
     # -------------------------------------------------------------------------
-    @staticmethod
-    def get_pytorch_activation(activation_type, **kwargs):
+    @classmethod
+    def get_pytorch_activation(cls, activation_type, **kwargs):
         """Get PyTorch unit activation function.
     
         Parameters
@@ -1021,21 +1065,20 @@ class GNNEPDBaseModel(torch.nn.Module):
         activation_function : torch.nn._Module
             PyTorch unit activation function.
         """
-        # Set available unit activation function types
-        available = ('identity', 'relu', 'tanh')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get unit activation function
-        if activation_type == 'identity':
-            activation_function = torch.nn.Identity(**kwargs)
-        elif activation_type == 'relu':
-            activation_function = torch.nn.ReLU(**kwargs)
-        elif activation_type == 'tanh':
-            activation_function = torch.nn.Tanh(**kwargs)
-        else:
+        # Get activation function class
+        try:
+            activation_function_cls = cls._available_activ_fn[activation_type]
+        except ValueError:
             raise RuntimeError(f'Unknown or unavailable PyTorch unit '
                                f'activation function: \'{activation_type}\'.'
-                               f'\n\nAvailable: {available}')
+                               '\n\nAvailable: '
+                               f'{cls._available_activ_fn.keys()}.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Initialize activation function
+        activation_function = activation_function_cls(**kwargs)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Return activation function
         return activation_function
     # -------------------------------------------------------------------------
     def save_model_init_state(self):

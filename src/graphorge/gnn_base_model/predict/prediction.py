@@ -217,6 +217,27 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             # Initialize sample results
             results = {}
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Get metadata
+            metadata = model.get_metadata_from_graph(pyg_graph)
+            # Store metadata
+            results['metadata'] = {}
+            if isinstance(metadata, dict):
+                # Iterate over metadata items
+                for key, value in metadata.items():
+                    # Process tensor metadata
+                    if isinstance(value, torch.Tensor):
+                        # If there is only one element, store it as a scalar
+                        if value.numel() == 1:
+                            results['metadata'][key] = (
+                                value.detach().cpu().item())
+                        # Otherwise, store it as a numpy array
+                        else:
+                            results['metadata'][key] = (
+                                value.detach().cpu().numpy())
+                    # Process non-tensor metadata
+                    else:
+                        results['metadata'][key] = value
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Compute output features predictions (forward propagation)
             if loss_nature == 'node_features_out':
                 # Compute node output features

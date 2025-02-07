@@ -22,6 +22,10 @@ __status__ = 'Planning'
 @pytest.fixture
 def graph_patch_data_2d():
     """GNN-based material patch graph data for 2D material patch."""
+    # Set sample ID and name
+    sample_id = 0
+    sample_name = 'material_patch_2d'
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of spatial dimensions
     n_dim = 2
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +73,9 @@ def graph_patch_data_2d():
     # Generate and set random global targets matrix
     global_targets_matrix = np.random.rand(1, n_global_out)
     gnn_patch_data.set_global_targets_matrix(global_targets_matrix)
+    # Set sample ID metadata
+    metadata = dict(sample_id=sample_id, name=sample_name)
+    gnn_patch_data.set_metadata(metadata)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return gnn_patch_data
 # -----------------------------------------------------------------------------
@@ -130,6 +137,9 @@ def batch_graph_patch_data_2d():
         # Generate and set random global targets matrix
         global_targets_matrix = np.random.rand(1, n_global_out)
         gnn_patch_data.set_global_targets_matrix(global_targets_matrix)
+        # Set sample ID metadata
+        metadata = dict(sample_id=i, name=f'material_patch_2d_{i}')
+        gnn_patch_data.set_metadata(metadata)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store GNN-based material patch graph data
         batch_graph_data.append(gnn_patch_data)
