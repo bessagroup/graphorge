@@ -146,7 +146,7 @@ def build_rnn(input_size,
                         hidden_size=output_size,
                         bias=bias,
                         num_layers=num_layers)
-    print('inside RNN: num_layers=', num_layers)
+    # print('inside RNN: num_layers=', num_layers)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return rnn
 # =============================================================================
