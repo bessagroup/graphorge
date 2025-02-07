@@ -23,8 +23,8 @@ import torch_geometric.nn
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
-__credits__ = ['Bernardo Ferreira', ]
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
+__credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
 #
