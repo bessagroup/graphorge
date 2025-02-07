@@ -98,9 +98,8 @@ def build_rnn(input_size,
               rnn_cell='GRU',
               # output_activation=torch.nn.Identity(),
               hidden_layer_sizes=[],
-              bias=True): #,
-              # hidden_activation=torch.nn.Identity()):
-    """Build multilayer recurrent neural network.
+              bias=True):
+    """Build stacked recurrent neural network.
 
     Parameters
     ----------
@@ -109,8 +108,7 @@ def build_rnn(input_size,
     output_size : int
         Number of neurons of output layer.
     rnn_cell : str, default='GRU'
-        RNN architecture cell.
-        Currently on 'GRU', 'LSTM' are supported. Defaults to GRU.
+        RNN architecture cell. Currently on 'GRU'. Defaults to GRU.
     hidden_layer_sizes : list[int], default=[]
         Number of neurons of hidden layers.
     bias : bool, default=True
