@@ -13,6 +13,7 @@ if root_dir not in sys.path:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os
 import shutil
+import numpy as np
 import random
 # Local
 from gnn_base_model.data.graph_dataset import GNNGraphDataset
@@ -86,6 +87,7 @@ def generate_datasets(dataset_csv_file_path, dataset_split_sizes,
         dataset = GNNGraphDataset(subset_directory, subset_samples_files,
                                   dataset_basename='graph_dataset',
                                   is_store_dataset=False)
+        # print('len: ', np.shape(dataset.__getitem__(0).x))
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Save GNN-based data set to file
         _ = dataset.save_dataset(is_append_n_sample=True)

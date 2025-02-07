@@ -1,0 +1,47 @@
+Summary: Model training
+-----------------------
+
+"device_type":  cpu
+
+"seed":  None
+
+"model_directory":  /Users/rbarreira/Desktop/Continual_Learning/graphorge/src/graphorge/projects/shell_knock_down/1_graph_from_defects/3_model
+
+"load_model_state":  None
+
+"n_max_epochs":  250
+
+"is_model_in_normalized":  True
+
+"is_model_out_normalized":  True
+
+"batch_size":  16
+
+"is_sampler_shuffle":  False
+
+"loss_nature":  global_features_out
+
+"loss_type":  mse
+
+"loss_kwargs":  None
+
+"opt_algorithm":  adam
+
+"lr_init":  0.001
+
+"lr_scheduler_type":  explr
+
+"lr_scheduler_kwargs":
+  "gamma": 0.9817479430199844
+
+"Number of completed epochs":  40
+
+"Training data set file":  /Users/rbarreira/Desktop/Continual_Learning/graphorge/src/graphorge/projects/shell_knock_down/1_graph_from_defects/1_training_dataset/graph_dataset_n5243.pkl
+
+"Training data set size":  5243
+
+"Best loss: ":  2.96056688e-01 (training epoch 34)
+
+"Total training time":  0:06:45
+
+"Avg. training time per epoch":  0:00:10

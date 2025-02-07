@@ -159,6 +159,7 @@ class GraphData:
         if self._node_features_matrix is not None:
             x = torch.tensor(copy.deepcopy(self._node_features_matrix),
                              dtype=torch.float)
+            # x = torch.randn(10, x.shape[0], x.shape[1]) 
         # Set PyG graph connectivity
         edge_index = None
         if self._edges_indexes is not None:
@@ -202,6 +203,15 @@ class GraphData:
                              dtype=torch.float)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Instantiate PyG homogeneous graph data object
+        # if _is_time_series:
+        #     pyg_graph = torch_geometric.data.Data(
+        #         x=x, edge_index=edge_index, edge_attr=edge_attr, y=y,
+        #         pos=pos, num_nodes=num_nodes,
+        #         edge_targets_matrix=edge_targets_matrix,
+        #         global_features_matrix=global_features_matrix,
+        #         global_targets_matrix=global_targets_matrix)
+        # else:
+        # print(x.shape)
         pyg_graph = torch_geometric.data.Data(
             x=x, edge_index=edge_index, edge_attr=edge_attr, y=y,
             pos=pos, num_nodes=num_nodes,
