@@ -128,11 +128,6 @@ def build_rnn(input_size,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check cells
     if rnn_cell != 'GRU':
-    #     torch.nn.GRU(input_size=, 
-    #                  hidden)
-    # # elif rnn_cell == 'LSTM':
-    # #     torch.nn.LSTM()
-    # else:
         raise RuntimeError(f'({rnn_cell}) is not a recognized RNN cell.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of neurons of each layer
@@ -146,40 +141,11 @@ def build_rnn(input_size,
     n_layer = len(layer_sizes) - 1
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Create multilayer recurrent neural network:
-    class GetRNNOutput(torch.nn.Module):
-        # nn.GRU/RNN/LSTM returns the output and the model's state, i.e., a tuple.
-        # GetRNNOutput class is call implicitly and the output of the RNN previous 
-        # layer is passed as an argument. 
-        # It then returns just the output part, discarding the model's state.
-        def forward(self, x):
-            out, _ = x
-            return out
     # Initialize neural network
-    #rnn = torch.nn.Sequential()
-    # rnn = torch.nn.GRU(input_size=input_size,
-    #                                     hidden_size=output_size,
-    #                                     bias=bias)
-    # Loop over neural network layers
-    #for i in range(n_layer-1):
-        # Set multi-layer RNN cell - indices from (0) to (n_layer-2)
-        # if rnn_cell == 'GRU':
-        #     rnn.add_module("Layer-" + str(i),
-        #                    torch.nn.GRU(input_size=layer_sizes[i],
-        #                                 hidden_size=layer_sizes[i + 1],
-        #                                 bias=bias,
-        #                                 num_layer)
-        #                    )
-        #     rnn.add_module(GetRNNOutput())
     rnn = torch.nn.GRU(input_size=input_size,
                         hidden_size=output_size,
                         bias=bias,
                         num_layers=n_layer)
-    # # Set output linear layer - index (n-layer-1)
-    # rnn.add_module("Layer-" + str(n_layer-1),
-    #                torch.nn.linear(in_features=layer_sizes[n_layer-1],
-    #                                 out_features=layer_sizes[n_layer],
-    #                                 bias=bias)
-    #                )
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return rnn
 # =============================================================================
