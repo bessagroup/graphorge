@@ -713,22 +713,53 @@ class Processor(torch_geometric.nn.MessagePassing):
             (1, n_features).
         """
         # Check number of nodal, edge and global features
-        if node_features_in is not None and node_features_in.numel() > 0 \
-                and node_features_in.shape[-1] != self._n_node_in:
-            raise RuntimeError(f'Mismatch of number of node features of model '
-                               f'({self._n_node_in}) and nodes input features '
-                               f'matrix ({node_features_in.shape[1]}).')
-        elif edge_features_in is not None \
-                and edge_features_in.shape[-1] != self._n_edge_in:
-            raise RuntimeError(f'Mismatch of number of edge features of model '
-                               f'({self._n_edge_in}) and edges input features '
-                               f'matrix ({edge_features_in.shape[1]}).')
-        elif global_features_in is not None \
-                and global_features_in.shape[-1] != self._n_global_in:
-            raise RuntimeError(f'Mismatch of number of global features of '
-                               f'model ({self._n_global_in}) and global input '
-                               f'features matrix '
-                               f'({global_features_in.shape[1]}).')
+        if self._n_time_node >0 :
+            if node_features_in is not None and node_features_in.numel() > 0 \
+                    and node_features_in.shape[-1] != \
+                        self._n_node_in*self._n_time_node:
+                raise RuntimeError(f'Mismatch of number of node '
+                                f'features of model '
+                                f'({self._n_node_in*self._n_time_node}) '
+                                f'and nodes input features '
+                                f'matrix ({node_features_in.shape[1]}).')
+        else:
+            if node_features_in is not None and node_features_in.numel() > 0 \
+                    and node_features_in.shape[-1] != self._n_node_in:
+                raise RuntimeError(f'Mismatch of number of node '
+                                f'features of model ({self._n_node_in}) '
+                                f'and nodes input features '
+                                f'matrix ({node_features_in.shape[1]}).')
+        if self._n_time_edge >0 :
+            if edge_features_in is not None \
+                    and edge_features_in.shape[-1] != \
+                        self._n_edge_in * self._n_time_edge:
+                raise RuntimeError(f'Mismatch of number of edge '
+                                f'features of model '
+                                f'({self._n_edge_in*self._n_time_edge}) '
+                                f'and edges input features '
+                                f'matrix ({edge_features_in.shape[1]}).')
+        else:
+            if edge_features_in is not None \
+                    and edge_features_in.shape[-1] != self._n_edge_in:
+                raise RuntimeError(f'Mismatch of number of edge features of model '
+                                f'({self._n_edge_in}) and edges input features '
+                                f'matrix ({edge_features_in.shape[1]}).')
+        if self._n_time_global >0 :
+            if global_features_in is not None \
+                    and global_features_in.shape[-1] != \
+                        self._n_global_in*self._n_time_global:
+                raise RuntimeError(f'Mismatch of number of global features of '
+                                f'model '
+                                f'({self._n_global_in*self._n_time_global}) '
+                                f' and global input features matrix '
+                                f'({global_features_in.shape[1]}).')  
+        else:
+            if global_features_in is not None \
+                    and global_features_in.shape[-1] != self._n_global_in:
+                raise RuntimeError(f'Mismatch of number of global features of '
+                                f'model ({self._n_global_in}) and global input '
+                                f'features matrix '
+                                f'({global_features_in.shape[1]}).')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Collect number of nodes to preserve total number of nodes in
         # edge-to-node aggregation when number of node input features is zero

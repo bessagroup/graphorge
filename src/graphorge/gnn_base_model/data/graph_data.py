@@ -159,7 +159,14 @@ class GraphData:
         if self._node_features_matrix is not None:
             x = torch.tensor(copy.deepcopy(self._node_features_matrix),
                              dtype=torch.float)
-            # x = torch.randn(10, x.shape[0], x.shape[1]) 
+            # test time dimension: nodal features
+            #print('x.shape no time dim: ', x.shape)
+            x_new = torch.zeros((20, *x.shape), dtype=torch.float)
+            for i in range(20):
+                x_new[i, :, :] = x * (1 - 0.05 * i)
+            #print('x.shape with time dim: ', x_new.shape) 
+            x = x_new.view(x.shape[0], x.shape[1]*20)
+            #print('x.reshape with time dim: ', x.shape)
         # Set PyG graph connectivity
         edge_index = None
         if self._edges_indexes is not None:
@@ -171,6 +178,11 @@ class GraphData:
         if self._edge_features_matrix is not None:
             edge_attr = torch.tensor(copy.deepcopy(self._edge_features_matrix),
                                      dtype=torch.float)
+            # test time dimension: edge features
+            edge_attr_new = torch.zeros((20, *edge_attr.shape), dtype=torch.float)
+            for i in range(20):
+                edge_attr_new[i, :, :] = x * (1 - 0.05 * i)
+            edge_attr = edge_attr_new.view(edge_attr.shape[0], edge_attr.shape[1]*20)
         # Set PyG node ground-truth labels
         y = None
         if self._node_targets_matrix is not None:

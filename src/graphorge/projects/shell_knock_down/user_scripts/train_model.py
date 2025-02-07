@@ -267,21 +267,31 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
     # Set number of node input and output features
     n_node_in = 5
     n_node_out = 0
-    n_time_node = 1
+    n_time_node = 20
     # Set number of edge input and output features
     n_edge_in = 0
     n_edge_out = 0
-    n_time_edge = 1
+    # Even if we do not have time-dependent edge features, 
+    # setting n_time_edge = n_time_node is necessary to allow for aggregation
+    # of nodal to edge features and vice-versa within the 
+    # GraphInteractionNetwork class, specifically, within the 'message' and
+    # 'update' methods (called by 'propagate'). If this is not the case, 
+    # when the aggregation is performed, we will be concatening tensors with 
+    # and without time dimension, i.e., 
+    # of shape (batch_size, n_node_in*n_time_node) and (batch_size, n_edge_in)
+    # - or vice versa with node and edge swapped.
+    # Then, the .view() reshaping will no longer work.
+    n_time_edge = n_time_node
     # Set number of global input and output features
     n_global_in = 0
     n_global_out = 1
-    n_time_global = 1
+    n_time_global = 0
     # Set number of message-passing steps (number of processor layers)
     n_message_steps = 2
     # Set number of FNN/RNN hidden layers
     enc_n_hidden_layers = 2
-    pro_n_hidden_layers = 2
-    dec_n_hidden_layers = 2
+    pro_n_hidden_layers = 5
+    dec_n_hidden_layers = 3
     # Set hidden layer size
     hidden_layer_size = 128
     # Set (shared) hidden unit activation function
