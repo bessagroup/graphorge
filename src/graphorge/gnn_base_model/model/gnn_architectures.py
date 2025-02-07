@@ -135,8 +135,9 @@ def build_rnn(input_size,
     layer_sizes.append(output_size)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of layers of adaptive weights
-    # n_layer counts all layer from the input to before the output layer
-    n_layer = len(layer_sizes) - 1
+    # n_layer counts all layer from the input up to and including the 
+    # output layer
+    n_layer = len(layer_sizes) # - 1
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Create multilayer recurrent neural network:
     # Initialize neural network
