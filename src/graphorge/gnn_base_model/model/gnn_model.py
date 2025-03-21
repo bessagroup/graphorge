@@ -31,7 +31,7 @@ from utilities.data_scalers import TorchStandardScaler
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
 __credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
@@ -905,22 +905,54 @@ class GNNEPDBaseModel(torch.nn.Module):
             global_features_out = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check consistency with simulator
-        if (node_features_out is not None
-                and node_features_out.shape[-1] != self._n_node_out):
-            raise RuntimeError(f'Input graph ({node_features_out.shape[-1]}) '
-                               f'and simulator ({self._n_node_out}) number of '
-                               f'output node features are not consistent.')
-        if (edge_features_out is not None
-                and edge_features_out.shape[-1] != self._n_edge_out):
-            raise RuntimeError(f'Input graph ({edge_features_out.shape[-1]}) '
-                               f'and simulator ({self._n_edge_out}) number of '
-                               f'output edge features are not consistent.')
-        if (global_features_out is not None
-                and global_features_out.shape[-1] != self._n_global_out):
-            raise RuntimeError(f'Input graph ({global_features_out.shape[-1]}) '
-                               f'and simulator ({self._n_global_out}) number '
-                               f'of output global features are not '
-                               f'consistent.')
+        if self._n_time_node > 0 :
+            if (node_features_out is not None
+                    and node_features_out.shape[-1] != \
+                        self._n_node_out*self._n_time_node):
+                raise RuntimeError(f'Input graph '
+                            f' ({node_features_out.shape[-1]}) '
+                            f'and simulator '
+                            f'({self._n_node_out*self._n_time_node}) '
+                            f'number of output node features are not '
+                            f'consistent.')
+        else:
+            if (node_features_out is not None
+                    and node_features_out.shape[-1] != self._n_node_out):
+                raise RuntimeError(f'Input graph '
+                            f' ({node_features_out.shape[-1]}) '
+                            f'and simulator ({self._n_node_out}) number of '
+                            f'output node features are not consistent.')
+        if self._n_time_edge > 0:
+            if (edge_features_out is not None
+                    and edge_features_out.shape[-1] != \
+                        self._n_edge_out*self._n_time_edge):
+                raise RuntimeError(f'Input graph ({edge_features_out.shape[-1]}) '
+                                f'and simulator '
+                                f'({self._n_edge_out*self._n_time_edge}) '
+                                f'number of output edge features are not '
+                                f'consistent.')
+        else:
+            if (edge_features_out is not None
+                    and edge_features_out.shape[-1] != self._n_edge_out):
+                raise RuntimeError(f'Input graph ({edge_features_out.shape[-1]}) '
+                                f'and simulator ({self._n_edge_out}) number of '
+                                f'output edge features are not consistent.')
+        if self._n_time_global > 0:
+            if (global_features_out is not None
+                    and global_features_out.shape[-1] != \
+                        self._n_global_out*self._n_time_global):
+                raise RuntimeError(f'Input graph ({global_features_out.shape[-1]}) '
+                                f'and simulator '
+                                f'({self._n_global_out*self._n_time_global}) '
+                                f'number of output global features are not '
+                                f'consistent.')
+        else:
+            if (global_features_out is not None
+                    and global_features_out.shape[-1] != self._n_global_out):
+                raise RuntimeError(f'Input graph ({global_features_out.shape[-1]}) '
+                                f'and simulator ({self._n_global_out}) number '
+                                f'of output global features are not '
+                                f'consistent.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
         # Normalize output features data
         if is_normalized:                
@@ -1852,16 +1884,8 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
             raise RuntimeError('Unknown features type.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Process sample to fit data scaler
+        
         if isinstance(features_tensor, torch.Tensor):
-            # Check number of features
-            # if n_time > 0:
-            #     if features_tensor.shape[-1] != n_features*n_time:
-            #         raise RuntimeError(f'Mismatch between input graph '
-            #                         f'({features_tensor.shape[-1]}) and '
-            #                         f'model ({n_features}) number of '
-            #                         f'features for features type: '
-            #                         f'{features_type}')
-            # else:
             if features_tensor.shape[-1] != n_features:
                 raise RuntimeError(f'Mismatch between input graph '
                                 f'({features_tensor.shape[-1]}) and '

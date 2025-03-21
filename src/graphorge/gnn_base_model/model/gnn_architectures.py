@@ -23,7 +23,7 @@ import torch_geometric.nn
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
 __credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
@@ -97,8 +97,6 @@ def build_rnn(input_size,
               output_size,
               num_layers,
               rnn_cell='GRU',
-              # output_activation=torch.nn.Identity(),
-              #hidden_layer_sizes=[],
               bias=True):
     """Build stacked recurrent neural network.
 
@@ -128,27 +126,21 @@ def build_rnn(input_size,
     # Check cells
     if rnn_cell != 'GRU':
         raise RuntimeError(f'({rnn_cell}) is not a recognized RNN cell.')
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set number of neurons of each layer
-    # layer_sizes = []
-    # layer_sizes.append(input_size)
-    # # layer_sizes += hidden_layer_sizes
-    # layer_sizes.append(output_size)
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Set number of layers of adaptive weights
-    # n_layer counts all layer from the input up to and including the 
-    # output layer
-    # n_layer = len(layer_sizes) # - 1
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Create multilayer recurrent neural network:
-    # Initialize neural network
     rnn = torch.nn.GRU(input_size=input_size,
                         hidden_size=output_size,
                         bias=bias,
                         num_layers=num_layers)
-    # print('inside RNN: num_layers=', num_layers)
+    # include linear layer (hidden_size -> output_size)
+    # create wrapper class from BF code
+    #then nn.Sequential(GRU,
+    #                   class_wrapper, 
+    #                   linear_layer(hidden_size, output_size))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return rnn
+# =============================================================================
+#class TorchRNNWrapper(nn.Module):
+
 # =============================================================================
 def build_identity():
     """Build identity neural network.
@@ -310,10 +302,22 @@ class GraphIndependentNetwork(torch.nn.Module):
         self._n_global_out = int(n_global_out)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set input with time dimension
-        if n_time_node != n_time_edge:
+        if n_time_node != 0 and n_time_edge !=0 and n_time_node != n_time_edge:
             raise RuntimeError(f'Number of time steps must match across '
-                                f' nodal and edge features. Instead, got '
+                                f'nodal and edge features. Instead, got '
                                 f'n_time_node=({n_time_node}) and '
+                                f'n_time_edge=({n_time_edge})')
+        if n_time_node != 0 and n_time_global !=0 and \
+                n_time_node != n_time_global:
+            raise RuntimeError(f'Number of time steps must match across '
+                                f'nodal and global features. Instead, got '
+                                f'n_time_global=({n_time_global}) and '
+                                f'n_time_node=({n_time_node})')
+        if n_time_edge != 0 and n_time_global !=0 and \
+                n_time_edge != n_time_global:
+            raise RuntimeError(f'Number of time steps must match across '
+                                f'edge and global features. Instead, got '
+                                f'n_time_global=({n_time_global}) and '
                                 f'n_time_edge=({n_time_edge})')
         self._n_time_node = int(n_time_node)
         self._n_time_edge = int(n_time_edge)
@@ -544,10 +548,10 @@ class GraphIndependentNetwork(torch.nn.Module):
         # Forward propagation: Node update function
         node_features_out = None
         if self._node_fn is not None:
-            # If we have time series data, reshape to a 3d tensor:
-            # (n_time_node, batch_size, n_node_in)
             if self._n_time_node > 0:
                 batch_size_node = node_features_in.shape[0]
+                # If we have time series data, reshape to a 3d tensor:
+                # (n_time_node, batch_size, n_node_in)
                 node_features_in = node_features_in.view(
                             self._n_time_node, 
                             batch_size_node, 
@@ -766,10 +770,22 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         self._n_global_out = int(n_global_out)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set input with time dimension
-        if n_time_node != n_time_edge:
+        if n_time_node != 0 and n_time_edge !=0 and n_time_node != n_time_edge:
             raise RuntimeError(f'Number of time steps must match across '
-                                f' nodal and edge features. Instead, got '
+                                f'nodal and edge features. Instead, got '
                                 f'n_time_node=({n_time_node}) and '
+                                f'n_time_edge=({n_time_edge})')
+        if n_time_node != 0 and n_time_global !=0 and \
+                n_time_node != n_time_global:
+            raise RuntimeError(f'Number of time steps must match across '
+                                f'nodal and global features. Instead, got '
+                                f'n_time_global=({n_time_global}) and '
+                                f'n_time_node=({n_time_node})')
+        if n_time_edge != 0 and n_time_global !=0 and \
+                n_time_edge != n_time_global:
+            raise RuntimeError(f'Number of time steps must match across '
+                                f'edge and global features. Instead, got '
+                                f'n_time_global=({n_time_global}) and '
                                 f'n_time_edge=({n_time_edge})')
         self._n_time_node = int(n_time_node)
         self._n_time_edge = int(n_time_edge)
@@ -795,25 +811,34 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         # network with layer normalization:
         # Set node update function
         self._node_fn = torch.nn.Sequential()
-        if self._n_time_node>0:
+        if self._n_time_node > 0:
+            # Build recurrent neural network
             rnn = build_rnn(input_size=self._n_node_in+self._n_edge_out,
-                                output_size=self._n_node_out,
-                                rnn_cell='GRU',
-                                num_layers=n_hidden_layers,
-                                #hidden_layer_sizes=n_hidden_layers * \
-                                #    [hidden_layer_size, ],
-                                bias=True)
+                            output_size=self._n_node_out,
+                            rnn_cell='GRU',
+                            num_layers=n_hidden_layers,
+                            bias=True)
             self._node_fn.add_module('RNN', rnn)
         else:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                    input_size=self._n_node_in+self._n_edge_out,
-                    output_size=self._n_node_out,
-                    output_activation=node_output_activation,
-                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                    hidden_activation=node_hidden_activation)
-            # Set node update function
-            self._node_fn.add_module('FNN', fnn)
+                if self._n_time_edge > 0:
+                    # Build recurrent neural network
+                    rnn = build_rnn(input_size=self._n_node_in+
+                                            self._n_edge_out,
+                                    output_size=self._n_node_out,
+                                    rnn_cell='GRU',
+                                    num_layers=n_hidden_layers,
+                                    bias=True)
+                    self._node_fn.add_module('RNN', rnn)
+                else:
+                    # Build multilayer feed-forward neural network
+                    fnn = build_fnn(
+                            input_size=self._n_node_in+self._n_edge_out,
+                            output_size=self._n_node_out,
+                            output_activation=node_output_activation,
+                            hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                            hidden_activation=node_hidden_activation)
+                    # Set node update function
+                    self._node_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to node update function
         if is_norm_layer:
@@ -821,30 +846,38 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 num_features=self._n_node_out, affine=True)
             self._node_fn.add_module('Norm-Layer', norm_layer)        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set edge update function as multilayer feed-forward neural network
-        # with layer normalization:
+        # Set edge update function as multilayer feed-forward or recurrent
+        # neural network with layer normalization:
         # Set edge update function
         self._edge_fn = torch.nn.Sequential()
-        if self._n_time_edge>0:
+        if self._n_time_edge > 0:
+            # Build recurrent neural network
             rnn = build_rnn(input_size=self._n_edge_in+
                                     2*self._n_node_in,
                                 output_size=self._n_edge_out,
                                 rnn_cell='GRU',
                                 num_layers=n_hidden_layers,
-                                #hidden_layer_sizes=n_hidden_layers * \
-                                #    [hidden_layer_size, ],
                                 bias=True)
             self._edge_fn.add_module('RNN', rnn)
         else:
-            # Build multilayer feed-forward neural network
-            fnn = build_fnn(
-                    input_size=self._n_edge_in+2*self._n_node_in,
-                    output_size=self._n_edge_out,
-                    output_activation=edge_output_activation,
-                    hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
-                    hidden_activation=edge_hidden_activation)
-            # Set edge update function
-            self._edge_fn.add_module('FNN', fnn)
+            if self._n_time_node > 0:
+                rnn = build_rnn(input_size=self._n_edge_in+
+                                    2*self._n_node_in,
+                                output_size=self._n_edge_out,
+                                rnn_cell='GRU',
+                                num_layers=n_hidden_layers,
+                                bias=True)
+                self._edge_fn.add_module('RNN', rnn)
+            else:
+                # Build multilayer feed-forward neural network
+                fnn = build_fnn(
+                        input_size=self._n_edge_in+2*self._n_node_in,
+                        output_size=self._n_edge_out,
+                        output_activation=edge_output_activation,
+                        hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
+                        hidden_activation=edge_hidden_activation)
+                # Set edge update function
+                self._edge_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to edge update function
         if is_norm_layer:
@@ -857,38 +890,26 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         if self._n_global_out > 0:
             # Set global update function
             self._global_fn = torch.nn.Sequential()
-            if self._n_time_global>0:
+
+            if self._n_time_global > 0:
                 # Build stacked recurrent neural network
-                if self._n_time_node > 0:
-                    rnn = build_rnn(input_size=self._n_global_in + 
-                                        self._n_node_out*self._n_time_node,
+                # if self._n_time_node > 0:
+                rnn = build_rnn(input_size=self._n_global_in + 
+                                    self._n_node_out,
                                     output_size=self._n_global_out,
                                     rnn_cell='GRU',
                                     num_layers=n_hidden_layers,
-                                    #hidden_layer_sizes=n_hidden_layers * \
-                                    #    [hidden_layer_size, ],
                                     bias=True)
-                else:
+                self._global_fn.add_module('RNN', rnn)
+            else:
+                if self._n_time_node > 0:
                     rnn = build_rnn(input_size=self._n_global_in + 
                                         self._n_node_out,
                                     output_size=self._n_global_out,
                                     rnn_cell='GRU',
                                     num_layers=n_hidden_layers,
-                                    #hidden_layer_sizes=n_hidden_layers * \
-                                    #    [hidden_layer_size, ],
                                     bias=True)
-                self._global_fn.add_module('RNN', rnn)
-            else:
-                # Build multilayer feed-forward neural network
-                if self._n_time_node>0:
-                    fnn = build_fnn(
-                        input_size=self._n_global_in+
-                                self._n_node_out*self._n_time_node,
-                        output_size=self._n_global_out,
-                        output_activation=global_output_activation,
-                        hidden_layer_sizes=n_hidden_layers*\
-                            [hidden_layer_size,],
-                        hidden_activation=global_hidden_activation)
+                    self._global_fn.add_module('RNN', rnn)
                 else:
                     fnn = build_fnn(
                         input_size=self._n_global_in+self._n_node_out,
@@ -896,7 +917,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                         output_activation=global_output_activation,
                         hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
                         hidden_activation=global_hidden_activation)
-                self._global_fn.add_module('FNN', fnn)
+                    self._global_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-element) to global update function
             if is_norm_layer:
@@ -1112,15 +1133,25 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Concatenate available input features for each edge
         if is_node_features_in and is_edge_features_in:
+            if self._n_time_node > 0 and self._n_time_edge == 0:
+                edge_features_in = edge_features_in.repeat(1, 
+                                                           self._n_time_node)
+            elif self._n_time_edge > 0 and self._n_time_node == 0:
+                node_features_in_i = node_features_in_i.repeat(1,
+                                                           self._n_time_node)
+                node_features_in_j = node_features_in_j.repeat(1,
+                                                           self._n_time_node)
             # Concatenate nodes and edges input features
             edge_features_in_cat = \
                 torch.cat([node_features_in_i, node_features_in_j,
-                           edge_features_in], dim=-1)
+                        edge_features_in], dim=-1)
         elif is_node_features_in and not is_edge_features_in:
+            # If not is_edge_features_in: self._n_time_edge > 0 makes no sense
             # Concatenate nodes input features
             edge_features_in_cat = \
                 torch.cat([node_features_in_i, node_features_in_j], dim=-1)
         elif is_edge_features_in:
+            # If not is_node_features_in: self._n_time_node > 0 makes no sense
             # Concatenate edges input features
             edge_features_in_cat = edge_features_in
         else:
@@ -1131,7 +1162,9 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         # Update edge features
         # If we have time series data, reshape to a 3d tensor:
         # (n_time_edge, batch_size, n_edge_in)
-        if self._n_time_edge > 0:
+        # If edges feature time series data, then it must be of the same size
+        # as the time series data at the nodes
+        if self._n_time_edge > 0: # and self._n_time_edge == self._n_time_node: 
             batch_size_edge = edge_features_in_cat.shape[0]
             edge_features_in_cat = edge_features_in_cat.view(
                                                             self._n_time_edge,
@@ -1143,8 +1176,20 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             # (batch_size, n_edge_in * n_time_edge)
             edge_features_out = edge_features_out.view(batch_size_edge, -1)
         else:
-            # Compute global update
-            edge_features_out = self._edge_fn(edge_features_in_cat)
+            if self._n_time_node > 0:
+                batch_size_edge = edge_features_in_cat.shape[0]
+                edge_features_in_cat = edge_features_in_cat.view(
+                                                            self._n_time_node,
+                                                            batch_size_edge,
+                                                            -1)
+                # Compute global update
+                edge_features_out, _ = self._edge_fn(edge_features_in_cat)
+                # If we have time series data, reshape back to 2d tensor:
+                # (batch_size, n_edge_in * n_time_edge)
+                edge_features_out = edge_features_out.view(batch_size_edge, -1)
+            else:
+                # Compute global update
+                edge_features_out = self._edge_fn(edge_features_in_cat)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Store updated edges features
         self._edge_features_out = edge_features_out
@@ -1179,6 +1224,13 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         """        
         # Concatenate features for each node:
         # Set node features stemming from edge-to-node aggregation
+        # It is not necessary to extend node_features_in_aggr along the last
+        # dimension, as this was already done in the message() function, when 
+        # aggregating edge-to-nodal features. 
+        # Only node_features_in needs to be extended, for the case 
+        # self._n_time_edge > 0 and self._n_time_node == 0, as 
+        # node_features_in_aggr will already be extended to include a time 
+        # dimension
         node_features_in_cat = node_features_in_aggr
         # Concatenate available node input features
         if node_features_in is not None:
@@ -1190,13 +1242,16 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                                    f'and nodes features input matrix '
                                    f'({node_features_in.shape[0]}).')
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            if self._n_time_edge > 0 and self._n_time_node == 0:
+                node_features_in = node_features_in.repeat(1,
+                                                           self._n_time_edge)
             node_features_in_cat = \
                 torch.cat([node_features_in_cat, node_features_in], dim=-1)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Update node features
-        # If we have time series data, reshape to a 3d tensor:
-        # (n_time_node, batch_size, n_node_in)
         if self._n_time_node > 0:
+            # If we have time series data, reshape to a 3d tensor:
+            # (n_time_node, batch_size, n_node_in)
             batch_size_node = node_features_in_cat.shape[0]
             node_features_in_cat = node_features_in_cat.view(
                                                             self._n_time_node,
@@ -1208,8 +1263,22 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             # (batch_size, n_node_in * n_time_node)
             node_features_out = node_features_out.view(batch_size_node, -1)
         else:
-            # Compute global update
-            node_features_out = self._node_fn(node_features_in_cat)
+            if self._n_time_edge > 0:
+                # If we have time series data, reshape to a 3d tensor:
+                # (n_time_edge, batch_size, n_node_in)
+                batch_size_node = node_features_in_cat.shape[0]
+                node_features_in_cat = node_features_in_cat.view(
+                                                        self._n_time_edge,
+                                                        batch_size_node,
+                                                        -1)
+                # Compute global update
+                node_features_out, _ = self._node_fn(node_features_in_cat)
+                # If we have time series data, reshape back to 2d tensor:
+                # (batch_size, n_node_in * n_time_node)
+                node_features_out = node_features_out.view(batch_size_node, -1)
+            else:
+                # Compute global update
+                node_features_out = self._node_fn(node_features_in_cat)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return node_features_out
     # -------------------------------------------------------------------------
@@ -1222,6 +1291,9 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         node_features_out : torch.Tensor
             Nodes features output matrix stored as a torch.Tensor(2d) of shape
             (n_nodes, n_features).
+            If self._n_time_node > 0 or self._n_time_edge > 0, then 
+            node_features_out has shape 
+            (n_nodes, n_features*self._n_time_node/edge).
         global_features_in : torch.Tensor, default=None
             Global features input matrix stored as a torch.Tensor(2d) of shape
             (1, n_features).
@@ -1252,8 +1324,17 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         global_features_in_cat = node_features_in_aggr
         # Concatenate available global input features
         if global_features_in is not None:
+            if (self._n_time_node > 0 or self._n_time_edge > 0) \
+                        and self._n_time_global == 0:
+                # If self._n_time_node > 0 or self._n_time_edge > 0, then
+                # it is checked upon initialization that 
+                # self._n_time_node == self._n_time_edge 
+                # Further, if self._n_time_global == 0, then global features must be 
+                # extended with a time dimension
+                global_features_in = global_features_in.repeat(1,
+                                                           self._n_time_node)
             global_features_in_cat = \
-                torch.cat([global_features_in_cat, global_features_in], dim=-1)
+                    torch.cat([global_features_in_cat, global_features_in], dim=-1)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Update global features:
         # If we have time series data, reshape to a 3d tensor:
@@ -1271,8 +1352,21 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             global_features_out = global_features_out.view(
                                             batch_size_global, -1)
         else:
-            # Compute global update
-            global_features_out = self._global_fn(global_features_in_cat)
+            if self._n_time_node > 0:
+                batch_size_global = global_features_in_cat.shape[0]
+                global_features_in_cat = global_features_in_cat.view(
+                                                        self._n_time_node,
+                                                        batch_size_global,
+                                                        -1)
+                # Compute global update
+                global_features_out, _ = self._global_fn(global_features_in_cat)
+                # If we have time series data, reshape back to 2d tensor:
+                # (batch_size, n_global_in * n_time_node)
+                global_features_out = global_features_out.view(
+                                                batch_size_global, -1)
+            else:
+                # Compute global update
+                global_features_out = self._global_fn(global_features_in_cat)
         
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return global_features_out

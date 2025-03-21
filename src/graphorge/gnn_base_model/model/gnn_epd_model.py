@@ -23,7 +23,7 @@ from gnn_base_model.model.gnn_architectures import build_fnn, \
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
 __credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
@@ -344,13 +344,62 @@ class EncodeProcessDecode(torch.nn.Module):
                           is_global_res_connect=is_global_res_connect)
         else:
             self._processor = None
+        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # # If nodes do not encode time series data, but edges do,
+        # # then, after the processor: 
+        # # node_features.shape=(batch_size, hidden_layer_size*n_time_edge)
+        # if n_time_node == 0 and n_time_edge != 0:
+        #     dec_n_node_in = hidden_layer_size*n_time_edge
+        # # If nodes do not encode time series data, but global features do,
+        # # then, after the processor: 
+        # # node_features.shape=(batch_size, hidden_layer_size*n_time_global)
+        # elif n_time_node == 0 and n_time_global != 0:
+        #     dec_n_node_in = hidden_layer_size*n_time_global
+        # else:
+        #     dec_n_node_in = hidden_layer_size
+        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # # If global features do not encode time series data, but nodes do,
+        # # then, after the processor: 
+        # # global_features.shape=(batch_size, hidden_layer_size*n_time_node)
+        # if n_time_global == 0 and n_time_node != 0:
+        #     dec_n_global_in = hidden_layer_size*n_time_node
+        # # If global features do not encode time series data, but edges do,
+        # # then, after the processor: 
+        # # global_features.shape=(batch_size, hidden_layer_size*n_time_edge)
+        # elif n_time_global == 0 and n_time_edge != 0:
+        #     dec_n_global_in = hidden_layer_size*n_time_edge
+        # else:
+        #     dec_n_global_in = hidden_layer_size
+        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # # If edges do not encode time series data, but nodes do,
+        # # then, after the processor: 
+        # # edge_features.shape=(batch_size, hidden_layer_size*n_time_nodes)
+        # if n_time_edge == 0 and n_time_node != 0:
+        #     dec_n_edge_in = hidden_layer_size*n_time_node
+        # # If edges do not encode time series data, but global features do,
+        # # then, after the processor: 
+        # # edge_features.shape=(batch_size, hidden_layer_size*n_time_global)
+        # elif n_time_edge == 0 and n_time_global != 0:
+        #     dec_n_edge_in = hidden_layer_size*n_time_global
+        # else:
+        #     dec_n_edge_in = hidden_layer_size
+        if n_time_edge > 0:
+            n_time_node = n_time_edge
+            n_time_global = n_time_edge
+        elif n_time_node > 0:
+            n_time_edge = n_time_node
+            n_time_global = n_time_node
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set model decoder
         self._decoder = \
             Decoder(n_hidden_layers=dec_n_hidden_layers,
                     hidden_layer_size=hidden_layer_size,
-                    n_node_in=hidden_layer_size, n_node_out=n_node_out,
-                    n_edge_in=hidden_layer_size, n_edge_out=n_edge_out,
-                    n_global_in=hidden_layer_size, n_global_out=n_global_out,
+                    n_node_in=hidden_layer_size,
+                    n_edge_in=hidden_layer_size, 
+                    n_global_in=hidden_layer_size, 
+                    n_node_out=n_node_out,
+                    n_edge_out=n_edge_out,
+                    n_global_out=n_global_out,
                     node_hidden_activation=dec_node_hidden_activation,
                     node_output_activation=dec_node_output_activation,
                     edge_hidden_activation=dec_edge_hidden_activation,
@@ -360,7 +409,8 @@ class EncodeProcessDecode(torch.nn.Module):
                     n_time_node=n_time_node,
                     n_time_edge=n_time_edge,
                     n_time_global=n_time_global,
-                    is_norm_layer=is_dec_norm_layer, is_skip_unset_update=True)
+                    is_norm_layer=is_dec_norm_layer,
+                    is_skip_unset_update=True)
     # -------------------------------------------------------------------------
     def forward(self, edges_indexes, node_features_in=None,
                 edge_features_in=None, global_features_in=None,
@@ -424,7 +474,6 @@ class EncodeProcessDecode(torch.nn.Module):
                                 edge_features_in=edge_features,
                                 global_features_in=global_features,
                                 batch_vector=batch_vector)
-        # Perform decoding
         node_features_out, edge_features_out, global_features_out = \
             self._decoder(node_features_in=node_features,
                           edge_features_in=edge_features,
@@ -446,8 +495,8 @@ class Encoder(GraphIndependentNetwork):
     
     Encodes input state graph data into latent graph by means of a Graph
     Independent Network. Node, edge and global features update functions are
-    implemented as multilayer feed-forward neural networks and are independent
-    (no aggregation).
+    implemented as multilayer feed-forward or recurrent neural networks and are
+    independent (no aggregation).
     """
     pass
 # =============================================================================
@@ -459,7 +508,7 @@ class Processor(torch_geometric.nn.MessagePassing):
     the graph neural network. All message-passing steps are performed by means
     of an identical Graph Interaction Network (unshared parameters), where
     node, edge and global features update functions are implemented as
-    multilayer feed-forward neural networks.
+    multilayer feed-forward or recurrent neural networks.
     
     Residual connections are adopted between the input and output latent
     features of both nodes and edges at each message-passing step.
