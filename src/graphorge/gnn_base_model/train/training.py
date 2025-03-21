@@ -304,7 +304,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         print(f'\n> Output data normalization: {output_normalization_str}')
         print('\n\n> Starting training process...\n')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # print(dataset.__getitem__(0).x.shape)
     # Loop over training iterations
     while is_keep_training:
         # Store epoch initial training step
