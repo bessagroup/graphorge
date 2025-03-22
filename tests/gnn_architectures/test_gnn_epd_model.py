@@ -22,22 +22,38 @@ __status__ = 'Planning'
 @pytest.mark.parametrize('n_message_steps, n_node_in, n_node_out, n_edge_in,'
                          'n_edge_out, n_global_in, n_global_out,'
                          'n_hidden_layers, hidden_layer_size,'
+                         'n_time_node, n_time_edge, n_time_global,'
                          'is_node_res_connect, is_edge_res_connect,'
                          'is_global_res_connect',
-                         [(1, 1, 5, 2, 3, 0, 0, 2, 4, False, False, False),
-                          (1, 3, 3, 1, 4, 2, 3, 1, 2, True, False, False),
-                          (1, 1, 5, 4, 4, 0, 0, 2, 4, False, True, False),
-                          (1, 5, 5, 4, 4, 1, 1, 2, 4, True, True, True),
-                          (2, 3, 3, 4, 4, 0, 0, 1, 2, False, False, False),
-                          (2, 3, 3, 4, 4, 0, 2, 1, 2, True, True, False),
-                          (2, 0, 3, 4, 4, 0, 0, 1, 2, False, True, False),
-                          (2, 0, 3, 4, 4, 1, 1, 1, 2, False, False, True),
-                          (2, 3, 3, 0, 4, 0, 0, 1, 2, True, False, False),
-                          (2, 3, 3, 0, 4, 0, 0, 1, 2, False, False, False),
-                          ])
+                    [(1, 1, 5, 2, 3, 0, 0, 2, 4, 0, 0, 0, False, False, False),
+                    (1, 3, 3, 1, 4, 2, 3, 1, 2, 2, 2, 2, True, False, False),
+                    (1, 1, 5, 4, 4, 0, 0, 2, 4, 1, 0, 0, False, True, False),
+                    (1, 5, 5, 4, 4, 1, 1, 2, 4, 0, 1, 0, True, True, True),
+                    (2, 3, 3, 4, 4, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+                    (2, 3, 3, 4, 4, 0, 2, 1, 2, 2, 2, 2, True, True, False),
+                    (2, 0, 3, 4, 4, 0, 0, 1, 2, 0, 0, 0, False, True, False),
+                    (2, 0, 3, 4, 4, 1, 1, 1, 2, 0, 5, 5, False, False, True),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 1, 1, 1, True, False, False),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 2, 0, 2, False, False, False),
+                    (2, 5, 5, 0, 2, 0, 0, 1, 2, 5, 5, 0, False, False, False),
+                    (2, 0, 2, 5, 5, 0, 0, 1, 2, 5, 5, 0, False, False, False),
+                    (2, 2, 2, 4, 4, 5, 5, 1, 2, 0, 0, 5, False, False, False),
+                    (2, 5, 5, 6, 6, 0, 0, 1, 2, 2, 2, 0, False, False, False),
+                    (2, 5, 5, 7, 7, 0, 0, 1, 2, 2, 2, 0, False, False, False),
+                    (2, 5, 5, 7, 7, 0, 6, 1, 2, 2, 2, 0, False, False, False),
+                    (1, 0, 5, 7, 7, 0, 0, 1, 2, 0, 2, 0, False, False, False),
+                    (2, 5, 5, 4, 4, 1, 1, 1, 2, 5, 5, 5, False, False, True),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 2, 0, 0, False, False, False),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 0, 2, 0, False, False, False),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 2, 2, 0, False, False, False),
+                    (2, 0, 3, 4, 4, 1, 1, 1, 2, 0, 5, 5, False, False, True),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 1, 1, 1, True, False, False),
+                    (2, 3, 3, 0, 4, 0, 0, 1, 2, 2, 0, 2, False, False, False),
+                    ])
 def test_processor_init(n_message_steps, n_node_in, n_node_out, n_edge_in,
                         n_edge_out, n_global_in, n_global_out, n_hidden_layers,
-                        hidden_layer_size, is_node_res_connect,
+                        hidden_layer_size, n_time_node, n_time_edge, 
+                        n_time_global, is_node_res_connect,
                         is_edge_res_connect, is_global_res_connect):
     """Test GNN-based processor constructor."""
     # Initialize errors
@@ -46,6 +62,8 @@ def test_processor_init(n_message_steps, n_node_in, n_node_out, n_edge_in,
     # Build GNN-based processor
     model = Processor(n_message_steps=n_message_steps,
                       n_node_out=n_node_out, n_edge_out=n_edge_out,
+                      n_time_node=n_time_node, n_time_edge=n_time_edge,
+                      n_time_global=n_time_global,
                       n_hidden_layers=n_hidden_layers,
                       hidden_layer_size=hidden_layer_size,
                       n_node_in=n_node_in, n_edge_in=n_edge_in,
@@ -69,28 +87,38 @@ def test_processor_init(n_message_steps, n_node_in, n_node_out, n_edge_in,
 @pytest.mark.parametrize('n_message_steps, n_node_in, n_node_out, n_edge_in,'
                          'n_edge_out, n_global_in, n_global_out,'
                          'n_hidden_layers, hidden_layer_size,'
+                         'n_time_node, n_time_edge, n_time_global,'
                          'is_node_res_connect, is_edge_res_connect,'
                          'is_global_res_connect',
-                         [(0, 1, 5, 2, 3, 0, 0, 2, 4, False, False, False),
-                          (1, 4, 3, 1, 4, 0, 0, 1, 2, True, False, False),
-                          (1, 1, 5, 4, 2, 0, 0, 2, 4, False, True, False),
-                          (1, 2, 5, 4, 3, 0, 0, 2, 4, True, True, False),
-                          (2, 3, 3, 4, 2, 0, 0, 1, 2, False, False, False),
-                          (2, 3, 1, 4, 4, 0, 0, 1, 2, False, False, False),
-                          (2, 3, 3, 3, 4, 0, 0, 1, 2, False, False, False),
-                          (2, 0, 3, 0, 4, 0, 0, 1, 2, False, False, False),
-                          (2, 0, 3, 4, 4, 1, 2, 1, 2, False, False, True),
-                          ])
+                    [(0, 1, 5, 2, 3, 0, 0, 2, 4, 0, 0, 0, False, False, False),
+                    (1, 4, 3, 1, 4, 0, 0, 1, 2, 0, 0, 0, True, False, False),
+                    (1, 1, 5, 4, 2, 0, 0, 2, 4, 0, 0, 0, False, True, False),
+                    (1, 2, 5, 4, 3, 0, 0, 2, 4, 0, 0, 0, True, True, False),
+                    (2, 3, 3, 4, 2, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+                    (2, 3, 1, 4, 4, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+                    (2, 3, 3, 3, 4, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+                    (2, 0, 3, 0, 4, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+                    (2, 0, 3, 4, 4, 1, 2, 1, 2, 0, 0, 0, False, False, True),
+                    (1, 3, 3, 1, 2, 2, 3, 1, 2, 2, 1, 0, False, False, False),
+                    (1, 3, 3, 1, 4, 2, 3, 1 , 2, 2, 0, 1, True, False, False),
+                    (1, 3, 3, 1, 4, 2, 3, 1, 2, 1, 0, 2, True, False, False),
+                    (1, 3, 3, 1, 2, 2, 3, 1, 2, 2, 1, 0, False, False, False),
+                    (1, 3, 3, 1, 4, 2, 3, 1, 2, 2, 0, 1, True, False, False),
+                    (1, 3, 3, 1, 4, 2, 3, 1, 2, 1, 0, 2, True, False, False),
+                    ])
 def test_processor_init_invalid(n_message_steps, n_node_in, n_node_out,
                                 n_edge_in, n_edge_out, n_global_in,
                                 n_global_out, n_hidden_layers,
-                                hidden_layer_size, is_node_res_connect,
+                                hidden_layer_size, n_time_node, n_time_edge, 
+                                n_time_global, is_node_res_connect,
                                 is_edge_res_connect, is_global_res_connect):
     """Test detection of invalid input to GNN-based processor constructor."""
     with pytest.raises(RuntimeError):
         # Build GNN-based processor
         _ = Processor(n_message_steps=n_message_steps, 
                       n_node_out=n_node_out, n_edge_out=n_edge_out,
+                      n_time_node=n_time_node, n_time_edge=n_time_edge,
+                      n_time_global=n_time_global,
                       n_hidden_layers=n_hidden_layers,
                       hidden_layer_size=hidden_layer_size,
                       n_node_in=n_node_in, n_edge_in=n_edge_in,
@@ -102,23 +130,36 @@ def test_processor_init_invalid(n_message_steps, n_node_in, n_node_out,
 @pytest.mark.parametrize(
     'n_message_steps, n_nodes, n_node_in, n_node_out, n_edges, n_edge_in,'
     'n_edge_out, n_global_in, n_global_out, n_hidden_layers,'
-    'hidden_layer_size, is_node_res_connect, is_edge_res_connect,'
+    'hidden_layer_size, n_time_node, n_time_edge, n_time_global,'
+    'is_node_res_connect, is_edge_res_connect,'
     'is_global_res_connect',
-    [(1, 10, 1, 5, 20, 2, 3, 0, 0, 2, 4, False, False, False),
-     (1, 10, 3, 3, 20, 1, 4, 5, 2, 1, 2, True, False, False),
-     (1, 10, 1, 5, 20, 4, 4, 0, 0, 2, 4, False, True, False),
-     (1, 10, 5, 5, 20, 4, 4, 3, 3, 2, 4, True, True, True),
-     (2, 10, 3, 3, 20, 4, 4, 0, 0, 1, 2, False, False, False),
-     (2, 10, 3, 3, 20, 4, 4, 0, 0, 1, 2, True, True, False),
-     (2, 10, 0, 3, 20, 4, 4, 0, 0, 1, 2, False, True, False),
-     (2, 10, 3, 3, 20, 0, 4, 1, 1, 1, 2, True, False, True),
-     (1, 10, 0, 5, 20, 4, 4, 0, 0, 2, 4, False, True, False),
-     (1, 10, 3, 3, 20, 0, 4, 0, 0, 1, 2, True, False, False),
-     (1, 10, 3, 3, 20, 0, 4, 2, 2, 1, 2, True, False, True),
+    [(1, 10, 1, 5, 20, 2, 3, 0, 0, 2, 4, 0, 0, 0, False, False, False),
+     (1, 10, 3, 3, 20, 1, 4, 5, 2, 1, 2, 0, 0, 0, True, False, False),
+     (1, 10, 1, 5, 20, 4, 4, 0, 0, 2, 4, 0, 0, 0, False, True, False),
+     (1, 10, 5, 5, 20, 4, 4, 3, 3, 2, 4, 0, 0, 0, True, True, True),
+     (2, 10, 3, 3, 20, 4, 4, 0, 0, 1, 2, 0, 0, 0, False, False, False),
+     (2, 10, 3, 3, 20, 4, 4, 0, 0, 1, 2, 0, 0, 0, True, True, False),
+     (2, 10, 0, 3, 20, 4, 4, 0, 0, 1, 2, 0, 0, 0, False, True, False),
+     (2, 10, 3, 3, 20, 0, 4, 1, 1, 1, 2, 0, 0, 0, True, False, True),
+     (1, 10, 0, 5, 20, 4, 4, 0, 0, 2, 4, 0, 0, 0, False, True, False),
+     (1, 10, 3, 3, 20, 0, 4, 0, 0, 1, 2, 0, 0, 0, True, False, False),
+     (1, 10, 3, 3, 20, 0, 4, 2, 2, 1, 2, 0, 0, 0, True, False, True),
+     # n_time_node = n_time_edge = n_time_global
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 2, 2, 2, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
+     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
+     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
+     (1, 10, 5, 3, 5, 0, 5, 2, 2, 1, 2, 11, 11, 11, False, False, False),
+     (1, 10, 3, 3, 20, 10, 4, 0, 2, 1, 2, 2, 2, 2, False, False, False),
+     (1, 10, 3, 3, 20, 0, 5, 2, 2, 1, 2, 2, 2, 2, False, False, False),
      ])
 def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
                            n_edges, n_edge_in, n_edge_out, n_global_in,
-                           n_global_out, n_hidden_layers, hidden_layer_size,
+                           n_global_out,  n_hidden_layers, hidden_layer_size,
+                           n_time_node, n_time_edge, n_time_global,
                            is_node_res_connect, is_edge_res_connect,
                            is_global_res_connect):
     """Test GNN-based processor forward propagation."""
@@ -129,6 +170,8 @@ def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
     model = Processor(n_message_steps=n_message_steps, 
                       n_node_out=n_node_out, n_edge_out=n_edge_out,
                       n_hidden_layers=n_hidden_layers,
+                      n_time_node=n_time_node, n_time_edge=n_time_edge,
+                      n_time_global=n_time_global,
                       hidden_layer_size=hidden_layer_size,
                       n_node_in=n_node_in, n_edge_in=n_edge_in,
                       n_global_in=n_global_in, n_global_out=n_global_out,
@@ -139,18 +182,27 @@ def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
     # Generate random nodes features input matrix
     node_features_in = torch.empty(n_nodes, 0)
     if n_node_in > 0:
-        node_features_in = torch.rand(n_nodes, n_node_in)
+        if n_time_node == 0:
+            node_features_in = torch.rand(n_nodes, n_node_in)
+        elif n_time_node != 0:
+            node_features_in = torch.rand(n_nodes, n_node_in*n_time_node)
     # Generate random edges features input matrix
     edge_features_in = None
     if n_edge_in > 0:
-        edge_features_in = torch.rand(n_edges, n_edge_in)
+        if n_time_edge == 0:
+             edge_features_in = torch.rand(n_edges, n_edge_in)
+        elif n_time_edge != 0:
+            edge_features_in = torch.rand(n_edges, n_edge_in*n_time_edge)   
     # Generate random edges indexes
     edges_indexes = torch.randint(low=0, high=n_nodes, size=(2, n_edges),
                                   dtype=torch.long)
     # Generate random global features input matrix
     global_features_in = None
     if n_global_in > 0:
-        global_features_in = torch.rand(1, n_global_in)
+        if n_time_global == 0:
+             global_features_in = torch.rand(1, n_global_in)
+        elif n_time_global != 0:
+            global_features_in = torch.rand(1, n_global_in*n_time_global) 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Forward propagation
     node_features_out, edge_features_out, global_features_out = \
@@ -162,24 +214,43 @@ def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
     # Check node features output matrix 
     if not isinstance(node_features_out, torch.Tensor):
         errors.append('Nodes features output matrix is not torch.Tensor.')
-    elif not torch.equal(torch.tensor(node_features_out.size()),
-                         torch.tensor([n_nodes, n_node_out])):
+    elif n_time_node == 0 and \
+     not torch.equal(torch.tensor(node_features_out.size()),
+                    torch.tensor([n_nodes, n_node_out])):
         errors.append('Nodes features output matrix is not torch.Tensor(2d) '
                       'of shape (n_nodes, n_features).')
+    elif n_time_node != 0 and \
+     not torch.equal(torch.tensor(node_features_out.size()),
+                    torch.tensor([n_nodes, n_node_out*n_time_node])):
+        errors.append('Nodes features output matrix is not torch.Tensor(2d) '
+                      'of shape (n_nodes, n_features*n_time_node).')
     # Check edge features output matrix
     if not isinstance(edge_features_out, torch.Tensor):
         errors.append('Edges features output matrix is not torch.Tensor.')
-    elif not torch.equal(torch.tensor(edge_features_out.size()),
+    elif n_time_edge == 0 and \
+                    not torch.equal(torch.tensor(edge_features_out.size()),
                          torch.tensor([n_edges, n_edge_out])):
+        errors.append('Edges features output matrix is not torch.Tensor(2d) '
+                      'of shape (n_edges, n_features*n_time_edge).')
+    elif n_time_edge != 0 and \
+                    not torch.equal(torch.tensor(edge_features_out.size()),
+                         torch.tensor([n_edges, n_edge_out*n_time_edge])):
         errors.append('Edges features output matrix is not torch.Tensor(2d) '
                       'of shape (n_edges, n_features).')
     # Check global features output matrix
     if n_global_out > 0:
         if not isinstance(global_features_out, torch.Tensor):
             errors.append('Global features output matrix is not torch.Tensor.')
-        elif not torch.equal(torch.tensor(global_features_out.size()),
+        elif n_time_global == 0 and \
+                    not torch.equal(torch.tensor(global_features_out.size()),
                             torch.tensor([1, n_global_out])):
             errors.append('Global features output matrix is not '
                             'torch.Tensor(2d) of shape (1, n_features).')
+        elif n_time_global != 0 and \
+                    not torch.equal(torch.tensor(global_features_out.size()),
+                            torch.tensor([1, n_global_out*n_time_global])):
+            errors.append('Global features output matrix is not '
+                            'torch.Tensor(2d) of shape '
+                            '(1, n_features*n_time_global).')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     assert not errors, "Errors:\n{}".format("\n".join(errors))
