@@ -130,14 +130,17 @@ def build_rnn(input_size,
     if rnn_cell != 'GRU':
         raise RuntimeError(f'({rnn_cell}) is not a recognized RNN cell.')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if hidden_layer_sizes is None:
+        # This ensures at least one pass through an RNN, before the linear output layer.
+        hidden_layer_sizes = [output_size, ]
     if num_layers is None:
         num_layers = []
         for _ in range(len(hidden_layer_sizes)):
             num_layers.append(1)
-    else:
-        assert len(num_layers) == len(hidden_layer_sizes), f"Expected same \
-            number of 'num_layers' as 'hidden_layer_sizes'. Instead, \
-            got {len(num_layers)} and {len(hidden_layer_sizes)}."
+    elif len(num_layers) != len(hidden_layer_sizes):
+            raise RuntimeError(f"Expected same \
+                    number of 'num_layers' as 'hidden_layer_sizes'. Instead, \
+                    got {len(num_layers)} and {len(hidden_layer_sizes)}.")
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set number of neurons of each layer
     layer_sizes = []
@@ -357,7 +360,8 @@ class GraphIndependentNetwork(torch.nn.Module):
             if self._n_time_node>0:
                 rnn = build_rnn(input_size=self._n_node_in,
                                 output_size=self._n_node_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 rnn_cell='GRU',
                                 bias=True)
                 self._node_fn.add_module('RNN', rnn)
@@ -370,12 +374,12 @@ class GraphIndependentNetwork(torch.nn.Module):
                     hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
                     hidden_activation=node_hidden_activation)
                 self._node_fn.add_module('FNN', fnn)
-                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # Add normalization layer (per-feature) to node update function
-                if is_norm_layer:
-                    norm_layer = torch.nn.BatchNorm1d(
-                        num_features=self._n_node_out, affine=True)
-                    self._node_fn.add_module('Norm-Layer', norm_layer)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Add normalization layer (per-feature) to node update function
+            if is_norm_layer:
+                norm_layer = torch.nn.BatchNorm1d(
+                    num_features=self._n_node_out, affine=True)
+                self._node_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._node_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -387,7 +391,8 @@ class GraphIndependentNetwork(torch.nn.Module):
             if self._n_time_edge>0:
                 rnn = build_rnn(input_size=self._n_edge_in,
                                 output_size=self._n_edge_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 rnn_cell='GRU',
                                 bias=True)
                 self._edge_fn.add_module('RNN', rnn)
@@ -400,12 +405,12 @@ class GraphIndependentNetwork(torch.nn.Module):
                     hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
                     hidden_activation=edge_hidden_activation)
                 self._edge_fn.add_module('FNN', fnn)
-                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # Add normalization layer (per-feature) to edge update function
-                if is_norm_layer:
-                    norm_layer = torch.nn.BatchNorm1d(
-                        num_features=self._n_edge_out, affine=True)
-                    self._edge_fn.add_module('Norm-Layer', norm_layer)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Add normalization layer (per-feature) to edge update function
+            if is_norm_layer:
+                norm_layer = torch.nn.BatchNorm1d(
+                    num_features=self._n_edge_out, affine=True)
+                self._edge_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._edge_fn = None        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -417,7 +422,8 @@ class GraphIndependentNetwork(torch.nn.Module):
             if self._n_time_global>0:
                 rnn = build_rnn(input_size=self._n_global_in,
                                 output_size=self._n_global_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 bias=True)
                 self._global_fn.add_module('RNN', rnn)
             else:
@@ -429,20 +435,20 @@ class GraphIndependentNetwork(torch.nn.Module):
                     hidden_layer_sizes=n_hidden_layers*[hidden_layer_size,],
                     hidden_activation=global_hidden_activation)
                 self._global_fn.add_module('FNN', fnn)
-                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # Add normalization layer (per-element) to global update function
-                if is_norm_layer:
-                    if self._n_global_in < 2:
-                        raise RuntimeError(f'Number of global features '
-                                           f'({self._n_global_in}) must be '
-                                           f'greater than 1 to compute standard '
-                                           f'deviation in the corresponding '
-                                           f'update function normalization layer.')
-                    else:
-                        norm_layer = torch.nn.LayerNorm(
-                            normalized_shape=self._n_global_out,
-                            elementwise_affine=True)
-                        self._global_fn.add_module('Norm-Layer', norm_layer)
+            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # Add normalization layer (per-element) to global update function
+            if is_norm_layer:
+                if self._n_global_in < 2:
+                    raise RuntimeError(f'Number of global features '
+                                        f'({self._n_global_in}) must be '
+                                        f'greater than 1 to compute standard '
+                                        f'deviation in the corresponding '
+                                        f'update function normalization layer.')
+                else:
+                    norm_layer = torch.nn.LayerNorm(
+                        normalized_shape=self._n_global_out,
+                        elementwise_affine=True)
+                    self._global_fn.add_module('Norm-Layer', norm_layer)
         else:
             self._global_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -830,7 +836,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             # Build recurrent neural network
             rnn = build_rnn(input_size=self._n_node_in+self._n_edge_out,
                             output_size=self._n_node_out,
-                            hidden_layer_sizes=[hidden_layer_size, ],
+                            hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                             rnn_cell='GRU',
                             bias=True)
             self._node_fn.add_module('RNN', rnn)
@@ -840,7 +847,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                     rnn = build_rnn(input_size=self._n_node_in+
                                             self._n_edge_out,
                                     output_size=self._n_node_out,
-                                    hidden_layer_sizes=[hidden_layer_size, ],
+                                    hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                     rnn_cell='GRU',
                                     bias=True)
                     self._node_fn.add_module('RNN', rnn)
@@ -870,7 +878,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             rnn = build_rnn(input_size=self._n_edge_in+
                                     2*self._n_node_in,
                                 output_size=self._n_edge_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 rnn_cell='GRU',
                                 bias=True)
             self._edge_fn.add_module('RNN', rnn)
@@ -879,7 +888,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 rnn = build_rnn(input_size=self._n_edge_in+
                                     2*self._n_node_in,
                                 output_size=self._n_edge_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 rnn_cell='GRU',
                                 bias=True)
                 self._edge_fn.add_module('RNN', rnn)
@@ -912,7 +922,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 rnn = build_rnn(input_size=self._n_global_in + 
                                 self._n_node_out,
                                 output_size=self._n_global_out,
-                                hidden_layer_sizes=[hidden_layer_size, ],
+                                hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                 rnn_cell='GRU',
                                 bias=True)
                 self._global_fn.add_module('RNN', rnn)
@@ -921,7 +932,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                     rnn = build_rnn(input_size=self._n_global_in + 
                                         self._n_node_out,
                                     output_size=self._n_global_out,
-                                    hidden_layer_sizes=[hidden_layer_size, ],
+                                    hidden_layer_sizes=n_hidden_layers*[
+                                                        hidden_layer_size, ],
                                     rnn_cell='GRU',
                                     bias=True)
                     self._global_fn.add_module('RNN', rnn)
