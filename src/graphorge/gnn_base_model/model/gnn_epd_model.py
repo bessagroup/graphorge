@@ -547,9 +547,7 @@ class Processor(torch_geometric.nn.MessagePassing):
     def __init__(self, n_message_steps, n_node_out, n_edge_out,
                  n_hidden_layers, hidden_layer_size,
                  n_node_in=0, n_edge_in=0, n_global_in=0, n_global_out=0,
-                 n_time_node=0,
-                 n_time_edge=0,
-                 n_time_global=0,
+                 n_time_node=0, n_time_edge=0, n_time_global=0,
                  edge_to_node_aggr='add', node_to_global_aggr='add',
                  node_hidden_activation=torch.nn.Identity(),
                  node_output_activation=torch.nn.Identity(),
@@ -762,7 +760,7 @@ class Processor(torch_geometric.nn.MessagePassing):
             (1, n_features).
         """
         # Check number of nodal, edge and global features
-        if self._n_time_node >0 :
+        if self._n_time_node > 0:
             if node_features_in is not None and node_features_in.numel() > 0 \
                     and node_features_in.shape[-1] != \
                         self._n_node_in*self._n_time_node:
@@ -778,7 +776,7 @@ class Processor(torch_geometric.nn.MessagePassing):
                                 f'features of model ({self._n_node_in}) '
                                 f'and nodes input features '
                                 f'matrix ({node_features_in.shape[1]}).')
-        if self._n_time_edge >0 :
+        if self._n_time_edge > 0 :
             if edge_features_in is not None \
                     and edge_features_in.shape[-1] != \
                         self._n_edge_in * self._n_time_edge:
@@ -793,7 +791,7 @@ class Processor(torch_geometric.nn.MessagePassing):
                 raise RuntimeError(f'Mismatch of number of edge features of model '
                                 f'({self._n_edge_in}) and edges input features '
                                 f'matrix ({edge_features_in.shape[1]}).')
-        if self._n_time_global >0 :
+        if self._n_time_global > 0 :
             if global_features_in is not None \
                     and global_features_in.shape[-1] != \
                         self._n_global_in*self._n_time_global:
