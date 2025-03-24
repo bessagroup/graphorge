@@ -1177,12 +1177,18 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 torch.cat([node_features_in_i, node_features_in_j,
                         edge_features_in], dim=-1)
         elif is_node_features_in and not is_edge_features_in:
-            # If not is_edge_features_in: self._n_time_edge > 0 makes no sense
+            if self._n_time_edge > 0:
+                node_features_in_i = node_features_in_i.repeat(1,
+                                                           self._n_time_edge)
+                node_features_in_j = node_features_in_j.repeat(1,
+                                                           self._n_time_edge)
             # Concatenate nodes input features
             edge_features_in_cat = \
                 torch.cat([node_features_in_i, node_features_in_j], dim=-1)
         elif is_edge_features_in:
-            # If not is_node_features_in: self._n_time_node > 0 makes no sense
+            if self._n_time_node > 0:
+                edge_features_in = edge_features_in.repeat(1,
+                                                            self._n_time_node)
             # Concatenate edges input features
             edge_features_in_cat = edge_features_in
         else:
