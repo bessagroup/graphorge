@@ -207,15 +207,6 @@ class GraphData:
             global_targets_matrix = \
                 torch.tensor(copy.deepcopy(self._global_targets_matrix),
                              dtype=torch.float)
-            # # test time dimension: global features
-            global_tgts_new = torch.zeros((20, *global_targets_matrix.shape),
-                                           dtype=torch.float)
-            for i in range(20):
-                global_tgts_new[i, :, :] = global_targets_matrix * (
-                                                            1 - 0.05 * i)
-            global_targets_matrix = global_tgts_new.view(
-                                    global_targets_matrix.shape[0],
-                                    global_targets_matrix.shape[1]*20)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set metadata
         metadata = {}
