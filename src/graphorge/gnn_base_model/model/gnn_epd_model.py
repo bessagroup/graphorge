@@ -344,45 +344,10 @@ class EncodeProcessDecode(torch.nn.Module):
                           is_global_res_connect=is_global_res_connect)
         else:
             self._processor = None
-        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # # If nodes do not encode time series data, but edges do,
-        # # then, after the processor: 
-        # # node_features.shape=(batch_size, hidden_layer_size*n_time_edge)
-        # if n_time_node == 0 and n_time_edge != 0:
-        #     dec_n_node_in = hidden_layer_size*n_time_edge
-        # # If nodes do not encode time series data, but global features do,
-        # # then, after the processor: 
-        # # node_features.shape=(batch_size, hidden_layer_size*n_time_global)
-        # elif n_time_node == 0 and n_time_global != 0:
-        #     dec_n_node_in = hidden_layer_size*n_time_global
-        # else:
-        #     dec_n_node_in = hidden_layer_size
-        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # # If global features do not encode time series data, but nodes do,
-        # # then, after the processor: 
-        # # global_features.shape=(batch_size, hidden_layer_size*n_time_node)
-        # if n_time_global == 0 and n_time_node != 0:
-        #     dec_n_global_in = hidden_layer_size*n_time_node
-        # # If global features do not encode time series data, but edges do,
-        # # then, after the processor: 
-        # # global_features.shape=(batch_size, hidden_layer_size*n_time_edge)
-        # elif n_time_global == 0 and n_time_edge != 0:
-        #     dec_n_global_in = hidden_layer_size*n_time_edge
-        # else:
-        #     dec_n_global_in = hidden_layer_size
-        # # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # # If edges do not encode time series data, but nodes do,
-        # # then, after the processor: 
-        # # edge_features.shape=(batch_size, hidden_layer_size*n_time_nodes)
-        # if n_time_edge == 0 and n_time_node != 0:
-        #     dec_n_edge_in = hidden_layer_size*n_time_node
-        # # If edges do not encode time series data, but global features do,
-        # # then, after the processor: 
-        # # edge_features.shape=(batch_size, hidden_layer_size*n_time_global)
-        # elif n_time_edge == 0 and n_time_global != 0:
-        #     dec_n_edge_in = hidden_layer_size*n_time_global
-        # else:
-        #     dec_n_edge_in = hidden_layer_size
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # If nodes/edges encode time series data, and the remaining features
+        # do not, then, after passing through the process, i.e., a graph
+        # interaction network, the remaining features also become time series 
         if n_time_edge > 0:
             n_time_node = n_time_edge
             n_time_global = n_time_edge
