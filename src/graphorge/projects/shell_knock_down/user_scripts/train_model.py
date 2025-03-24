@@ -27,7 +27,7 @@ from ioput.iostandard import make_directory, find_unique_file_with_regex
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu),'
 __credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
