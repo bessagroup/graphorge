@@ -144,17 +144,26 @@ def test_processor_init_invalid(n_message_steps, n_node_in, n_node_out,
      (1, 10, 0, 5, 20, 4, 4, 0, 0, 2, 4, 0, 0, 0, False, True, False),
      (1, 10, 3, 3, 20, 0, 4, 0, 0, 1, 2, 0, 0, 0, True, False, False),
      (1, 10, 3, 3, 20, 0, 4, 2, 2, 1, 2, 0, 0, 0, True, False, True),
-     # n_time_node = n_time_edge = n_time_global
-     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 2, 2, 2, False, False, False),
-     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
-     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
-     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
-     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
-     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 11, False, False, False),
-     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 7, 7, 7, False, False, False),
-     (1, 10, 5, 3, 5, 0, 5, 2, 2, 1, 2, 11, 11, 11, False, False, False),
-     (1, 10, 3, 3, 20, 10, 4, 0, 2, 1, 2, 2, 2, 2, False, False, False),
-     (1, 10, 3, 3, 20, 0, 5, 2, 2, 1, 2, 2, 2, 2, False, False, False),
+     # n_node/edge/global_in will be computed from the input data, thus they
+     # must be passed as n_node/edge/global_in * n_time_node/edge/global
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 2, 0, 0, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 0, 11, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 0, False, False, False),
+     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 11, 0, 0, False, False, False),
+     (1, 10, 5, 3, 5, 0, 5, 2, 2, 1, 2, 11, 0, 0, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 7, 0, 7, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 0, 0, 1, 2, 7, 0, 0, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 0, 0, 1, 2, 7, 0, 7, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 0, 0, 1, 2, 0, 7, 0, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 0, 0, 1, 2, 0, 7, 7, False, False, False),
+     (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 0, 7, 0, False, False, False),
+     (1, 10, 0, 3, 20, 10, 4, 2, 2, 1, 2, 0, 7, 0, False, False, False),
+     (1, 10, 3, 3, 20, 10, 4, 0, 2, 1, 2, 0, 2, 0, False, False, False),
+     (1, 10, 3, 3, 20, 1, 5, 2, 2, 1, 2, 0, 2, 0, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 0, 0, 1, 2, 0, 0, 7, False, False, False),
+     (1, 2, 2, 2, 20, 10, 4, 1, 1, 1, 2, 0, 0, 7, False, False, False),
+     (1, 10, 0, 3, 20, 5, 2, 2, 2, 1, 2, 3, 0, 0, False, False, False),
+     (1, 10, 3, 3, 20, 0, 2, 2, 2, 1, 2, 0, 2, 0, False, False, False),
      ])
 def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
                            n_edges, n_edge_in, n_edge_out, n_global_in,
@@ -178,6 +187,14 @@ def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
                       is_node_res_connect=is_node_res_connect,
                       is_edge_res_connect=is_edge_res_connect,
                       is_global_res_connect=is_global_res_connect)
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set time dimensions
+    n_time_in = 0
+    if n_time_node > 0: 
+        n_time_in = n_time_node
+    if n_time_edge > 0:
+        n_time_in = n_time_edge
+    n_time_all = max(n_time_in, n_time_global)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Generate random nodes features input matrix
     node_features_in = torch.empty(n_nodes, 0)
@@ -214,41 +231,41 @@ def test_processor_forward(n_message_steps, n_nodes, n_node_in, n_node_out,
     # Check node features output matrix 
     if not isinstance(node_features_out, torch.Tensor):
         errors.append('Nodes features output matrix is not torch.Tensor.')
-    elif n_time_node == 0 and \
+    elif n_time_in == 0 and \
      not torch.equal(torch.tensor(node_features_out.size()),
                     torch.tensor([n_nodes, n_node_out])):
         errors.append('Nodes features output matrix is not torch.Tensor(2d) '
                       'of shape (n_nodes, n_features).')
-    elif n_time_node != 0 and \
+    elif (n_time_in != 0 or n_time_edge !=0 ) and \
      not torch.equal(torch.tensor(node_features_out.size()),
-                    torch.tensor([n_nodes, n_node_out*n_time_node])):
+                    torch.tensor([n_nodes, n_node_out*n_time_in])):
         errors.append('Nodes features output matrix is not torch.Tensor(2d) '
                       'of shape (n_nodes, n_features*n_time_node).')
     # Check edge features output matrix
     if not isinstance(edge_features_out, torch.Tensor):
         errors.append('Edges features output matrix is not torch.Tensor.')
-    elif n_time_edge == 0 and \
+    elif n_time_in == 0 and \
                     not torch.equal(torch.tensor(edge_features_out.size()),
                          torch.tensor([n_edges, n_edge_out])):
         errors.append('Edges features output matrix is not torch.Tensor(2d) '
                       'of shape (n_edges, n_features*n_time_edge).')
-    elif n_time_edge != 0 and \
+    elif n_time_in != 0 and \
                     not torch.equal(torch.tensor(edge_features_out.size()),
-                         torch.tensor([n_edges, n_edge_out*n_time_edge])):
+                         torch.tensor([n_edges, n_edge_out*n_time_in])):
         errors.append('Edges features output matrix is not torch.Tensor(2d) '
                       'of shape (n_edges, n_features).')
     # Check global features output matrix
     if n_global_out > 0:
         if not isinstance(global_features_out, torch.Tensor):
             errors.append('Global features output matrix is not torch.Tensor.')
-        elif n_time_global == 0 and \
-                    not torch.equal(torch.tensor(global_features_out.size()),
+        elif n_time_all == 0 and not torch.equal(
+                            torch.tensor(global_features_out.size()),
                             torch.tensor([1, n_global_out])):
             errors.append('Global features output matrix is not '
                             'torch.Tensor(2d) of shape (1, n_features).')
-        elif n_time_global != 0 and \
-                    not torch.equal(torch.tensor(global_features_out.size()),
-                            torch.tensor([1, n_global_out*n_time_global])):
+        elif n_time_all != 0 and not torch.equal(
+                            torch.tensor(global_features_out.size()),
+                            torch.tensor([1, n_global_out*n_time_all])):
             errors.append('Global features output matrix is not '
                             'torch.Tensor(2d) of shape '
                             '(1, n_features*n_time_global).')
