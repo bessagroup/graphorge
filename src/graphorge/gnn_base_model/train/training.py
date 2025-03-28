@@ -57,8 +57,8 @@ from ioput.iostandard import write_summary_file
 #
 #                                                          Authorship & Credits
 # =============================================================================
-__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu), Rui Barreira'
-__credits__ = ['Bernardo Ferreira', 'Rui Barreira']
+__author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
+__credits__ = ['Bernardo Ferreira', 'Rui Barreira', ]
 __status__ = 'Planning'
 # =============================================================================
 #
@@ -354,7 +354,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 loss = loss_function(node_features_out, node_targets)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             elif loss_nature == 'edge_features_out':
-                # Get global output features
+                # Get edge output features
                 _, edge_features_out, _ = model(
                     node_features_in=node_features_in,
                     edge_features_in=edge_features_in,

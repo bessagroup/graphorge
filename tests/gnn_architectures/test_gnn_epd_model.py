@@ -14,7 +14,7 @@ from src.graphorge.gnn_base_model.model.gnn_epd_model import Processor
 #                                                          Authorship & Credits
 # =============================================================================
 __author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
-__credits__ = ['Bernardo Ferreira', ]
+__credits__ = ['Bernardo Ferreira', 'Rui Barreira', ]
 __status__ = 'Planning'
 # =============================================================================
 #
@@ -144,8 +144,6 @@ def test_processor_init_invalid(n_message_steps, n_node_in, n_node_out,
      (1, 10, 0, 5, 20, 4, 4, 0, 0, 2, 4, 0, 0, 0, False, True, False),
      (1, 10, 3, 3, 20, 0, 4, 0, 0, 1, 2, 0, 0, 0, True, False, False),
      (1, 10, 3, 3, 20, 0, 4, 2, 2, 1, 2, 0, 0, 0, True, False, True),
-     # n_node/edge/global_in will be computed from the input data, thus they
-     # must be passed as n_node/edge/global_in * n_time_node/edge/global
      (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 2, 0, 0, False, False, False),
      (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 0, 11, False, False, False),
      (1, 10, 5, 3, 20, 10, 4, 2, 2, 1, 2, 11, 11, 0, False, False, False),

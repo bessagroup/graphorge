@@ -49,12 +49,15 @@ class EncodeProcessDecode(torch.nn.Module):
     _n_global_out : int
         Number of node output features.
     _n_time_node : int
-        If greater than 0, then nodal input features a time
+        Number of discrete time steps of nodal features.
+        If greater than 0, then nodal input features include a time
         dimension and message passing layers are RNNs.
     _n_time_edge : int
-        If greater than 0, then edge input features a time 
+        Number of discrete time steps of edge features.
+        If greater than 0, then edge input features include a time 
         dimension and message passing layers are RNNs.
     _n_time_global : int
+        Number of discrete time steps of global features.
         If greater than 0, then global input features include a time
         dimension and message passing layers are RNNs.
     
@@ -68,9 +71,7 @@ class EncodeProcessDecode(torch.nn.Module):
                  n_global_out, enc_n_hidden_layers, pro_n_hidden_layers,
                  dec_n_hidden_layers, hidden_layer_size,
                  n_node_in=0, n_edge_in=0, n_global_in=0,
-                 n_time_node=0, 
-                 n_time_edge=0,
-                 n_time_global=0,
+                 n_time_node=0, n_time_edge=0, n_time_global=0,
                  pro_edge_to_node_aggr='add', pro_node_to_global_aggr='add',
                  enc_node_hidden_activation=torch.nn.Identity(),
                  enc_node_output_activation=torch.nn.Identity(),
@@ -108,23 +109,26 @@ class EncodeProcessDecode(torch.nn.Module):
         n_global_out : int
             Number of node output features.
         n_time_node : int, default=0
+            Number of discrete time steps of nodal features.
             If greater than 0, then nodal input features include a time 
             dimension and message passing layers are RNNs.
-        n_time_edge : int, default=False
+        n_time_edge : int, default=0
+            Number of discrete time steps of edge features.
             If greater than 0, then edge input features include a time
             dimension and message passing layers are RNNs.
-        n_time_global : int, default=False
+        n_time_global : int, default=0
+            Number of discrete time steps of global features.
             If greater than 0, then global input features include a time
             dimension and message passing layers are RNNs.
         enc_n_hidden_layers : int
-            Encoder: Number of hidden layers of multilayer feed-forward/recurrent
-            neural network update functions.
+            Encoder: Number of hidden layers of multilayer feed-forward/
+            recurrent neural network update functions.
         pro_n_hidden_layers : int
             Processor: Number of hidden layers of multilayer feed-forward/
             recurrent neural network update functions.
         dec_n_hidden_layers : int
-            Decoder: Number of hidden layers of multilayer feed-forward/recurrent
-            neural network update functions.
+            Decoder: Number of hidden layers of multilayer feed-forward/
+            recurrent neural network update functions.
         hidden_layer_size : int
             Number of neurons of hidden layers of multilayer feed-forward/
             recurrent neural network update functions.
@@ -371,8 +375,7 @@ class EncodeProcessDecode(torch.nn.Module):
                     edge_output_activation=dec_edge_output_activation,
                     global_hidden_activation=dec_global_hidden_activation,
                     global_output_activation=dec_global_output_activation,
-                    n_time_node=n_time_node,
-                    n_time_edge=n_time_edge,
+                    n_time_node=n_time_node, n_time_edge=n_time_edge,
                     n_time_global=n_time_global,
                     is_norm_layer=is_dec_norm_layer,
                     is_skip_unset_update=True)
@@ -494,15 +497,18 @@ class Processor(torch_geometric.nn.MessagePassing):
         Number of global input features.
     _n_global_out : int
         Number of global output features.
-    _n_time_node : int, default=0
-        If greater than 0,, then nodal input features a time
-        dimension and message passing layers are RNNs.
-    _n_time_edge : int, default=0
-        If greater than 0,, then edge input features a time 
-        dimension and message passing layers are RNNs.
-    _n_time_global : int, default=0
+    _n_time_node : int
+        Number of discrete time steps of nodal features.
+        If greater than 0, then nodal input features include a time
+        dimension, and message passing layers are RNNs.
+    _n_time_edge : int
+        Number of discrete time steps of edge features.
+        If greater than 0, then edge input features include a time 
+        dimension, and message passing layers are RNNs.
+    _n_time_global : int
+        Number of discrete time steps of global features.
         If greater than 0, then global input features include a time
-        dimension and message passing layers are RNNs.
+        dimension, and message passing layers are RNNs.
         
     Methods
     -------
@@ -575,12 +581,15 @@ class Processor(torch_geometric.nn.MessagePassing):
             (multilayer feed-forward neural network). Defaults to identity
             (linear) unit activation function.
         n_time_node : int, default=0
+            Number of discrete time steps of nodal features.
             If greater than 0, then nodal input features include a time 
             dimension and message passing layers are RNNs.
-        n_time_edge : int, default=False
+        n_time_edge : int, default=0
+            Number of discrete time steps of edge features.
             If greater than 0, then edge input features include a time
             dimension and message passing layers are RNNs.
-        n_time_global : int, default=False
+        n_time_global : int, default=0
+            Number of discrete time steps of global features.
             If greater than 0, then global input features include a time
             dimension and message passing layers are RNNs.
         is_norm_layer : bool, default=False
@@ -609,7 +618,7 @@ class Processor(torch_geometric.nn.MessagePassing):
         self._n_edge_out = int(n_edge_out)
         self._n_global_in = int(n_global_in)
         self._n_global_out = int(n_global_out)
-         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set input with time dimension
         self._n_time_node = n_time_node
         self._n_time_edge = n_time_edge
@@ -730,48 +739,49 @@ class Processor(torch_geometric.nn.MessagePassing):
                     and node_features_in.shape[-1] != \
                         self._n_node_in*self._n_time_node:
                 raise RuntimeError(f'Mismatch of number of node '
-                                f'features of model '
-                                f'({self._n_node_in*self._n_time_node}) '
-                                f'and nodes input features '
-                                f'matrix ({node_features_in.shape[1]}).')
+                                   f'features of model '
+                                   f'({self._n_node_in*self._n_time_node}) '
+                                   f'and nodes input features '
+                                   f'matrix ({node_features_in.shape[1]}).')
         else:
             if node_features_in is not None and node_features_in.numel() > 0 \
                     and node_features_in.shape[-1] != self._n_node_in:
                 raise RuntimeError(f'Mismatch of number of node '
-                                f'features of model ({self._n_node_in}) '
-                                f'and nodes input features '
-                                f'matrix ({node_features_in.shape[1]}).')
+                                   f'features of model ({self._n_node_in}) '
+                                   f'and nodes input features '
+                                   f'matrix ({node_features_in.shape[1]}).')
         if self._n_time_edge > 0 :
             if edge_features_in is not None \
                     and edge_features_in.shape[-1] != \
                         self._n_edge_in * self._n_time_edge:
                 raise RuntimeError(f'Mismatch of number of edge '
-                                f'features of model '
-                                f'({self._n_edge_in*self._n_time_edge}) '
-                                f'and edges input features '
-                                f'matrix ({edge_features_in.shape[1]}).')
+                                   f'features of model '
+                                   f'({self._n_edge_in*self._n_time_edge}) '
+                                   f'and edges input features '
+                                   f'matrix ({edge_features_in.shape[1]}).')
         else:
             if edge_features_in is not None \
                     and edge_features_in.shape[-1] != self._n_edge_in:
-                raise RuntimeError(f'Mismatch of number of edge features of model '
-                                f'({self._n_edge_in}) and edges input features '
-                                f'matrix ({edge_features_in.shape[1]}).')
+                raise RuntimeError(f'Mismatch of number of edge features of '
+                                   f'model ({self._n_edge_in}) and edges '
+                                   f'input features matrix '
+                                   f'({edge_features_in.shape[1]}).')
         if self._n_time_global > 0 :
             if global_features_in is not None \
                     and global_features_in.shape[-1] != \
                         self._n_global_in*self._n_time_global:
                 raise RuntimeError(f'Mismatch of number of global features of '
-                                f'model '
-                                f'({self._n_global_in*self._n_time_global}) '
-                                f' and global input features matrix '
-                                f'({global_features_in.shape[1]}).')  
+                                   f'model ('
+                                   f'{self._n_global_in*self._n_time_global}) '
+                                   f' and global input features matrix '
+                                   f'({global_features_in.shape[1]}).')  
         else:
             if global_features_in is not None \
                     and global_features_in.shape[-1] != self._n_global_in:
                 raise RuntimeError(f'Mismatch of number of global features of '
-                                f'model ({self._n_global_in}) and global input '
-                                f'features matrix '
-                                f'({global_features_in.shape[1]}).')
+                                   f'model ({self._n_global_in}) and global  '
+                                   f'input features matrix '
+                                   f'({global_features_in.shape[1]}).')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Collect number of nodes to preserve total number of nodes in
         # edge-to-node aggregation when number of node input features is zero

@@ -178,6 +178,7 @@ class GraphData:
         if self._edge_features_matrix is not None:
             edge_attr = torch.tensor(copy.deepcopy(self._edge_features_matrix),
                                      dtype=torch.float)
+        # Set PyG node ground-truth labels
         y = None
         if self._node_targets_matrix is not None:
             y = torch.tensor(copy.deepcopy(self._node_targets_matrix),
@@ -207,15 +208,6 @@ class GraphData:
             global_targets_matrix = \
                 torch.tensor(copy.deepcopy(self._global_targets_matrix),
                              dtype=torch.float)
-            # # test time dimension: global features
-            global_tgts_new = torch.zeros((20, *global_targets_matrix.shape),
-                                           dtype=torch.float)
-            for i in range(20):
-                global_tgts_new[i, :, :] = global_targets_matrix * (
-                                                            1 - 0.05 * i)
-            global_targets_matrix = global_tgts_new.view(
-                                    global_targets_matrix.shape[0],
-                                    global_targets_matrix.shape[1]*20)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set metadata
         metadata = {}

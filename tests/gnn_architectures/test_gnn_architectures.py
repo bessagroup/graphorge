@@ -13,7 +13,7 @@ from src.graphorge.gnn_base_model.model.gnn_architectures import \
 #                                                          Authorship & Credits
 # =============================================================================
 __author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
-__credits__ = ['Bernardo Ferreira', ]
+__credits__ = ['Bernardo Ferreira', 'Rui Barreira', ]
 __status__ = 'Planning'
 # =============================================================================
 #
@@ -112,7 +112,8 @@ def test_build_rnn(input_size, hidden_layer_sizes, output_size, num_layers,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Get recurrent neural network modules
     layer_name = rnn_cell + '-'
-    layers = [layer for layer in rnn.named_children() if layer_name in layer[0]]
+    layers = [layer for layer in rnn.named_children() if layer_name in layer[0]
+              ]
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check number of modules
     if len(layers) != len(hidden_layer_sizes):
@@ -146,7 +147,7 @@ def test_build_rnn(input_size, hidden_layer_sizes, output_size, num_layers,
             if layer[1].num_layers != num_layers[i]:
                 errors.append('Number of layers of the RNN layer '
                               'was not properly set.')
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Check output layer features
     output_layer = [layer for layer in rnn.named_children() 
                      if 'Output-layer' in layer[0]][0]
@@ -198,9 +199,10 @@ def test_build_rnn_invalid(input_size, hidden_layer_sizes, output_size,
                           ])
 def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
                                         n_edge_out, n_global_in, n_global_out,
-                                        n_time_node, n_time_edge, 
-                                        n_time_global, n_hidden_layers, 
-                                        hidden_layer_size, is_skip_unset_update,
+                                        n_time_node, n_time_edge,
+                                        n_time_global, n_hidden_layers,
+                                        hidden_layer_size,
+                                        is_skip_unset_update,
                                         rnn_cell):
     """Test Graph Independent Network constructor."""
     # Initialize errors
@@ -232,14 +234,14 @@ def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
         update_functions.append((model._global_fn, n_global_in, n_global_out))
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over update functions
-    for update_fn, n_features_in, n_features_out in update_functions:        
+    for update_fn, n_features_in, n_features_out in update_functions:
         # Loop over update function modules
         for name, module in update_fn.named_children():
             # Check feed-forward neural network
             if name == 'FNN':
                 # Get feed-forward neural network layers
                 layers = [layer for layer in module.named_children()
-                          if 'Layer-' in layer[0]]                
+                          if 'Layer-' in layer[0]]
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Check number of layers
                 if len(layers) != n_hidden_layers + 1:
@@ -251,7 +253,7 @@ def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
                     if i == 0:
                         if layer[1].in_features != n_features_in:
                             errors.append('Number of input features of '
-                                          'input layer was not properly set.')  
+                                          'input layer was not properly set.')
                         if len(layers) == 1:
                             if layer[1].out_features != n_features_out:
                                 errors.append('Number of ouput features of '
@@ -281,7 +283,7 @@ def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
             elif name == 'RNN':
                 # Get recurrent neural network modules
                 layer_name = rnn_cell + '-'
-                layers = [layer for layer in module.named_children() if 
+                layers = [layer for layer in module.named_children() if
                           layer_name in layer[0]]
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Check number of modules
@@ -302,26 +304,27 @@ def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
                                             'set.')
                         else:
                             if layer[1].hidden_size != hidden_layer_size:
-                                errors.append('Number of hidden features of input RNN '
-                                            'layer was not properly set.')
+                                errors.append('Number of hidden features of '
+                                            'input RNN layer was not properly '
+                                            'set.')
                     else:
                         if layer[1].input_size != hidden_layer_size:
-                            errors.append('Number of input features of RNN layer '
-                                        'was not properly set.')
+                            errors.append('Number of input features of RNN '
+                                        'layer was not properly set.')
                         if layer[1].hidden_size != hidden_layer_size:
-                                errors.append('Number of hidden features of RNN '
-                                            'layer was not properly set.')
+                                errors.append('Number of hidden features of '
+                                            'RNN layer was not properly set.')
                 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 # Check output layer features
                 output_layer = [layer for layer in module.named_children() 
                                 if 'Output-layer' in layer[0]][0]
                 if hidden_layer_size != 0:
                     if output_layer[1].in_features != hidden_layer_size:
-                        errors.append('Number of input features of output layer was '
-                                        'not properly set.')
+                        errors.append('Number of input features of output '
+                                        'layer was not properly set.')
                 if output_layer[1].out_features != n_features_out:
-                    errors.append('Number of output features of output layer was '
-                                        'not properly set.')
+                    errors.append('Number of output features of output layer '
+                                        'was not properly set.')
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Check normalization layer
             elif name == 'Norm-Layer':
@@ -358,12 +361,12 @@ def test_graph_independent_network_init(n_node_in, n_node_out, n_edge_in,
                           (2, 3, 2, 2, 0, 0, 0, 0, 1, 2, 0, 5, 5, True),
                           (3, 0, 0, 6, 5, 4, 1, 3, 0, 2, 3, 3, 0, False),
                           (2, 3, 2, 2, 0, 0, 0, 0, 1, 2, 0, 7, 0, False),
-
                           ])
 def test_graph_independent_network_forward(n_nodes, n_node_in, n_node_out,
                                            n_edges, n_edge_in, n_edge_out,
                                            n_global_in, n_global_out,
-                                           n_time_node, n_time_edge, n_time_global,
+                                           n_time_node, n_time_edge,
+                                           n_time_global,
                                            n_hidden_layers, hidden_layer_size,
                                            is_skip_unset_update):
     """Test Graph Independent Network forward propagation."""
@@ -572,7 +575,7 @@ def test_graph_interaction_network_init(n_node_in, n_node_out, n_edge_in,
                     if i == 0:
                         if layer[1].in_features != n_features_in:
                             errors.append('Number of input features of '
-                                          'input layer was not properly set.')  
+                                          'input layer was not properly set.')
                         if len(layers) == 1:
                             if layer[1].out_features != n_features_out:
                                 errors.append('Number of ouput features of '
@@ -615,7 +618,7 @@ def test_graph_interaction_network_init(n_node_in, n_node_out, n_edge_in,
                     if i == 0:
                         if layer[1].input_size != n_features_in:
                             errors.append('Number of input features of input '
-                                        'RNN layer was not properly set.')  
+                                        'RNN layer was not properly set.')
                         if len(layers) == 1:
                             if layer[1].hidden_size != hidden_layer_size:
                                 errors.append('Number of hidden features of '

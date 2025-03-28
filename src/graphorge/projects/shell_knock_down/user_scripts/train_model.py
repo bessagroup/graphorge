@@ -267,7 +267,7 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
     # Set number of node input and output features
     n_node_in = 5
     n_node_out = 0
-    n_time_node = 20
+    n_time_node = 0
     # Set number of edge input and output features
     n_edge_in = 0
     n_edge_out = 0
@@ -275,7 +275,7 @@ def set_default_model_parameters(model_directory, device_type='cpu'):
     # Set number of global input and output features
     n_global_in = 0
     n_global_out = 1
-    n_time_global = 20
+    n_time_global = 0
     # Set number of message-passing steps (number of processor layers)
     n_message_steps = 2
     # Set number of FNN/RNN hidden layers
