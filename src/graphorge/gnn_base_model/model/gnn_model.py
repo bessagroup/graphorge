@@ -792,8 +792,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         if self._n_time_node > 0:
             if graph.num_node_features != self._n_node_in*self._n_time_node:
                 raise RuntimeError(f'Input graph '
-                                   f'({graph.num_node_features*\
-                                      self._n_time_node}) '
+                                   f'''({graph.num_node_features*
+                                       self._n_time_node}) '''
                                    f'and simulator ({self._n_node_in}) number '
                                    f'of node features are not consistent.')
         else:
@@ -804,8 +804,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         if self._n_time_edge > 0:
             if graph.num_edge_features != self._n_edge_in*self._n_time_edge:
                 raise RuntimeError(f'Input graph '
-                                   f'({graph.num_edge_features*\
-                                       self._n_time_edge}) '
+                                   f'''({graph.num_edge_features*
+                                       self._n_time_edge}) '''
                                    f'and simulator ({self._n_edge_in}) number '
                                    f'of edge features are not consistent.')
         else:
@@ -950,8 +950,8 @@ class GNNEPDBaseModel(torch.nn.Module):
                 raise RuntimeError(f'Input graph ('
                                    f'({global_features_out.shape[-1]}) '
                                    f'and simulator '
-                                   f'({self._n_global_out*\
-                                       self._n_time_global}) '
+                                   f'''({self._n_global_out*
+                                       self._n_time_global}) '''
                                    f'number of output global features are not '
                                    f'consistent.')
         else:
