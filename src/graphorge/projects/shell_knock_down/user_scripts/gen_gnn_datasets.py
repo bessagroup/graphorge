@@ -167,13 +167,10 @@ if __name__ == "__main__":
         {'training': 0.7, 'validation': 0.2, 'in_distribution': 0.1}
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set data set file path (shells .csv file)
-    dataset_csv_file_path = \
-        ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
-         'graphorge/projects/shell_knock_down/0_datasets_files/shells.csv')
+    dataset_csv_file_path = ('../0_datasets_files/shells.csv')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
-    base_dir = ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
-         'graphorge/projects/shell_knock_down/')
+    base_dir = ('../')
     # Set case study directory
     case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
