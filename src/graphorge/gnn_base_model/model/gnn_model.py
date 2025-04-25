@@ -32,7 +32,7 @@ from utilities.data_scalers import TorchStandardScaler
 #                                                          Authorship & Credits
 # =============================================================================
 __author__ = 'Bernardo Ferreira (bernardo_ferreira@brown.edu)'
-__credits__ = ['Bernardo Ferreira', ]
+__credits__ = ['Bernardo Ferreira', 'Rui Barreira']
 __status__ = 'Planning'
 # =============================================================================
 #
@@ -58,6 +58,18 @@ class GNNEPDBaseModel(torch.nn.Module):
         Number of global input features.
     _n_global_out : int
         Number of global output features.
+    _n_time_node : int
+        Number of discrete time steps of nodal features.
+        If greater than 0, then nodal input features include a time
+        dimension and message passing layers are RNNs.
+    _n_time_edge : int
+        Number of discrete time steps of edge features.
+        If greater than 0, then edge input features include a time 
+        dimension and message passing layers are RNNs.
+    _n_time_global : int
+        Number of discrete time steps of global features.
+        If greater than 0, then global input features include a time
+        dimension and message passing layers are RNNs.
     _n_message_steps : int
         Number of message-passing steps.
     _enc_n_hidden_layers : int
@@ -230,6 +242,7 @@ class GNNEPDBaseModel(torch.nn.Module):
                  enc_n_hidden_layers, pro_n_hidden_layers, dec_n_hidden_layers,
                  hidden_layer_size, model_directory,
                  model_name='gnn_epd_model',
+                 n_time_node=0, n_time_edge=0, n_time_global=0,
                  is_model_in_normalized=False, is_model_out_normalized=False,
                  pro_edge_to_node_aggr='add', pro_node_to_global_aggr='add',
                  enc_node_hidden_activ_type='identity',
@@ -286,6 +299,18 @@ class GNNEPDBaseModel(torch.nn.Module):
             Directory where model is stored.
         model_name : str, default='gnn_epd_model'
             Name of model.
+        n_time_node : int, default=0
+            Number of discrete time steps of nodal features.
+            If greater than 0, then nodal input features include a time 
+            dimension and message passing layers are RNNs.
+        n_time_edge : int, default=0
+            Number of discrete time steps of edge features.
+            If greater than 0, then edge input features include a time
+            dimension and message passing layers are RNNs.
+        n_time_global : int, default=0
+            Number of discrete time steps of global features.
+            If greater than 0, then global input features include a time
+            dimension and message passing layers are RNNs.
         is_model_in_normalized : bool, default=False
             If True, then model input features are assumed to be normalized
             (normalized input data has been seen during model training).
@@ -380,6 +405,10 @@ class GNNEPDBaseModel(torch.nn.Module):
         # Initialize from base class
         super(GNNEPDBaseModel, self).__init__()
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Set time attributes
+        self._n_time_node = n_time_node
+        self._n_time_edge = n_time_edge
+        self._n_time_global = n_time_global
         # Set number of features
         self._n_node_in = n_node_in
         self._n_node_out = n_node_out
@@ -433,6 +462,9 @@ class GNNEPDBaseModel(torch.nn.Module):
             n_message_steps=n_message_steps,
             n_node_out=n_node_out, n_edge_out=n_edge_out,
             n_global_out=n_global_out,
+            n_time_node=self._n_time_node,
+            n_time_edge=self._n_time_edge,
+            n_time_global=self._n_time_global,
             enc_n_hidden_layers=enc_n_hidden_layers,
             pro_n_hidden_layers=pro_n_hidden_layers,
             dec_n_hidden_layers=dec_n_hidden_layers,
@@ -585,7 +617,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             assigning each node to a specific batch subgraph. Required to
             process a graph holding multiple isolated subgraphs when batch
             size is greater than 1.
-            
+
         Returns
         -------
         node_features_out : {torch.Tensor, None}
@@ -658,6 +690,9 @@ class GNNEPDBaseModel(torch.nn.Module):
         model_init_args['n_edge_out'] = self._n_edge_out
         model_init_args['n_global_in'] = self._n_global_in
         model_init_args['n_global_out'] = self._n_global_out
+        model_init_args['n_time_node'] = self._n_time_node
+        model_init_args['n_time_edge'] = self._n_time_edge
+        model_init_args['n_time_global'] = self._n_time_global
         model_init_args['n_message_steps'] = self._n_message_steps
         model_init_args['dec_n_hidden_layers'] = self._enc_n_hidden_layers
         model_init_args['pro_n_hidden_layers'] = self._pro_n_hidden_layers
@@ -722,7 +757,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         with open(model_init_file_path, 'wb') as init_file:
             pickle.dump(model_init_attributes, init_file)
     # -------------------------------------------------------------------------
-    def get_input_features_from_graph(self, graph, is_normalized=False):
+    def get_input_features_from_graph(self, graph,
+                                      is_normalized=False):
         """Get input features from graph.
         
         Parameters
@@ -753,14 +789,30 @@ class GNNEPDBaseModel(torch.nn.Module):
             raise RuntimeError('Input graph is not torch_geometric.data.Data.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check consistency with simulator
-        if graph.num_node_features != self._n_node_in:
-            raise RuntimeError(f'Input graph ({graph.num_node_features}) and '
-                               f'simulator ({self._n_node_in}) number of node '
-                               f'features are not consistent.')
-        if graph.num_edge_features != self._n_edge_in:
-            raise RuntimeError(f'Input graph ({graph.num_edge_features}) and '
-                               f'simulator ({self._n_edge_in}) number of edge '
-                               f'features are not consistent.')
+        if self._n_time_node > 0:
+            if graph.num_node_features != self._n_node_in*self._n_time_node:
+                raise RuntimeError(f'Input graph '
+                                   f'''({graph.num_node_features*
+                                       self._n_time_node}) '''
+                                   f'and simulator ({self._n_node_in}) number '
+                                   f'of node features are not consistent.')
+        else:
+            if graph.num_node_features != self._n_node_in:
+                raise RuntimeError(f'Input graph ({graph.num_node_features}) '
+                                   f'and simulator ({self._n_node_in}) number '
+                                   f'of node features are not consistent.')
+        if self._n_time_edge > 0:
+            if graph.num_edge_features != self._n_edge_in*self._n_time_edge:
+                raise RuntimeError(f'Input graph '
+                                   f'''({graph.num_edge_features*
+                                       self._n_time_edge}) '''
+                                   f'and simulator ({self._n_edge_in}) number '
+                                   f'of edge features are not consistent.')
+        else:
+            if graph.num_edge_features != self._n_edge_in:
+                raise RuntimeError(f'Input graph ({graph.num_edge_features}) '
+                                   f'and simulator ({self._n_edge_in}) number '
+                                   f'of edge features are not consistent.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Get nodes features from graph
         if 'x' in graph.keys() and isinstance(graph.x, torch.Tensor):
@@ -855,22 +907,61 @@ class GNNEPDBaseModel(torch.nn.Module):
             global_features_out = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check consistency with simulator
-        if (node_features_out is not None
-                and node_features_out.shape[1] != self._n_node_out):
-            raise RuntimeError(f'Input graph ({node_features_out.shape[1]}) '
-                               f'and simulator ({self._n_node_out}) number of '
-                               f'output node features are not consistent.')
-        if (edge_features_out is not None
-                and edge_features_out.shape[1] != self._n_edge_out):
-            raise RuntimeError(f'Input graph ({edge_features_out.shape[1]}) '
-                               f'and simulator ({self._n_edge_out}) number of '
-                               f'output edge features are not consistent.')
-        if (global_features_out is not None
-                and global_features_out.shape[1] != self._n_global_out):
-            raise RuntimeError(f'Input graph ({global_features_out.shape[1]}) '
-                               f'and simulator ({self._n_global_out}) number '
-                               f'of output global features are not '
-                               f'consistent.')
+        if self._n_time_node > 0 :
+            if (node_features_out is not None
+                    and node_features_out.shape[-1] != \
+                        self._n_node_out*self._n_time_node):
+                raise RuntimeError(f'Input graph '
+                                   f'({node_features_out.shape[-1]}) '
+                                   f'and simulator '
+                                   f'({self._n_node_out*self._n_time_node}) '
+                                   f'number of output node features are not '
+                                   f'consistent.')
+        else:
+            if (node_features_out is not None
+                    and node_features_out.shape[-1] != self._n_node_out):
+                raise RuntimeError(f'Input graph '
+                                   f'({node_features_out.shape[-1]}) '
+                                   f'and simulator ({self._n_node_out}) '
+                                   f'number of output node features are not '
+                                   f'consistent.')
+        if self._n_time_edge > 0:
+            if (edge_features_out is not None
+                    and edge_features_out.shape[-1] != \
+                        self._n_edge_out*self._n_time_edge):
+                raise RuntimeError(f'Input graph '
+                                   f'({edge_features_out.shape[-1]}) '
+                                   f'and simulator '
+                                   f'({self._n_edge_out*self._n_time_edge}) '
+                                   f'number of output edge features are not '
+                                   f'consistent.')
+        else:
+            if (edge_features_out is not None
+                    and edge_features_out.shape[-1] != self._n_edge_out):
+                raise RuntimeError(f'Input graph '
+                                   f'({edge_features_out.shape[-1]}) and '
+                                   f'simulator ({self._n_edge_out}) number '
+                                   f'of output edge features are not '
+                                   f'consistent.')
+        if self._n_time_global > 0:
+            if (global_features_out is not None
+                    and global_features_out.shape[-1] != \
+                        self._n_global_out*self._n_time_global):
+                raise RuntimeError(f'Input graph ('
+                                   f'({global_features_out.shape[-1]}) '
+                                   f'and simulator '
+                                   f'''({self._n_global_out*
+                                       self._n_time_global}) '''
+                                   f'number of output global features are not '
+                                   f'consistent.')
+        else:
+            if (global_features_out is not None
+                    and global_features_out.shape[-1] != self._n_global_out):
+                raise RuntimeError(f'Input graph '
+                                   f'({global_features_out.shape[-1]}) '
+                                   f'and simulator ({self._n_global_out}) '
+                                   f'number of output global features are not '
+                                   f'consistent.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
         # Normalize output features data
         if is_normalized:                
@@ -1015,7 +1106,6 @@ class GNNEPDBaseModel(torch.nn.Module):
         activation_function : torch.nn._Module
             PyTorch unit activation function.
         """
-        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Get activation function class
         try:
@@ -1419,75 +1509,157 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Instantiate data scalers
         scaler_node_in = None
-        if self._n_node_in > 0:
-            scaler_node_in = TorchStandardScaler(
-                n_features=self._n_node_in, device_type=self._device_type)
-        scaler_edge_in = None
-        if self._n_edge_in > 0:
-            scaler_edge_in = TorchStandardScaler(
-                n_features=self._n_edge_in, device_type=self._device_type)
-        scaler_global_in = None
-        if self._n_global_in > 0:
-            scaler_global_in = TorchStandardScaler(
-                n_features=self._n_global_in, device_type=self._device_type)
         scaler_node_out = None
-        if self._n_node_out > 0:
-            scaler_node_out = TorchStandardScaler(
+        if self._n_time_node > 0:
+            if self._n_node_in > 0:
+                scaler_node_in = TorchStandardScaler(
+                    n_features=self._n_node_in*self._n_time_node, 
+                    device_type=self._device_type)      
+            if self._n_node_out > 0:
+                scaler_node_out = TorchStandardScaler(
+                n_features=self._n_node_out*self._n_time_node, 
+                device_type=self._device_type)
+        else:
+            if self._n_node_in > 0:
+                scaler_node_in = TorchStandardScaler(
+                    n_features=self._n_node_in, device_type=self._device_type)
+            if self._n_node_out > 0:
+                scaler_node_out = TorchStandardScaler(
                 n_features=self._n_node_out, device_type=self._device_type)
+        scaler_edge_in = None
         scaler_edge_out = None
-        if self._n_edge_out > 0:
-            scaler_edge_out = TorchStandardScaler(
-                n_features=self._n_edge_out, device_type=self._device_type)
+        if self._n_time_edge > 0:
+            if self._n_edge_in > 0:
+                scaler_edge_in = TorchStandardScaler(
+                    n_features=self._n_edge_in*self._n_time_edge, 
+                    device_type=self._device_type)
+            if self._n_edge_out > 0:
+                scaler_edge_out = TorchStandardScaler(
+                    n_features=self._n_edge_out*self._n_time_edge, 
+                    device_type=self._device_type)
+        else:
+            if self._n_edge_in > 0:
+                scaler_edge_in = TorchStandardScaler(
+                    n_features=self._n_edge_in, device_type=self._device_type)
+            if self._n_edge_out > 0:
+                scaler_edge_out = TorchStandardScaler(
+                    n_features=self._n_edge_out, device_type=self._device_type)
+        scaler_global_in = None
         scaler_global_out = None
-        if self._n_global_out > 0:
-            scaler_global_out = TorchStandardScaler(
-                n_features=self._n_global_out, device_type=self._device_type)
+        if self._n_time_global > 0:
+            if self._n_global_in > 0:
+                scaler_global_in = TorchStandardScaler(
+                    n_features=self._n_global_in*self._n_time_global, 
+                    device_type=self._device_type)
+            if self._n_global_out > 0:
+                scaler_global_out = TorchStandardScaler(
+                    n_features=self._n_global_out*self._n_time_global, 
+                    device_type=self._device_type)
+        else:
+            if self._n_global_in > 0:
+                scaler_global_in = TorchStandardScaler(
+                    n_features=self._n_global_in, 
+                    device_type=self._device_type)
+            if self._n_global_out > 0:
+                scaler_global_out = TorchStandardScaler(
+                    n_features=self._n_global_out, 
+                    device_type=self._device_type)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Get scaling parameters and fit data scalers: node input features
-        if self._n_node_in > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='node_features_in',
-                n_features=self._n_node_in)
-            scaler_node_in.set_mean_and_std(mean, std)        
-        # Get scaling parameters and fit data scalers: edge input features
-        if self._n_edge_in > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='edge_features_in',
-                n_features=self._n_edge_in)
-            scaler_edge_in.set_mean_and_std(mean, std)
-        # Get scaling parameters and fit data scalers: global input features
-        if self._n_global_in > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='global_features_in',
-                n_features=self._n_global_in)
-            scaler_global_in.set_mean_and_std(mean, std)
-        # Get scaling parameters and fit data scalers: node output features
-        if self._n_node_out > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='node_features_out',
-                n_features=self._n_node_out)
-            scaler_node_out.set_mean_and_std(mean, std)
-        # Get scaling parameters and fit data scalers: edge output features
-        if self._n_edge_out > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='edge_features_out',
-                n_features=self._n_edge_out)
-            scaler_edge_out.set_mean_and_std(mean, std)
-        # Get scaling parameters and fit data scalers: global output features
-        if self._n_global_out > 0:
-            mean, std = graph_standard_partial_fit(
-                dataset, features_type='global_features_out',
-                n_features=self._n_global_out)
-            scaler_global_out.set_mean_and_std(mean, std)
+        if self._n_time_node > 0:
+            # Time series data
+            # Get scaling parameters and fit data scalers: node input features
+            if self._n_node_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='node_features_in',
+                    n_features=self._n_node_in * self._n_time_node)
+                scaler_node_in.set_mean_and_std(mean, std)     
+            # Get scaling parameters and fit data scalers: node output features
+            if self._n_node_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='node_features_out',
+                    n_features=self._n_node_out*self._n_time_node)
+                scaler_node_out.set_mean_and_std(mean, std)   
+        else:
+            # No time series data
+            # Get scaling parameters and fit data scalers: node input features
+            if self._n_node_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='node_features_in',
+                    n_features=self._n_node_in)
+                scaler_node_in.set_mean_and_std(mean, std)     
+            # Get scaling parameters and fit data scalers: node output features
+            if self._n_node_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='node_features_out',
+                    n_features=self._n_node_out)
+                scaler_node_out.set_mean_and_std(mean, std) 
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+        if self._n_time_edge > 0:
+            # Get scaling parameters and fit data scalers: edge input features
+            if self._n_edge_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='edge_features_in',
+                    n_features=self._n_edge_in*self._n_time_edge)
+                scaler_edge_in.set_mean_and_std(mean, std)
+            # Get scaling parameters and fit data scalers: edge output features
+            if self._n_edge_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='edge_features_out',
+                    n_features=self._n_edge_out*self._n_time_edge)
+                scaler_edge_out.set_mean_and_std(mean, std)
+        else:
+            # Get scaling parameters and fit data scalers: edge input features
+            if self._n_edge_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='edge_features_in',
+                    n_features=self._n_edge_in)
+                scaler_edge_in.set_mean_and_std(mean, std)
+            # Get scaling parameters and fit data scalers: edge output features
+            if self._n_edge_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='edge_features_out',
+                    n_features=self._n_edge_out)
+                scaler_edge_out.set_mean_and_std(mean, std)
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if self._n_time_global > 0:
+            # Get scaling parameters and fit data scalers: 
+            # global input features
+            if self._n_global_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='global_features_in',
+                    n_features=self._n_global_in*self._n_time_global)
+                scaler_global_in.set_mean_and_std(mean, std)            
+            # Get scaling parameters and fit data scalers: 
+            # global output features
+            if self._n_global_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='global_features_out',
+                    n_features=self._n_global_out*self._n_time_global)
+                scaler_global_out.set_mean_and_std(mean, std)
+        else:
+            # Get scaling parameters and fit data scalers: 
+            # global input features
+            if self._n_global_in > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='global_features_in',
+                    n_features=self._n_global_in)
+                scaler_global_in.set_mean_and_std(mean, std)            
+            # Get scaling parameters and fit data scalers: 
+            # global output features
+            if self._n_global_out > 0:
+                mean, std = graph_standard_partial_fit(
+                    dataset, features_type='global_features_out',
+                    n_features=self._n_global_out)
+                scaler_global_out.set_mean_and_std(mean, std)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         if is_verbose:
             print('\n> Setting fitted standard scalers...\n')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set fitted data scalers
         self._data_scalers['node_features_in'] = scaler_node_in
+        self._data_scalers['node_features_out'] = scaler_node_out
         self._data_scalers['edge_features_in'] = scaler_edge_in
         self._data_scalers['global_features_in'] = scaler_global_in
-        self._data_scalers['node_features_out'] = scaler_node_out
         self._data_scalers['edge_features_out'] = scaler_edge_out
         self._data_scalers['global_features_out'] = scaler_global_out
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1721,11 +1893,11 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
             raise RuntimeError('Unknown features type.')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Process sample to fit data scaler
+        
         if isinstance(features_tensor, torch.Tensor):
-            # Check number of features
-            if features_tensor.shape[1] != n_features:
+            if features_tensor.shape[-1] != n_features:
                 raise RuntimeError(f'Mismatch between input graph '
-                                   f'({features_tensor.shape[1]}) and '
+                                   f'({features_tensor.shape[-1]}) and '
                                    f'model ({n_features}) number of '
                                    f'features for features type: '
                                    f'{features_type}')
@@ -1742,14 +1914,14 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
     if not isinstance(mean, torch.Tensor):
         raise RuntimeError('Features standardization mean tensor is not a '
                            'torch.Tensor.')
-    elif len(mean) != features_tensor.shape[1]:
+    elif len(mean) != features_tensor.shape[-1]:
         raise RuntimeError('Features standardization mean tensor is not a '
                            'torch.Tensor(1d) with shape (n_features,).')
     # Check features standardization standard deviation tensor
     if not isinstance(std, torch.Tensor):
         raise RuntimeError('Features standardization standard deviation '
                             'tensor is not a torch.Tensor.')
-    elif len(std) != features_tensor.shape[1]:
+    elif len(std) != features_tensor.shape[-1]:
         raise RuntimeError('Features standardization standard deviation '
                            'tensor is not a torch.Tensor(1d) with shape '
                            '(n_features,).')

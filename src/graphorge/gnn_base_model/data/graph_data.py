@@ -63,7 +63,7 @@ class GraphData:
         (1, n_targets).
     _edges_indexes : numpy.ndarray(2d)
         Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
-        (num_edges, 2), where the i-th edge is stored in
+        (n_edges, 2), where the i-th edge is stored in
         edges_indexes[i, :] as (start_node_index, end_node_index).
     _metadata : dict
         A dictionary containing any metadata information.

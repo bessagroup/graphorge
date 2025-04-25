@@ -144,8 +144,8 @@ if __name__ == "__main__":
                     'out_distribution')[2]
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set case studies base directory
-    base_dir = ('/home/bernardoferreira/Documents/brown/projects/'
-                'colaboration_guillaume/shell_knock_down/')
+    base_dir = ('/Users/rbarreira/Desktop/Continual_Learning/graphorge/src/'
+         'graphorge/projects/shell_knock_down/')
     # Set case study directory
     case_study_name = '1_graph_from_defects'
     case_study_dir = os.path.join(os.path.normpath(base_dir),
