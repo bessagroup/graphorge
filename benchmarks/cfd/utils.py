@@ -170,6 +170,16 @@ def _parse_tensorflow_sample(sample, metadata):
 
     """
 
+    try:
+        import tensorflow as tf
+    except ImportError:
+        err_msg = (
+            "TensorFlow is required to parse the dataset."
+            " See https://www.tensorflow.org/install"
+            " for installation instructions."
+        )
+        raise ImportError(err_msg)
+
     feature_dict = {
         k: tf.io.VarLenFeature(tf.string) for k in metadata["field_names"]
     }
