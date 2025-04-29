@@ -394,8 +394,7 @@ def save_sample_predictions(predictions_dir, prediction_id, sample_results,
     predictions_dir : str
         Directory where sample prediction results are stored.
     prediction_id : int
-        Sample ID. Sample ID is appended to sample prediction results file
-        name.
+        Prediction ID appended to the prediction sample results file name.
     sample_results : dict
         Sample prediction results.
     file_name_pattern: str, default=None
