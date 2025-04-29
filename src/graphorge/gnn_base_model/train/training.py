@@ -753,7 +753,7 @@ def load_training_state(model, opt_algorithm, optimizer,
             raise RuntimeError('Unknown optimization algorithm')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load optimizer state
-        optimizer_state = torch.load(optimizer_path)
+        optimizer_state = torch.load(optimizer_path, weights_only=True)
         # Set loaded optimizer state
         optimizer.load_state_dict(optimizer_state['state'])
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

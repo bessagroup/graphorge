@@ -1342,7 +1342,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load model state
         self.load_state_dict(torch.load(model_path,
-                                        map_location=torch.device('cpu')))
+                                        map_location=torch.device('cpu'),
+                                        weights_only=True))
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return epoch
     # -------------------------------------------------------------------------
