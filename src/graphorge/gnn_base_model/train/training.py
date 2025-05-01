@@ -70,8 +70,9 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 loss_type='mse', loss_kwargs={},
                 batch_size=1, is_sampler_shuffle=False,
                 is_early_stopping=False, early_stopping_kwargs={},
-                load_model_state=None, save_every=None, dataset_file_path=None,
-                device_type='cpu', seed=None, is_verbose=False):
+                load_model_state=None, save_every=None, save_loss_every=None,
+                dataset_file_path=None, device_type='cpu', seed=None,
+                is_verbose=False):
     """Training of Graph Neural Network model.
     
     Parameters
@@ -151,6 +152,9 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     save_every : int, default=None
         Save Graph Neural Network model every save_every epochs. If None, then
         saves only last epoch and best performance states.
+    save_loss_every : int, default=None
+        Save loss history model every save_loss_every epochs. If None, then
+        saves loss history only after the last epoch.
     dataset_file_path : str, default=None
         Graph Neural Network graph data set file path if such file exists. Only
         used for output purposes.
@@ -446,7 +450,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         # Save model and optimizer current states
         if save_every is not None and epoch % save_every == 0:
             save_training_state(model=model, optimizer=optimizer, epoch=epoch)
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if save_loss_every is not None and epoch % save_loss_every == 0:
             # Get validation loss history
             if is_early_stopping:
                 validation_loss_history = \
@@ -464,15 +469,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             save_training_state(model=model, optimizer=optimizer,
                                 epoch=epoch, is_best_state=True)
             # Get validation loss history
-            if is_early_stopping:
-                validation_loss_history = \
-                    early_stopper.get_validation_loss_history()
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            # Save loss and learning rate histories
-            save_loss_history(model, n_max_epochs, loss_nature, loss_type,
-                      loss_history_epochs, lr_scheduler_type=lr_scheduler_type,
-                      lr_history_epochs=lr_history_epochs,
-                      validation_loss_history=validation_loss_history)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check early stopping criterion
         if is_early_stopping:
