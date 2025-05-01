@@ -193,8 +193,13 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     with torch.no_grad():
         # Loop over graph samples
         for i, pyg_graph in enumerate(tqdm.tqdm(data_loader,
-                                      desc='> Predictions: ',
-                                      disable=not is_verbose)):
+                               mininterval=1,
+                               maxinterval=60,
+                               miniters=0,
+                               dynamic_miniters=True,
+                               desc='> > Predictions: ',
+                               disable=not is_verbose,
+                               unit=' sample')):
             # Move sample to device
             pyg_graph.to(device)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

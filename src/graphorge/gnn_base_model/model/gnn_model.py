@@ -1862,8 +1862,13 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over graph samples
     for pyg_graph in tqdm.tqdm(data_loader,
+                               mininterval=1,
+                               maxinterval=60,
+                               miniters=0,
+                               dynamic_miniters=True,
                                desc='> Processing data samples: ',
-                               disable=not is_verbose):
+                               disable=not is_verbose,
+                               unit=' sample'):
         # Check sample graph type
         if not isinstance(pyg_graph, torch_geometric.data.Data):
             raise RuntimeError('Graph sample must be instance of '
