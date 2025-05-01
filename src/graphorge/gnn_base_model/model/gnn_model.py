@@ -23,7 +23,7 @@ import torch
 import torch_geometric.nn
 import torch_geometric.data
 import torch_geometric.loader
-import tqdm
+from tqdm.auto import tqdm
 import sklearn.preprocessing
 # Local
 from gnn_base_model.model.gnn_epd_model import EncodeProcessDecode
@@ -1861,7 +1861,7 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
         torch_geometric.loader.dataloader.DataLoader(dataset=dataset)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over graph samples
-    for pyg_graph in tqdm.tqdm(data_loader,
+    for pyg_graph in tqdm(data_loader,
                                mininterval=1,
                                maxinterval=60,
                                miniters=0,

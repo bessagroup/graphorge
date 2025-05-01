@@ -48,6 +48,7 @@ import copy
 # Third-party
 import torch
 import torch_geometric.loader
+from tqdm.auto import tqdm
 import numpy as np
 # Local
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel
@@ -310,6 +311,14 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         output_normalization_str = 'Yes' if is_model_out_normalized else 'No'
         print(f'\n> Output data normalization: {output_normalization_str}')
         print('\n\n> Starting training process...\n')
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        pbar = tqdm(total=n_max_epochs, 
+                    mininterval=1,
+                    maxinterval=300,
+                    miniters=0,
+                    dynamic_miniters=True,
+                    desc='> Epochs: ',
+                    unit=' epoch')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over training iterations
     while is_keep_training:
@@ -318,7 +327,15 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Loop over graph batches. A graph batch is a data object describing a
         # batch of graphs as one large (disconnected) graph.
-        for pyg_graph in data_loader:
+        for pyg_graph in tqdm(data_loader,
+                              leave=False,
+                              mininterval=1,
+                              maxinterval=60,
+                              miniters=0,
+                              dynamic_miniters=True,
+                              desc='> Steps: ',
+                              disable=not is_verbose,
+                              unit=' step'):
             # Move graph sample to device
             pyg_graph.to(device)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -405,15 +422,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             # attribute of model parameters
             optimizer.step()
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            if is_verbose:
-                n_max_steps = len(data_loader) * n_max_epochs
-                total_time_sec = time.time() - start_time_sec
-                print('> Epoch: {:{width}d}/{:d} | Training step: {:d}/{:d} | '
-                      'Loss: {:.8e} | Elapsed time (s): {:}'.format(
-                    epoch, n_max_epochs, step, n_max_steps, loss,
-                    str(datetime.timedelta(seconds=int(total_time_sec))),
-                    width=len(str(n_max_epochs))), end='\r')
-            # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Save training step loss and learning rate
             loss_history_steps.append(loss.clone().detach().cpu())
             if is_lr_scheduler:
@@ -486,18 +494,20 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 save_training_state(model, optimizer, epoch=best_epoch,
                                     is_best_state=True)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # Increment epoch counter
+        epoch += 1
+        # Update progress bar
+        pbar.update(1)
         # Check training process flow
-        if epoch >= n_max_epochs:
+        if epoch == n_max_epochs:
             # Completed maximum number of epochs
             is_keep_training = False
             break
         elif is_early_stopping and is_stop_training:
             # Early stopping criterion triggered
             is_keep_training = False
-            break
-        else:
-            # Increment epoch counter
-            epoch += 1
+            break            
+
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
         if is_early_stopping and is_stop_training:

@@ -30,7 +30,7 @@ import datetime
 # Third-party
 import torch
 import torch_geometric
-import tqdm
+from tqdm.auto import tqdm
 import numpy as np
 # Local
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel
@@ -192,7 +192,7 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     # model evaluation (forward propagation)
     with torch.no_grad():
         # Loop over graph samples
-        for i, pyg_graph in enumerate(tqdm.tqdm(data_loader,
+        for i, pyg_graph in enumerate(tqdm(data_loader,
                                mininterval=1,
                                maxinterval=60,
                                miniters=0,
