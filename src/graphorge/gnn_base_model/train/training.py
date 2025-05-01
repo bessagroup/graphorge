@@ -48,7 +48,7 @@ import copy
 # Third-party
 import torch
 import torch_geometric.loader
-from tqdm.auto import tqdm
+from tqdm import tqdm
 import numpy as np
 # Local
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel

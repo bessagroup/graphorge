@@ -23,7 +23,7 @@ import torch
 import torch_geometric.nn
 import torch_geometric.data
 import torch_geometric.loader
-from tqdm.auto import tqdm
+from tqdm import tqdm
 import sklearn.preprocessing
 # Local
 from gnn_base_model.model.gnn_epd_model import EncodeProcessDecode
