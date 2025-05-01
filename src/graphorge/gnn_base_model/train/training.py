@@ -406,10 +406,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             optimizer.step()
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if is_verbose:
+                n_max_steps = len(data_loader) * n_max_epochs
                 total_time_sec = time.time() - start_time_sec
-                print('> Epoch: {:{width}d}/{:d} | Training step: {:d} | '
+                print('> Epoch: {:{width}d}/{:d} | Training step: {:d}/{:d} | '
                       'Loss: {:.8e} | Elapsed time (s): {:}'.format(
-                    epoch, n_max_epochs, step, loss,
+                    epoch, n_max_epochs, step, n_max_steps, loss,
                     str(datetime.timedelta(seconds=int(total_time_sec))),
                     width=len(str(n_max_epochs))), end='\r')
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
