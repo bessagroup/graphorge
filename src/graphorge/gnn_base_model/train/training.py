@@ -68,7 +68,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 opt_algorithm='adam', lr_scheduler_type=None,
                 lr_scheduler_kwargs={}, loss_nature='node_features_out',
                 loss_type='mse', loss_kwargs={},
-                batch_size=1, is_sampler_shuffle=False,
+                batch_size=1, is_sampler_shuffle=False, data_loader_kwargs={},
                 is_early_stopping=False, early_stopping_kwargs={},
                 load_model_state=None, save_every=None, save_loss_every=None,
                 dataset_file_path=None, device_type='cpu', seed=None,
@@ -128,6 +128,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         Number of samples loaded per batch.
     is_sampler_shuffle : bool, default=False
         If True, shuffles data set samples at every epoch.
+    data_loader_kwargs : dict, default={}
+        Additional arguments for torch_geometric.loader.dataloader.DataLoader.
     is_early_stopping : bool, default=False
         If True, then training process is halted when early stopping criterion
         is triggered. By default, 20% of the training data set is allocated for
@@ -304,10 +306,11 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     if isinstance(seed, int):
         data_loader = torch_geometric.loader.dataloader.DataLoader(
             dataset=dataset, batch_size=batch_size, worker_init_fn=seed_worker,
-            generator=generator)
+            generator=generator, **data_loader_kwargs)
     else:
         data_loader = torch_geometric.loader.dataloader.DataLoader(
-            dataset=dataset, batch_size=batch_size, shuffle=is_sampler_shuffle)
+            dataset=dataset, batch_size=batch_size, shuffle=is_sampler_shuffle,
+            **data_loader_kwargs)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if is_verbose:
         input_normalization_str = 'Yes' if is_model_in_normalized else 'No'
