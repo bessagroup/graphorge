@@ -197,7 +197,7 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
                                maxinterval=60,
                                miniters=0,
                                dynamic_miniters=True,
-                               desc='> > Predictions: ',
+                               desc='> Predictions: ',
                                disable=not is_verbose,
                                unit=' sample')):
             # Move sample to device
