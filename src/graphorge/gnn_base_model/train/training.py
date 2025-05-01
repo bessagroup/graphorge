@@ -181,6 +181,13 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     # Set device
     device = torch.device(device_type)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if is_verbose:
+        if device_type == 'cuda':
+            device_name = torch.cuda.get_device_name(device)
+        else:
+            device_name = 'cpu'
+        print(f'\n> Setting device: {device_name}')
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     start_time_sec = time.time()
     if is_verbose:
         print('\nGraph Neural Network model training'
