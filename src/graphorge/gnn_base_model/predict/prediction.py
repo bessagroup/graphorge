@@ -196,7 +196,6 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
                                mininterval=1,
                                maxinterval=60,
                                miniters=0,
-                               dynamic_miniters=True,
                                desc='> Predictions: ',
                                disable=not is_verbose,
                                unit=' sample')):

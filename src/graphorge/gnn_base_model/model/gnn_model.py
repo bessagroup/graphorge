@@ -1865,7 +1865,6 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
                                mininterval=1,
                                maxinterval=60,
                                miniters=0,
-                               dynamic_miniters=True,
                                desc='> Processing data samples: ',
                                disable=not is_verbose,
                                unit=' sample'):

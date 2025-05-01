@@ -316,7 +316,6 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                     mininterval=1,
                     maxinterval=300,
                     miniters=0,
-                    dynamic_miniters=True,
                     desc='> Epochs: ',
                     unit=' epoch')
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
