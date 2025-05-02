@@ -443,7 +443,7 @@ class GraphIndependentNetwork(torch.nn.Module):
                 else:
                     raise RuntimeError('Unknown normalization layer '
                                        f'({norm_layer}).')
-                self._node_fn.add_module(norm_layer, _norm_layer)
+                self._edge_fn.add_module(norm_layer, _norm_layer)
         else:
             self._edge_fn = None        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -489,7 +489,7 @@ class GraphIndependentNetwork(torch.nn.Module):
                     else:
                         raise RuntimeError('Unknown normalization layer '
                                         f'({norm_layer}).')
-                    self._node_fn.add_module(norm_layer, _norm_layer)
+                    self._global_fn.add_module(norm_layer, _norm_layer)
         else:
             self._global_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -966,7 +966,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 else:
                     raise RuntimeError('Unknown normalization layer '
                                        f'({norm_layer}).')
-                self._node_fn.add_module(norm_layer, _norm_layer)
+                self._edge_fn.add_module(norm_layer, _norm_layer)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set global update function as multilayer feed-forward neural network
         # with layer normalization:
@@ -1026,7 +1026,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                     else:
                         raise RuntimeError('Unknown normalization layer '
                                         f'({norm_layer}).')
-                    self._node_fn.add_module(norm_layer, _norm_layer)
+                    self._global_fn.add_module(norm_layer, _norm_layer)
         else:
             self._global_fn = None
     # -------------------------------------------------------------------------
