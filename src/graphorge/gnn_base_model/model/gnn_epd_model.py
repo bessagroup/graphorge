@@ -93,7 +93,10 @@ class EncodeProcessDecode(torch.nn.Module):
                  dec_global_output_activation=torch.nn.Identity(),
                  is_node_res_connect=False,
                  is_edge_res_connect=False,
-                 is_global_res_connect=False):
+                 is_global_res_connect=False,
+                 enc_norm_layer = None,
+                 pro_norm_layer = None,
+                 dec_norm_layer = None):
         """Constructor.
         
         Parameters
@@ -293,13 +296,6 @@ class EncodeProcessDecode(torch.nn.Module):
         else:
             n_global_hidden_out = hidden_layer_size
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # Set encoder normalization layer
-        is_enc_norm_layer = False
-        # Set processor normalization layer
-        is_pro_norm_layer = False
-        # Set decoder normalization layer
-        is_dec_norm_layer = False
-        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set model encoder
         self._encoder = \
             Encoder(n_hidden_layers=enc_n_hidden_layers,
@@ -316,7 +312,7 @@ class EncodeProcessDecode(torch.nn.Module):
                     edge_output_activation=enc_edge_output_activation,
                     global_hidden_activation=enc_global_hidden_activation,
                     global_output_activation=enc_global_output_activation,
-                    is_norm_layer=is_enc_norm_layer, is_skip_unset_update=True)
+                    norm_layer=enc_norm_layer, is_skip_unset_update=True)
         # Set model processor if positive number of message-passing steps
         if self._n_message_steps > 0:
             self._processor = \
@@ -342,7 +338,7 @@ class EncodeProcessDecode(torch.nn.Module):
                           n_time_node=n_time_node,
                           n_time_edge=n_time_edge,
                           n_time_global=n_time_global,
-                          is_norm_layer=is_pro_norm_layer,
+                          norm_layer=pro_norm_layer,
                           is_node_res_connect=is_node_res_connect,
                           is_edge_res_connect=is_edge_res_connect,
                           is_global_res_connect=is_global_res_connect)
@@ -377,7 +373,7 @@ class EncodeProcessDecode(torch.nn.Module):
                     global_output_activation=dec_global_output_activation,
                     n_time_node=n_time_node, n_time_edge=n_time_edge,
                     n_time_global=n_time_global,
-                    is_norm_layer=is_dec_norm_layer,
+                    norm_layer=dec_norm_layer,
                     is_skip_unset_update=True)
     # -------------------------------------------------------------------------
     def forward(self, edges_indexes, node_features_in=None,
@@ -526,7 +522,7 @@ class Processor(torch_geometric.nn.MessagePassing):
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
-                 is_norm_layer = False, is_node_res_connect=False,
+                 norm_layer=None, is_node_res_connect=False,
                  is_edge_res_connect=False, is_global_res_connect=False):
         """Constructor.
         
@@ -592,9 +588,8 @@ class Processor(torch_geometric.nn.MessagePassing):
             Number of discrete time steps of global features.
             If greater than 0, then global input features include a time
             dimension and message passing layers are RNNs.
-        is_norm_layer : bool, default=False
-            If True, then add normalization layer to node, edge and global
-            update functions.
+        norm_layer : bool, default=None
+            Add normalization layer to node, edge and global update functions.
         is_node_res_connect : bool, default=False
             Add residual connections between nodes input and output features
             if True, False otherwise. Number of input and output features must
@@ -687,7 +682,7 @@ class Processor(torch_geometric.nn.MessagePassing):
                 n_time_node = n_time_node,
                 n_time_edge = n_time_edge,
                 n_time_global = n_time_global,
-                is_norm_layer=is_norm_layer,
+                norm_layer=norm_layer,
                 global_hidden_activation=global_hidden_activation,
                 global_output_activation=global_output_activation)
              for _ in range(n_message_steps)])

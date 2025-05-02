@@ -236,9 +236,8 @@ class GraphIndependentNetwork(torch.nn.Module):
         Number of discrete time steps of global features.
         If greater than 0, then global input features include a time
         dimension, and message passing layers are RNNs.
-    _is_norm_layer : bool, default=False
-        If True, then add normalization layer to node, edge and global
-        update functions.
+    _norm_layer : str, default=None
+            Normalization layer to node, edge and global update functions.
     _is_skip_unset_update : bool
         If True, then return features input matrix when the corresponding
         update function has not been setup, otherwise return None.
@@ -260,7 +259,7 @@ class GraphIndependentNetwork(torch.nn.Module):
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
-                 is_norm_layer=False,
+                 norm_layer=None,
                  is_skip_unset_update=False):
         """Constructor.
         
@@ -326,9 +325,8 @@ class GraphIndependentNetwork(torch.nn.Module):
             Number of discrete time steps of global features.
             If greater than 0, then global input features include a time
             dimension and message passing layers are RNNs.
-        is_norm_layer : bool, default=False
-            If True, then add normalization layer to node, edge and global
-            update functions.
+        norm_layer : str, default=None
+            Add normalization layer to node, edge and global update functions.
         is_skip_unset_update : bool, default=False
             If True, then return features input matrix when the corresponding
             update function has not been setup, otherwise return None. Ignored
@@ -368,7 +366,7 @@ class GraphIndependentNetwork(torch.nn.Module):
         self._n_time_global = int(n_time_global)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set normalization layer
-        self._is_norm_layer = is_norm_layer
+        self._norm_layer = norm_layer
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set node update function as multilayer feed-forward neural network
         # or recurrent neural network
@@ -395,10 +393,18 @@ class GraphIndependentNetwork(torch.nn.Module):
                 self._node_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-feature) to node update function
-            if is_norm_layer:
-                norm_layer = torch.nn.BatchNorm1d(
-                    num_features=self._n_node_out, affine=True)
-                self._node_fn.add_module('Norm-Layer', norm_layer)
+            if norm_layer:
+                if norm_layer == 'layernorm':
+                    _norm_layer = torch.nn.LayerNorm(
+                        normalized_shape=self._n_node_out,
+                        elementwise_affine=True)
+                elif norm_layer == 'batchnorm':
+                    _norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_node_out, affine=True)
+                else:
+                    raise RuntimeError('Unknown normalization layer '
+                                       f'({norm_layer}).')
+                self._node_fn.add_module(norm_layer, _norm_layer)
         else:
             self._node_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -426,10 +432,18 @@ class GraphIndependentNetwork(torch.nn.Module):
                 self._edge_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-feature) to edge update function
-            if is_norm_layer:
-                norm_layer = torch.nn.BatchNorm1d(
-                    num_features=self._n_edge_out, affine=True)
-                self._edge_fn.add_module('Norm-Layer', norm_layer)
+            if norm_layer:
+                if norm_layer == 'layernorm':
+                    _norm_layer = torch.nn.LayerNorm(
+                        normalized_shape=self._n_edge_out,
+                        elementwise_affine=True)
+                elif norm_layer == 'batchnorm':
+                    _norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_edge_out, affine=True)
+                else:
+                    raise RuntimeError('Unknown normalization layer '
+                                       f'({norm_layer}).')
+                self._edge_fn.add_module(norm_layer, _norm_layer)
         else:
             self._edge_fn = None        
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -456,7 +470,7 @@ class GraphIndependentNetwork(torch.nn.Module):
                 self._global_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-element) to global update function
-            if is_norm_layer:
+            if norm_layer:
                 if self._n_global_in < 2:
                     raise RuntimeError(f'Number of global features '
                                        f'({self._n_global_in}) must be '
@@ -465,10 +479,17 @@ class GraphIndependentNetwork(torch.nn.Module):
                                        f'update function normalization '
                                        f'layer.')
                 else:
-                    norm_layer = torch.nn.LayerNorm(
-                        normalized_shape=self._n_global_out,
-                        elementwise_affine=True)
-                    self._global_fn.add_module('Norm-Layer', norm_layer)
+                    if norm_layer == 'layernorm':
+                        _norm_layer = torch.nn.LayerNorm(
+                            normalized_shape=self._n_global_out,
+                            elementwise_affine=True)
+                    elif norm_layer == 'batchnorm':
+                        _norm_layer = torch.nn.BatchNorm1d(
+                            num_features=self._n_global_out, affine=True)
+                    else:
+                        raise RuntimeError('Unknown normalization layer '
+                                        f'({norm_layer}).')
+                    self._global_fn.add_module(norm_layer, _norm_layer)
         else:
             self._global_fn = None
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -524,7 +545,7 @@ class GraphIndependentNetwork(torch.nn.Module):
             if not isinstance(node_features_in, torch.Tensor):
                 raise RuntimeError('Nodes features input matrix is not a '
                                    'torch.Tensor.')
-            elif self._is_norm_layer and node_features_in.shape[0] < 2:
+            elif self._norm_layer and node_features_in.shape[0] < 2:
                 raise RuntimeError(f'Number of nodes '
                                    f'({node_features_in.shape[0]}) must be '
                                    f'greater than 1 to compute standard '
@@ -549,7 +570,7 @@ class GraphIndependentNetwork(torch.nn.Module):
             if not isinstance(edge_features_in, torch.Tensor):
                 raise RuntimeError('Edges features input matrix is not a '
                                    'torch.Tensor.')
-            elif self._is_norm_layer and edge_features_in.shape[0] < 2:
+            elif self._norm_layer and edge_features_in.shape[0] < 2:
                 raise RuntimeError(f'Number of edges '
                                    f'({edge_features_in.shape[0]}) must be '
                                    f'greater than 1 to compute standard '
@@ -694,9 +715,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         Number of discrete time steps of global features.
         If greater than 0, then global input features include a time
         dimension, and message passing layers are RNNs.
-    _is_norm_layer : bool, default=False
-        If True, then add normalization layer to node, edge and global
-        update functions.
+    _norm_layer : str, default=None
+            Normalization layer to node, edge and global update functions.
         
     Methods
     -------
@@ -718,7 +738,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                  edge_output_activation=torch.nn.Identity(),
                  global_hidden_activation=torch.nn.Identity(),
                  global_output_activation=torch.nn.Identity(),
-                 is_norm_layer=False):
+                 norm_layer=None):
         """Constructor.
         
         Parameters
@@ -781,9 +801,8 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             Number of discrete time steps of global features.
             If greater than 0, then global input features include a time
             dimension and message passing layers are RNNs.
-        is_norm_layer : bool, default=False
-            If True, then add normalization layer to node, edge and global
-            update functions.
+        norm_layer : str, default=None
+            Add normalization layer to node, edge and global update functions.
         """
         # Set aggregation scheme
         if edge_to_node_aggr == 'add':
@@ -835,7 +854,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
         self._n_time_global = int(n_time_global)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set normalization layer
-        self._is_norm_layer = is_norm_layer
+        self._norm_layer = norm_layer
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check number of input features
         if (self._n_node_in < 1 and self._n_edge_in < 1
@@ -885,10 +904,18 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 self._node_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to node update function
-        if is_norm_layer:
-            norm_layer = torch.nn.BatchNorm1d(
-                num_features=self._n_node_out, affine=True)
-            self._node_fn.add_module('Norm-Layer', norm_layer)        
+        if norm_layer:
+                if norm_layer == 'layernorm':
+                    _norm_layer = torch.nn.LayerNorm(
+                        normalized_shape=self._n_node_out,
+                        elementwise_affine=True)
+                elif norm_layer == 'batchnorm':
+                    _norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_node_out, affine=True)
+                else:
+                    raise RuntimeError('Unknown normalization layer '
+                                       f'({norm_layer}).')
+                self._node_fn.add_module(norm_layer, _norm_layer)    
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set edge update function as multilayer feed-forward or recurrent
         # neural network with layer normalization:
@@ -928,10 +955,18 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                 self._edge_fn.add_module('FNN', fnn)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Add normalization layer (per-feature) to edge update function
-        if is_norm_layer:
-            norm_layer = torch.nn.BatchNorm1d(
-                num_features=self._n_edge_out, affine=True)
-            self._edge_fn.add_module('Norm-Layer', norm_layer)
+        if norm_layer:
+                if norm_layer == 'layernorm':
+                    _norm_layer = torch.nn.LayerNorm(
+                        normalized_shape=self._n_edge_out,
+                        elementwise_affine=True)
+                elif norm_layer == 'batchnorm':
+                    _norm_layer = torch.nn.BatchNorm1d(
+                        num_features=self._n_edge_out, affine=True)
+                else:
+                    raise RuntimeError('Unknown normalization layer '
+                                       f'({norm_layer}).')
+                self._edge_fn.add_module(norm_layer, _norm_layer)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Set global update function as multilayer feed-forward neural network
         # with layer normalization:
@@ -973,7 +1008,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                     self._global_fn.add_module('FNN', fnn)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Add normalization layer (per-element) to global update function
-            if is_norm_layer:
+            if norm_layer:
                 if self._n_global_in < 2:
                     raise RuntimeError(f'Number of global features '
                                        f'({self._n_global_in}) must be '
@@ -981,10 +1016,17 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
                                        f'deviation in the corresponding '
                                        f'update function normalization layer.')
                 else:
-                    norm_layer = torch.nn.LayerNorm(
-                        normalized_shape=self._n_global_out,
-                        elementwise_affine=True)
-                    self._global_fn.add_module('Norm-Layer', norm_layer)
+                    if norm_layer == 'layernorm':
+                        _norm_layer = torch.nn.LayerNorm(
+                            normalized_shape=self._n_node_out,
+                            elementwise_affine=True)
+                    elif norm_layer == 'batchnorm':
+                        _norm_layer = torch.nn.BatchNorm1d(
+                            num_features=self._n_node_out, affine=True)
+                    else:
+                        raise RuntimeError('Unknown normalization layer '
+                                        f'({norm_layer}).')
+                    self._global_fn.add_module(norm_layer, _norm_layer)
         else:
             self._global_fn = None
     # -------------------------------------------------------------------------
@@ -1047,7 +1089,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             if not isinstance(node_features_in, torch.Tensor):
                 raise RuntimeError('Nodes features input matrix is not a '
                                    'torch.Tensor.')
-            elif self._is_norm_layer and node_features_in.shape[0] < 2:
+            elif self._norm_layer and node_features_in.shape[0] < 2:
                 raise RuntimeError(f'Number of nodes '
                                    f'({node_features_in.shape[0]}) must be '
                                    f'greater than 1 to compute standard '
@@ -1071,7 +1113,7 @@ class GraphInteractionNetwork(torch_geometric.nn.MessagePassing):
             if not isinstance(edge_features_in, torch.Tensor):
                 raise RuntimeError('Edges features input matrix is not a '
                                    'torch.Tensor.')
-            elif self._is_norm_layer and edge_features_in.shape[0] < 2:
+            elif self._norm_layer and edge_features_in.shape[0] < 2:
                 raise RuntimeError(f'Number of edges '
                                    f'({edge_features_in.shape[0]}) must be '
                                    f'greater than 1 to compute standard '
