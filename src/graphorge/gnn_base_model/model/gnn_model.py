@@ -722,6 +722,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             self._enc_global_hidden_activ_type
         model_init_args['enc_global_output_activ_type'] = \
             self._enc_global_output_activ_type
+        model_init_args['enc_norm_layer'] = self._enc_norm_layer
         model_init_args['pro_node_hidden_activ_type'] = \
             self._pro_node_hidden_activ_type
         model_init_args['pro_node_output_activ_type'] = \
@@ -730,6 +731,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             self._pro_edge_hidden_activ_type
         model_init_args['pro_edge_output_activ_type'] = \
             self._enc_edge_output_activ_type
+        model_init_args['pro_norm_layer'] = self._pro_norm_layer
         model_init_args['pro_global_hidden_activ_type'] = \
             self._pro_global_hidden_activ_type
         model_init_args['pro_global_output_activ_type'] = \
@@ -746,6 +748,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             self._dec_global_hidden_activ_type
         model_init_args['dec_global_output_activ_type'] = \
             self._dec_global_output_activ_type
+        model_init_args['dec_norm_layer'] = self._dec_norm_layer
         model_init_args['model_directory'] = self.model_directory
         model_init_args['model_name'] = self.model_name
         model_init_args['is_model_in_normalized'] = self.is_model_in_normalized
