@@ -8,13 +8,15 @@ Graphorge
 
 Summary
 -------
-Insert text.
+Graphorge is an open-source Python package built on `PyTorch <https://pytorch.org/>`_ that streamlines the development and evaluation of graph neural networks. It provides a complete workflow encompassing data preprocessing, dataset management, model training, prediction, and result post-processing. Graphorge includes a fully implemented, highly customizable example architecture to demonstrate practical use, and its code is thoroughly documented and commented, making it especially accessible to researchers new to implementing graph neural networks. Although originally developed for computational mechanics, Graphorge’s core functionality is general and can be applied across a wide range of domains.
 
 ----
 
 Statement of Need
 -----------------
-Insert text.
+Graph neural networks have emerged as a powerful modeling tool for data with relational or geometric structure. Existing graph neural network libraries tend to fall into two categories. On the one hand, many research-specific implementations are minimally documented and tightly tailored to particular benchmarks. While this may enable results reproducibility, code comprehension is often limited, as well as its customization and generalization to different applications. On the other hand, general purpose frameworks such as `PyTorch Geometric <https://pytorch-geometric.readthedocs.io/en/latest/>`_ and `Deep Graph Library <https://www.dgl.ai/>`_ offer robust, high-performance platforms to implement graph neural networks, usually providing multiple backend support and integration of state-of-the-art scientific contributions.
+
+Graphorge is not intended as an alternative to general-purpose frameworks, which are well-suited to the needs of advanced users. Instead, it is designed as a practical and educational tool for researchers and students that aim to understand and be able to implement a full Graph Neural Network pipeline. While only including a single, highly customizable architecture to demonstrate practical use, every single module in Graphorge is extensively documented and commented, aiming to maximize code comprehension. Moreover, rather than abstracting the workflow behind opaque interfaces, Graphorge provides deliberatly fully functional, modular scripts for each stage -- from pre-processing and dataset handling to model training and post-processing -- making it an ideal extensible, starting point for those looking to implement or customize Graph Neural Networks in a research environment.
 
 ----
 
@@ -48,8 +50,11 @@ Please refer to Graphorge's `Code of Conduct <https://github.com/BernardoFerreir
 
 Credits
 -------
-* Insert text.
+* Graphorge was originally inspired by `Google DeepMind research <https://github.com/google-deepmind/deepmind-research>`_, namely the contribution *Learning Mesh-Based Simulation with Graph Networks (2021)* by Pfaff and coworkers (`paper <https://arxiv.org/abs/2010.03409>`_, `code <https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate>`_).
 
+* Bernardo P. Ferreira is thankful to `Guillaume Broggi <https://github.com/GuillaumeBroggi>`_ for his essential contribution to developing comprehensive benchmarks that illustrate Graphorge's workflow and support the open-source project.
+
+* Bernardo P. Ferreira acknowledges the contribution of `Rui Pinto <https://github.com/ruibmpinto>`_, whose work enabled the seamless handling of time series data.
 ----
 
 License
@@ -60,6 +65,25 @@ All rights reserved.
 
 Graphorge is a free and open-source software published under a :doc:`MIT License <../license>`.
 
+.. toctree::
+   :name: gettingstartedtoc
+   :caption: Getting started
+   :maxdepth: 3
+   :hidden:
+   :includehidden:
+
+   rst_doc_files/getting_started/overview.rst
+   rst_doc_files/getting_started/installation.rst
+
+.. toctree::
+   :name: examplestoc
+   :caption: Examples
+   :maxdepth: 3
+   :hidden:
+   :includehidden:
+
+   rst_doc_files/examples/example_workflow.rst
+   rst_doc_files/examples/example_1.rst
 
 
 .. toctree::
