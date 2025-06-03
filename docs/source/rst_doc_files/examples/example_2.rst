@@ -1,4 +1,4 @@
-Example 1: INSERT NAME
+Example 2: INSERT NAME
 ======================
 
 Insert content.

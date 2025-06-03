@@ -40,7 +40,7 @@ Please refer to Graphorge's [Code of Conduct](https://github.com/BernardoFerreir
 
 # Credits
 
-* Graphorge was originally inspired by [Google DeepMind](https://github.com/google-deepmind/deepmind-research), namely the contribution *Learning Mesh-Based Simulation with Graph Networks (2021)* by Pfaff and coworkers ([paper](https://arxiv.org/abs/2010.03409), [code](https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate)).
+* Graphorge is based on the conceptual framework established by [Battaglia and coworkers (2018)](https://arxiv.org/abs/1806.01261) and was inspired by [Google DeepMind](https://github.com/google-deepmind/deepmind-research), namely the contribution by [Pfaff and coworkers (2021)](https://arxiv.org/abs/2010.03409) and the corresponding [code](https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate)).
 
 * Bernardo P. Ferreira is thankful to [Guillaume Broggi](https://github.com/GuillaumeBroggi) for his essential contribution to developing comprehensive benchmarks that illustrate Graphorge's workflow and support the open-source project.
 
