@@ -129,6 +129,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
 
 # Spyder project settings
 .spyderproject
@@ -161,5 +162,19 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# VSCode
+# Visual Studio Code
 .vscode/
+
+# Local projects
+projects/
+
+# Benchmark
+benchmarks/cfd/*
+!benchmarks/cfd/cylinder_flow.ipynb
+!benchmarks/cfd/utils.py
+
+# Visual Studio Code
+.vscode/
+
+# Local projects
+projects/

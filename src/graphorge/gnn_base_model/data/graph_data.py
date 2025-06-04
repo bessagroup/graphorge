@@ -929,7 +929,7 @@ class GraphData:
         """
         if not isinstance(edges_indexes, np.ndarray):
             raise RuntimeError('Edges indexes matrix is not a numpy.array.')
-        elif edges_indexes.dtype != int:
+        elif not np.issubdtype(edges_indexes.dtype, np.integer):
             raise RuntimeError('Edges indexes matrix is not a numpy.array '
                                'of dtype int.')
         elif len(edges_indexes.shape) != 2:

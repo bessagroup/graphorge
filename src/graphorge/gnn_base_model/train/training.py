@@ -222,7 +222,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         is_model_out_normalized = model.is_model_out_normalized
         # Fit model data scalers  
         if is_model_in_normalized or is_model_out_normalized:
-            model.fit_data_scalers(dataset)
+            model.fit_data_scalers(dataset, is_verbose=is_verbose)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     # Save model initial state
     model.save_model_init_state()
@@ -753,7 +753,7 @@ def load_training_state(model, opt_algorithm, optimizer,
             raise RuntimeError('Unknown optimization algorithm')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load optimizer state
-        optimizer_state = torch.load(optimizer_path)
+        optimizer_state = torch.load(optimizer_path, weights_only=True)
         # Set loaded optimizer state
         optimizer.load_state_dict(optimizer_state['state'])
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

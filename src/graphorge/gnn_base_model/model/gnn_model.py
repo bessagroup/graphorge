@@ -1342,7 +1342,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load model state
         self.load_state_dict(torch.load(model_path,
-                                        map_location=torch.device('cpu')))
+                                        map_location=torch.device('cpu'),
+                                        weights_only=True))
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         return epoch
     # -------------------------------------------------------------------------
@@ -1571,13 +1572,15 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_node_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_in',
-                    n_features=self._n_node_in * self._n_time_node)
+                    n_features=self._n_node_in * self._n_time_node,
+                    is_verbose=is_verbose)
                 scaler_node_in.set_mean_and_std(mean, std)     
             # Get scaling parameters and fit data scalers: node output features
             if self._n_node_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_out',
-                    n_features=self._n_node_out*self._n_time_node)
+                    n_features=self._n_node_out*self._n_time_node,
+                    is_verbose=is_verbose)
                 scaler_node_out.set_mean_and_std(mean, std)   
         else:
             # No time series data
@@ -1585,13 +1588,13 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_node_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_in',
-                    n_features=self._n_node_in)
+                    n_features=self._n_node_in, is_verbose=is_verbose)
                 scaler_node_in.set_mean_and_std(mean, std)     
             # Get scaling parameters and fit data scalers: node output features
             if self._n_node_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_out',
-                    n_features=self._n_node_out)
+                    n_features=self._n_node_out, is_verbose=is_verbose)
                 scaler_node_out.set_mean_and_std(mean, std) 
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
         if self._n_time_edge > 0:
@@ -1599,26 +1602,28 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_edge_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='edge_features_in',
-                    n_features=self._n_edge_in*self._n_time_edge)
+                    n_features=self._n_edge_in*self._n_time_edge,
+                    is_verbose=is_verbose)
                 scaler_edge_in.set_mean_and_std(mean, std)
             # Get scaling parameters and fit data scalers: edge output features
             if self._n_edge_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='edge_features_out',
-                    n_features=self._n_edge_out*self._n_time_edge)
+                    n_features=self._n_edge_out*self._n_time_edge,
+                    is_verbose=is_verbose)
                 scaler_edge_out.set_mean_and_std(mean, std)
         else:
             # Get scaling parameters and fit data scalers: edge input features
             if self._n_edge_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='edge_features_in',
-                    n_features=self._n_edge_in)
+                    n_features=self._n_edge_in, is_verbose=is_verbose)
                 scaler_edge_in.set_mean_and_std(mean, std)
             # Get scaling parameters and fit data scalers: edge output features
             if self._n_edge_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='edge_features_out',
-                    n_features=self._n_edge_out)
+                    n_features=self._n_edge_out,is_verbose=is_verbose)
                 scaler_edge_out.set_mean_and_std(mean, std)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         if self._n_time_global > 0:
@@ -1627,14 +1632,16 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_global_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='global_features_in',
-                    n_features=self._n_global_in*self._n_time_global)
+                    n_features=self._n_global_in*self._n_time_global,
+                    is_verbose=is_verbose)
                 scaler_global_in.set_mean_and_std(mean, std)            
             # Get scaling parameters and fit data scalers: 
             # global output features
             if self._n_global_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='global_features_out',
-                    n_features=self._n_global_out*self._n_time_global)
+                    n_features=self._n_global_out*self._n_time_global,
+                    is_verbose=is_verbose)
                 scaler_global_out.set_mean_and_std(mean, std)
         else:
             # Get scaling parameters and fit data scalers: 
@@ -1642,14 +1649,14 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_global_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='global_features_in',
-                    n_features=self._n_global_in)
+                    n_features=self._n_global_in, is_verbose=is_verbose)
                 scaler_global_in.set_mean_and_std(mean, std)            
             # Get scaling parameters and fit data scalers: 
             # global output features
             if self._n_global_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='global_features_out',
-                    n_features=self._n_global_out)
+                    n_features=self._n_global_out, is_verbose=is_verbose)
                 scaler_global_out.set_mean_and_std(mean, std)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         if is_verbose:
