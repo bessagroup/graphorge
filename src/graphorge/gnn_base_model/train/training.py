@@ -462,16 +462,16 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             # Save loss and learning rate histories
             save_loss_history(model, n_max_epochs, loss_nature, loss_type,
-                      loss_history_epochs, lr_scheduler_type=lr_scheduler_type,
-                      lr_history_epochs=lr_history_epochs,
-                      validation_loss_history=validation_loss_history)
+                              loss_history_epochs,
+                              lr_scheduler_type=lr_scheduler_type,
+                              lr_history_epochs=lr_history_epochs,
+                              validation_loss_history=validation_loss_history)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Save model and optimizer best performance state corresponding to
         # minimum training loss
         if epoch_avg_loss <= min(loss_history_epochs):
             save_training_state(model=model, optimizer=optimizer,
                                 epoch=epoch, is_best_state=True)
-            # Get validation loss history
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Check early stopping criterion
         if is_early_stopping:

@@ -192,13 +192,11 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
     # model evaluation (forward propagation)
     with torch.no_grad():
         # Loop over graph samples
-        for i, pyg_graph in enumerate(tqdm(data_loader,
-                               mininterval=1,
-                               maxinterval=60,
-                               miniters=0,
-                               desc='> Predictions: ',
-                               disable=not is_verbose,
-                               unit=' sample')):
+        for i, pyg_graph in enumerate(tqdm(data_loader, mininterval=1,
+                                           maxinterval=60, miniters=0, 
+                                           desc='> Predictions: ', 
+                                           disable=not is_verbose,
+                                           unit=' sample')):
             # Move sample to device
             pyg_graph.to(device)
             # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

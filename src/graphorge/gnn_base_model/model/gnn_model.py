@@ -1571,7 +1571,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             if self._n_node_in > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_in',
-                    n_features=self._n_node_in * self._n_time_node,
+                    n_features=self._n_node_in*self._n_time_node,
                     is_verbose=is_verbose)
                 scaler_node_in.set_mean_and_std(mean, std)     
             # Get scaling parameters and fit data scalers: node output features
@@ -1861,13 +1861,9 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
         torch_geometric.loader.dataloader.DataLoader(dataset=dataset)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Loop over graph samples
-    for pyg_graph in tqdm(data_loader,
-                               mininterval=1,
-                               maxinterval=60,
-                               miniters=0,
-                               desc='> Processing data samples: ',
-                               disable=not is_verbose,
-                               unit=' sample'):
+    for pyg_graph in tqdm(data_loader, mininterval=1, maxinterval=60,
+                          miniters=0, desc='> Processing data samples: ',
+                          disable=not is_verbose, unit=' sample'):
         # Check sample graph type
         if not isinstance(pyg_graph, torch_geometric.data.Data):
             raise RuntimeError('Graph sample must be instance of '
