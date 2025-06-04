@@ -1,0 +1,103 @@
+graphorge.gnn\_base\_model.model.gnn\_epd\_model.GraphInteractionNetwork
+========================================================================
+
+.. currentmodule:: graphorge.gnn_base_model.model.gnn_epd_model
+
+.. autoclass:: GraphInteractionNetwork
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: List of Public Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GraphInteractionNetwork.add_module
+      ~GraphInteractionNetwork.aggregate
+      ~GraphInteractionNetwork.apply
+      ~GraphInteractionNetwork.bfloat16
+      ~GraphInteractionNetwork.buffers
+      ~GraphInteractionNetwork.children
+      ~GraphInteractionNetwork.cpu
+      ~GraphInteractionNetwork.cuda
+      ~GraphInteractionNetwork.double
+      ~GraphInteractionNetwork.edge_update
+      ~GraphInteractionNetwork.edge_updater
+      ~GraphInteractionNetwork.eval
+      ~GraphInteractionNetwork.explain_message
+      ~GraphInteractionNetwork.extra_repr
+      ~GraphInteractionNetwork.float
+      ~GraphInteractionNetwork.forward
+      ~GraphInteractionNetwork.get_buffer
+      ~GraphInteractionNetwork.get_extra_state
+      ~GraphInteractionNetwork.get_parameter
+      ~GraphInteractionNetwork.get_submodule
+      ~GraphInteractionNetwork.half
+      ~GraphInteractionNetwork.ipu
+      ~GraphInteractionNetwork.jittable
+      ~GraphInteractionNetwork.load_state_dict
+      ~GraphInteractionNetwork.message
+      ~GraphInteractionNetwork.message_and_aggregate
+      ~GraphInteractionNetwork.modules
+      ~GraphInteractionNetwork.named_buffers
+      ~GraphInteractionNetwork.named_children
+      ~GraphInteractionNetwork.named_modules
+      ~GraphInteractionNetwork.named_parameters
+      ~GraphInteractionNetwork.parameters
+      ~GraphInteractionNetwork.propagate
+      ~GraphInteractionNetwork.register_aggregate_forward_hook
+      ~GraphInteractionNetwork.register_aggregate_forward_pre_hook
+      ~GraphInteractionNetwork.register_backward_hook
+      ~GraphInteractionNetwork.register_buffer
+      ~GraphInteractionNetwork.register_edge_update_forward_hook
+      ~GraphInteractionNetwork.register_edge_update_forward_pre_hook
+      ~GraphInteractionNetwork.register_forward_hook
+      ~GraphInteractionNetwork.register_forward_pre_hook
+      ~GraphInteractionNetwork.register_full_backward_hook
+      ~GraphInteractionNetwork.register_full_backward_pre_hook
+      ~GraphInteractionNetwork.register_load_state_dict_post_hook
+      ~GraphInteractionNetwork.register_message_and_aggregate_forward_hook
+      ~GraphInteractionNetwork.register_message_and_aggregate_forward_pre_hook
+      ~GraphInteractionNetwork.register_message_forward_hook
+      ~GraphInteractionNetwork.register_message_forward_pre_hook
+      ~GraphInteractionNetwork.register_module
+      ~GraphInteractionNetwork.register_parameter
+      ~GraphInteractionNetwork.register_propagate_forward_hook
+      ~GraphInteractionNetwork.register_propagate_forward_pre_hook
+      ~GraphInteractionNetwork.register_state_dict_pre_hook
+      ~GraphInteractionNetwork.requires_grad_
+      ~GraphInteractionNetwork.reset_parameters
+      ~GraphInteractionNetwork.set_extra_state
+      ~GraphInteractionNetwork.share_memory
+      ~GraphInteractionNetwork.state_dict
+      ~GraphInteractionNetwork.to
+      ~GraphInteractionNetwork.to_empty
+      ~GraphInteractionNetwork.train
+      ~GraphInteractionNetwork.type
+      ~GraphInteractionNetwork.update
+      ~GraphInteractionNetwork.update_global
+      ~GraphInteractionNetwork.xpu
+      ~GraphInteractionNetwork.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GraphInteractionNetwork.T_destination
+      ~GraphInteractionNetwork.call_super_init
+      ~GraphInteractionNetwork.dump_patches
+      ~GraphInteractionNetwork.explain
+      ~GraphInteractionNetwork.special_args
+      ~GraphInteractionNetwork.training
+   
+   
+
+   .. rubric:: Methods
