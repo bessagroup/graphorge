@@ -1,0 +1,33 @@
+graphorge.projects.bottle\_buckling.user\_scripts.gen\_gnn\_datasets.GNNGraphDataset
+====================================================================================
+
+.. currentmodule:: graphorge.projects.bottle_buckling.user_scripts.gen_gnn_datasets
+
+.. autoclass:: GNNGraphDataset
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: List of Public Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GNNGraphDataset.get_dataset_basename
+      ~GNNGraphDataset.get_dataset_directory
+      ~GNNGraphDataset.get_dataset_sample_files
+      ~GNNGraphDataset.load_dataset
+      ~GNNGraphDataset.save_dataset
+      ~GNNGraphDataset.set_dataset_basename
+      ~GNNGraphDataset.update_dataset_file_internal_directory
+   
+   
+
+   
+   
+   
+
+   .. rubric:: Methods

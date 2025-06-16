@@ -10,6 +10,7 @@
 # Source: https://docs.python.org/3/library/sys.html#sys.path
 import os
 import sys
+import importlib.util
 
 sys.path.insert(0,  os.path.abspath('../..'))
 sys.path.insert(0,  os.path.abspath('../../src'))
@@ -99,14 +100,13 @@ intersphinx_mapping = {
 # Source: https://docs.readthedocs.io/en/stable/faq.html#how-do-i-change-behavior-when-building-with-read-the-docs
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_theme
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_theme_path
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd:
-	html_theme = 'default'
-else:
+if importlib.util.find_spec("sphinx_rtd_theme") is not None:
+    html_theme = "sphinx_rtd_theme"
     # requires installation of Python package 'sphinx_rtd_theme'
     import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+else:
+    html_theme = "default"
 
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_static_path
 html_static_path = ['_static',]
