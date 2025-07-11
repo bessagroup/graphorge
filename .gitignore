@@ -169,13 +169,9 @@ cython_debug/
 projects/
 
 # Benchmark
-benchmarks/cfd/
-
-# Visual Studio Code
-.vscode/
-
+benchmarks/*
+!benchmarks/cfd/cylinder_flow.ipynb
+!benchmarks/cfd/utils.py
 # Local projects
 projects/
 
-# Benchmark
-benchmarks/cfd/
