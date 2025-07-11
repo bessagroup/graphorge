@@ -494,7 +494,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         # Increment epoch counter
         epoch += 1
         # Update progress bar
-        pbar.update(1)
+        if is_verbose:
+            pbar.update(1)
         # Check training process flow
         if epoch == n_max_epochs:
             # Completed maximum number of epochs
