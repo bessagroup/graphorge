@@ -41,11 +41,12 @@ extensions = ['sphinx.ext.duration',
 			  'sphinx.ext.viewcode',
 			  'sphinx_autodoc_typehints',
               'myst_nb',
+              'sphinx_copybutton',
               'sphinxcontrib.collections']
 
 # Sphinx collections, used to import executed notebooks
 collections = {
-    "benchmarks": {
+    "examples": {
         "driver": "symlink",
         "source": "../../benchmarks/",
     }

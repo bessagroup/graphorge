@@ -170,8 +170,12 @@ projects/
 
 # Benchmark
 benchmarks/*
-!benchmarks/cfd/cylinder_flow.ipynb
-!benchmarks/cfd/utils.py
+!benchmarks/mechanics/gnn_shell_buckling/gnn_shell_buckling.ipynb
+!benchmarks/mechanics/gnn_shell_buckling/utils.py
+
 # Local projects
 projects/
 
+# Documentation
+docs/source/_autosummary
+docs/source/_collections
