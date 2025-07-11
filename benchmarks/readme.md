@@ -8,4 +8,4 @@ This directory provides exaples demonstrating use of Graphorge.
 
 |Example|Field|Concepts covered|
 | --- | --- | --- |
-|[Shell buckling](./mechanics/gnn_shell_buckling)|Mechanics|Graphorge basics, regression on a global target.|
+|[Shell buckling](./mechanics/gnn_shell_buckling/gnn_shell_buckling.ipynb)|Mechanics|Graphorge basics, regression on a global target.|
