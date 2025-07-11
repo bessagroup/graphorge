@@ -170,6 +170,7 @@ projects/
 
 # Benchmark
 benchmarks/*
+!benchmarks/readme.me
 !benchmarks/mechanics/gnn_shell_buckling/gnn_shell_buckling.ipynb
 !benchmarks/mechanics/gnn_shell_buckling/utils.py
 
