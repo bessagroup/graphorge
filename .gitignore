@@ -170,10 +170,11 @@ projects/
 
 # Benchmark
 !benchmarks/readme.me
+!benchmarks/utils/utils.py
 benchmarks/mechanics/gnn_shell_buckling/*
 !benchmarks/mechanics/gnn_shell_buckling/gnn_shell_buckling.ipynb
-!benchmarks/mechanics/gnn_shell_buckling/utils.py
-benchmarks/cfd/
+benchmarks/cfd/gnn_porous_medium/*
+!benchmarks/cfd/gnn_porous_medium/gnn_porous_medium.ipynb
 
 # Local projects
 projects/
