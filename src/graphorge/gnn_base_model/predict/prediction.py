@@ -30,7 +30,6 @@ import datetime
 # Third-party
 import torch
 import torch_geometric
-from tqdm import tqdm
 import numpy as np
 # Local
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel
@@ -49,7 +48,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             file_name_pattern=None, load_model_state=None,
             loss_nature='node_features_out', loss_type='mse', loss_kwargs={},
             is_normalized_loss=False, batch_size=1, dataset_file_path=None,
-            device_type='cpu', seed=None, is_verbose=False):
+            device_type='cpu', seed=None, is_verbose=False,
+            tqdm_flavor='default'):
     """Make predictions with Graph Neural Network model for given dataset.
     
     Parameters
@@ -112,6 +112,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
         reproducibility. Does also set workers seed in PyTorch data loaders.
     is_verbose : bool, default=False
         If True, enable verbose output.
+    tqdm_flavor : {'default', 'notebook'}, default='default'
+        Type of tqdm progress bar to use when is_verbose=True.
         
     Returns
     -------
@@ -121,6 +123,13 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
         Average prediction loss per sample. Defaults to None if ground-truth is
         not available for all data set samples.
     """
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Import tqdm
+    if tqdm_flavor == 'notebook':
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set random number generators initialization for reproducibility
     if isinstance(seed, int):
         random.seed(seed)

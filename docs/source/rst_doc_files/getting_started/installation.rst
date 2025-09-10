@@ -1,4 +1,0 @@
-Installation
-============
-
-Insert content.
