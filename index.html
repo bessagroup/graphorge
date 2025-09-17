@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphorge &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview" href="rst_doc_files/getting_started/overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Graphorge</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphorge">
+<h1>Graphorge<a class="headerlink" href="#graphorge" title="Link to this heading">¶</a></h1>
+<a class="reference internal image-reference" href="_images/graphorge_logo_horizontal_white.png"><img alt="_images/graphorge_logo_horizontal_white.png" class="align-center" src="_images/graphorge_logo_horizontal_white.png" style="width: 70%;" />
+</a>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">¶</a></h2>
+<p>Graphorge is an open-source Python package built on <a class="reference external" href="https://pytorch.org/">PyTorch</a> that streamlines the development and evaluation of graph neural networks. It provides a complete workflow encompassing data pre-processing, dataset management, model training, prediction, and result post-processing. Graphorge includes a fully implemented, highly customizable example architecture to demonstrate practical use, and its code is thoroughly documented and commented, making it especially accessible to researchers new to implementing graph neural networks. Although originally developed for computational mechanics, Graphorge’s core functionality is general and can be applied across a wide range of domains.</p>
+</section>
+<hr class="docutils" />
+<section id="statement-of-need">
+<h2>Statement of Need<a class="headerlink" href="#statement-of-need" title="Link to this heading">¶</a></h2>
+<p>Graph neural networks have emerged as a powerful modeling tool for data with relational or geometric structure. Existing graph neural network libraries tend to fall into two categories. On the one hand, many research-specific implementations are minimally documented and tightly tailored to particular benchmarks. While this may enable results reproducibility, code comprehension is often limited, as well as its customization and generalization to different applications. On the other hand, general purpose frameworks such as <a class="reference external" href="https://pytorch-geometric.readthedocs.io/en/latest/">PyTorch Geometric</a> and <a class="reference external" href="https://www.dgl.ai/">Deep Graph Library</a> offer robust, high-performance platforms to implement graph neural networks, usually providing multiple backend support and integration of state-of-the-art scientific contributions.</p>
+<p>Graphorge is not intended as an alternative to general-purpose frameworks. Instead, it is designed as a practical and educational tool for researchers and students that aim to understand and be able to implement a full Graph Neural Network pipeline. While only including a single, highly customizable architecture to demonstrate practical use, every single module in Graphorge is extensively documented and commented, aiming to maximize code comprehension. Moreover, rather than abstracting the workflow behind opaque interfaces, Graphorge provides deliberatly fully functional, modular scripts for each stage – from pre-processing and dataset handling to model training and post-processing – making it an ideal extensible, starting point for those looking to implement or customize Graph Neural Networks in a research environment.</p>
+</section>
+<hr class="docutils" />
+<section id="authorship-citation">
+<h2>Authorship &amp; Citation<a class="headerlink" href="#authorship-citation" title="Link to this heading">¶</a></h2>
+<p>Graphorge was originally developed by Bernardo P. Ferreira <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.linkedin.com/in/bpferreira/">LinkedIn</a> , <a class="reference external" href="https://orcid.org/0000-0001-5956-3877">ORCID</a>, <a class="reference external" href="https://www.researchgate.net/profile/Bernardo-Ferreira-11?ev=hdr_xprf">ResearchGate</a></p>
+</aside>
+</aside>
+</section>
+<hr class="docutils" />
+<section id="useful-links">
+<h2>Useful Links<a class="headerlink" href="#useful-links" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/BernardoFerreira/graphorge">GitHub repository</a> (source code);</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="community-support">
+<h2>Community Support<a class="headerlink" href="#community-support" title="Link to this heading">¶</a></h2>
+<p>If you find any <strong>issues</strong>, <strong>bugs</strong> or <strong>problems</strong> with Graphorge, please use the <a class="reference external" href="https://github.com/bessagroup/graphorge/issues">GitHub issue tracker</a> to report them. Provide a clear description of the problem, as well as a complete report on the underlying details, so that it can be easily reproduced and (hopefully) fixed!</p>
+<p>You are also welcome to post any <strong>questions</strong>, <strong>comments</strong> or <strong>suggestions</strong> for improvement in the <a class="reference external" href="https://github.com/bessagroup/graphorge/discussions">GitHub discussions</a> space!</p>
+<p>Please refer to Graphorge’s <a class="reference external" href="https://github.com/bessagroup/graphorge/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a>.</p>
+</section>
+<hr class="docutils" />
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Graphorge is based on the conceptual framework established by <a class="reference external" href="https://arxiv.org/abs/1806.01261">Battaglia and coworkers (2018)</a> and was inspired by <a class="reference external" href="https://github.com/google-deepmind/deepmind-research">Google DeepMind research</a>, namely the contribution by <a class="reference external" href="https://arxiv.org/abs/2010.03409">Pfaff and coworkers (2021)</a> and the corresponding <a class="reference external" href="https://github.com/google-deepmind/deepmind-research/tree/master/learning_to_simulate">code</a>.</p></li>
+<li><p>Bernardo P. Ferreira is thankful to <a class="reference external" href="https://github.com/GuillaumeBroggi">Guillaume Broggi</a> for his essential contribution to developing comprehensive benchmarks that illustrate Graphorge’s workflow and support the open-source project.</p></li>
+<li><p>Bernardo P. Ferreira acknowledges the contribution of <a class="reference external" href="https://github.com/ruibmpinto">Rui Pinto</a>, whose work enabled the seamless handling of time series data.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
+<p>Copyright 2023, Bernardo Ferreira</p>
+<p>All rights reserved.</p>
+<p>Graphorge is a free and open-source software published under a <a class="reference internal" href="license.html"><span class="doc">MIT License</span></a>.</p>
+<div class="toctree-wrapper compound" id="gettingstartedtoc">
+</div>
+<div class="toctree-wrapper compound" id="examplestoc">
+</div>
+<div class="toctree-wrapper compound" id="apitoc">
+</div>
+<div class="toctree-wrapper compound" id="licensetoc">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rst_doc_files/getting_started/overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Graphorge" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<p>Graphorge is an open-source Python package built on PyTorch that facilitates the development and evaluation of graph neural networks. Unlike general-purpose frameworks that focus on performance, multi-backend support, or a broad collection of pre-implemented models, Graphorge emphasizes clarity and accessibility. It offers a fully functional environment where code readability and understanding take priority, supported by extensively documented and well-structured modules. While some foundational knowledge of graph neural networks and machine learning is still required, Graphorge is ideal for researchers aiming to understand, implement, and customize graph neural networks for a variety of applications.</p>
+<p>To meet the aforementioned goals, Graphorge includes a highly customizable graph neural network architecture proposed by <a class="reference external" href="https://arxiv.org/abs/1806.01261">Battaglia and coworkers (2018)</a> and illustrated below. Reading the referenced paper is essential for a complete understanding of the model’s architecture, implementation, and customization. However, key concepts are summarized below for convenience:</p>
+<ul class="simple">
+<li><p><strong>Features</strong>. The model supports three types of features: (1) node features, associated with the graph nodes, (2) edge features, associated with the edges between nodes, and (3) global features, associated with the entire graph. These features are customizable based on the problem at hand and can be independently defined for both model inputs and outputs;</p></li>
+<li><p><strong>Data</strong>. In parallel with feature types, the model supports input and output data at the node, edge, and global levels. Note that feature types and data types do not always align. For instance, edge features may be derived exclusively from node-level data. The model is also designed to handle both sequential (typically temporal) and non-sequential (non-temporal) data, providing flexibility for a broad range of applications.</p></li>
+<li><p><strong>Graph Network block</strong>. A Graph Network block is a model architecture unit that performs a graph-to-graph transformation. It enables flexible combinations of feature update functions, which can be implemented as feedforward or recurrent neural networks, and aggregation functions, which define how information is passed between entities and typically involve permutation-invariant operations such as summation or averaging. This design allows the expression of complex relationships among nodes, edges, and global features;</p></li>
+<li><p><strong>Multi-block architecture</strong>. An expressive architecture can be built by combining multiple graph network blocks, each with potentially different internal configurations. A common pattern involves an encoder-processor-decoder configuration, where graph data is encoded into a latent representation, processed through multiple message-passing steps, and finally decoded back into the original feature space.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../../_images/graphorge_overview.png"><img alt="../../_images/graphorge_overview.png" class="align-center" src="../../_images/graphorge_overview.png" style="width: 90%;" />
+</a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Various use cases of Graphorge are illustrated <a class="reference internal" href="../examples/example_workflow.html"><span class="doc">here</span></a>, showcasing its ability to handle different types of data and features. While the provided model is designed to be easily extended for diverse applications, it also serves as a practical foundation for implementing custom graph neural network models from scratch.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Graphorge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
