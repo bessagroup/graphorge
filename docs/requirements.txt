@@ -1,8 +1,7 @@
-sphinx
-sphinx_rtd_theme
-sphinx_autodoc_typehints
-myst-nb
-sphinx-collections
-sphinx-copybutton
-sphinx_rtd_theme
-sphinx-design
+sphinx==8.2.3
+sphinx_autodoc_typehints==3.2.0
+myst-nb==1.2.0
+sphinx-collections==0.0.1
+sphinx-copybutton==0.5.2
+sphinx-rtd-theme==1.2.0
+sphinx_design==0.6.1
