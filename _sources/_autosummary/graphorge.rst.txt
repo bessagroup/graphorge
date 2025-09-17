@@ -1,0 +1,34 @@
+﻿graphorge
+=========
+
+.. automodule:: graphorge
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   gnn_base_model
+   ioput
+   utilities
+

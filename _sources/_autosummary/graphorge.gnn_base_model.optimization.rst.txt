@@ -1,0 +1,33 @@
+graphorge.gnn\_base\_model.optimization
+=======================================
+
+.. automodule:: graphorge.gnn_base_model.optimization
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   hydra_optimization_plots
+   hydra_optimization_template
+

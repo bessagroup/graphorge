@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.gnn_base_model.data.graph_dataset &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/graphorge.html">Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">graphorge.gnn_base_model.data.graph_dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for graphorge.gnn_base_model.data.graph_dataset</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Graph Neural Network graph data set.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+<span class="sd">GNNGraphDataset(torch.utils.data.Dataset)</span>
+<span class="sd">    Graph Neural Network graph data set.</span>
+<span class="sd">GNNGraphDatasetInMemory(torch.utils.data.Dataset)</span>
+<span class="sd">    Graph Neural Network graph data set (in-memory storage only).</span>
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+<span class="sd">get_dataset_sample_files_from_dir</span>
+<span class="sd">    Get Graph Neural Network graph data set samples files from directory.</span>
+<span class="sd">split_dataset</span>
+<span class="sd">    Randomly split data set into non-overlapping parts.</span>
+<span class="sd">get_subset_indices_mapping</span>
+<span class="sd">    Get mapping from subset indexes to whole parent data set indices.</span>
+<span class="sd">get_pyg_data_loader</span>
+<span class="sd">    Get Graph Neural Network graph data set PyG data loader.</span>
+<span class="sd">write_graph_dataset_summary_file</span>
+<span class="sd">    Write summary data file for Graph Neural Network graph data set generation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#                                                                       Modules</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Standard</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="c1"># Third-party</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch_geometric.loader</span>
+<span class="c1"># Local</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ioput.iostandard</span><span class="w"> </span><span class="kn">import</span> <span class="n">write_summary_file</span>
+<span class="c1">#</span>
+<span class="c1">#                                                          Authorship &amp; Credits</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Bernardo Ferreira (bernardo_ferreira@brown.edu)&#39;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bernardo Ferreira&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Planning&#39;</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1">#</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="get_dataset_sample_files_from_dir">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.get_dataset_sample_files_from_dir.html#graphorge.gnn_base_model.data.graph_dataset.get_dataset_sample_files_from_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_sample_files_from_dir</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">,</span> <span class="n">sample_file_basename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get Graph Neural Network graph data set samples files from directory.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_directory : str</span>
+<span class="sd">        Directory where the Graph Neural Network graph data set is stored (all</span>
+<span class="sd">        data set samples files).</span>
+<span class="sd">    sample_file_basename : str</span>
+<span class="sd">        Basename of Graph Neural Network graph data set sample file. The</span>
+<span class="sd">        basename is appended with sample index.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataset_sample_files : list[str]</span>
+<span class="sd">        Graph Neural Network graph data set samples files paths. Each sample</span>
+<span class="sd">        file contains a torch_geometric.data.Data object describing a</span>
+<span class="sd">        homogeneous graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check Graph Neural Network graph data set directory</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The Graph Neural Network graph data set directory &#39;</span>
+                           <span class="s1">&#39;has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">dataset_directory</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Initialize Graph Neural Network graph data set samples files paths</span>
+    <span class="n">dataset_sample_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Get files in Graph Neural Network graph data set directory</span>
+    <span class="n">directory_list</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">)</span>
+    <span class="c1"># Loop over files</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">directory_list</span><span class="p">:</span>
+        <span class="c1"># Check if file is Graph Neural Network graph data set samples file</span>
+        <span class="n">is_sample_file</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="n">sample_file_basename</span>
+                                        <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;_[0-9]+&#39;</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;\.pt&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Append sample file path</span>
+        <span class="k">if</span> <span class="n">is_sample_file</span><span class="p">:</span>
+            <span class="n">dataset_sample_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Sort Graph Neural Network graph data set samples</span>
+    <span class="n">dataset_sample_files</span> <span class="o">=</span> \
+        <span class="nb">sorted</span><span class="p">(</span><span class="n">dataset_sample_files</span><span class="p">,</span>
+               <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;_(\d+)$&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>    
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="k">return</span> <span class="n">dataset_sample_files</span></div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="GNNGraphDataset">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GNNGraphDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Graph Neural Network graph data set.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _dataset_directory : str</span>
+<span class="sd">        Directory where the Graph Neural Network graph data set is stored</span>
+<span class="sd">        (all data set samples files).</span>
+<span class="sd">    _dataset_sample_files : list[str]</span>
+<span class="sd">        Graph Neural Network graph data set samples files paths. Each sample</span>
+<span class="sd">        file contains a torch_geometric.data.Data object describing a</span>
+<span class="sd">        homogeneous graph.</span>
+<span class="sd">    _dataset_samples : list</span>
+<span class="sd">        Graph Neural Network graph data set samples data. Each sample is stored</span>
+<span class="sd">        as a torch_geometric.data.Data object describing a homogeneous graph.</span>
+<span class="sd">        Only populated if _is_store_dataset is True, otherwise is set as an</span>
+<span class="sd">        empty list.</span>
+<span class="sd">    _is_store_dataset : bool, default=False</span>
+<span class="sd">        If True, then the Graph Neural Network graph data set samples are</span>
+<span class="sd">        loaded and stored in attribute dataset_samples_data. If False, the</span>
+<span class="sd">        dataset object holds solely the samples data files paths and load the</span>
+<span class="sd">        corresponding files when accessing a given sample data.</span>
+<span class="sd">    _dataset_basename : str</span>
+<span class="sd">        Data set file base name.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    __len__(self):</span>
+<span class="sd">        Return size of data set (number of samples).</span>
+<span class="sd">    __getitem__(self, index)</span>
+<span class="sd">        Return data set sample from corresponding index.</span>
+<span class="sd">    get_dataset_directory(self)</span>
+<span class="sd">        Get directory where the Graph Neural Network graph data set is stored.</span>
+<span class="sd">    get_dataset_sample_files(self)</span>
+<span class="sd">        Get Graph Neural Network graph data set data set samples files paths.</span>
+<span class="sd">    set_dataset_basename(self, dataset_basename)</span>
+<span class="sd">        Set data set file base name.</span>
+<span class="sd">    get_dataset_basename(self)</span>
+<span class="sd">        Get data set file base name.</span>
+<span class="sd">    save_dataset(self)</span>
+<span class="sd">        Save Graph Neural Network graph data set to file.</span>
+<span class="sd">    load_dataset(dataset_file_path)</span>
+<span class="sd">        Load PyTorch data set.</span>
+<span class="sd">    _update_dataset_directory(self, dataset_directory, is_reload_data=False)</span>
+<span class="sd">        Update directory where Graph Neural Network graph data set is stored.</span>
+<span class="sd">    update_dataset_file_internal_directory(dataset_file_path, new_directory, \</span>
+<span class="sd">                                           is_reload_data=False)</span>
+<span class="sd">        Update internal directory of stored data set in provided file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GNNGraphDataset.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_directory</span><span class="p">,</span> <span class="n">dataset_sample_files</span><span class="p">,</span>
+                 <span class="n">dataset_basename</span><span class="o">=</span><span class="s1">&#39;graph_dataset&#39;</span><span class="p">,</span> <span class="n">is_store_dataset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters </span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_directory : str</span>
+<span class="sd">            Directory where the Graph Neural Network graph data set is stored</span>
+<span class="sd">            (all data set samples files).</span>
+<span class="sd">        dataset_sample_files : list[str]</span>
+<span class="sd">            Graph Neural Network graph data set samples file paths. Each sample</span>
+<span class="sd">            file contains a torch_geometric.data.Data object describing a</span>
+<span class="sd">            homogeneous graph.</span>
+<span class="sd">        dataset_basename : str, default=&#39;graph_dataset&#39;</span>
+<span class="sd">            Data set file base name.</span>
+<span class="sd">        is_store_dataset : bool, default=False</span>
+<span class="sd">            If True, then the Graph Neural Network graph data set samples are</span>
+<span class="sd">            loaded and stored in attribute dataset_samples_data. If False,</span>
+<span class="sd">            the dataset object holds solely the samples data files paths and</span>
+<span class="sd">            load the corresponding files when accessing a given sample data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize data set from base class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GNNGraphDataset</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set data set directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The Graph Neural Network graph data set &#39;</span>
+                               <span class="s1">&#39;directory has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                               <span class="o">+</span> <span class="n">dataset_directory</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check data set sample files</span>
+        <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">dataset_sample_files</span><span class="p">:</span>
+            <span class="c1"># Check if sample file exists</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Graph Neural Network graph data set &#39;</span>
+                                   <span class="s1">&#39;sample file has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                                   <span class="o">+</span> <span class="n">file_path</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> \
+                    <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Graph Neural Network graph data set &#39;</span>
+                                   <span class="s1">&#39;sample file is not in dataset directory:&#39;</span>
+                                   <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">dataset_directory</span><span class="p">)</span>
+        <span class="c1"># Store data set samples file paths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span> <span class="o">=</span> <span class="n">dataset_sample_files</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set data set sample data storage flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_dataset</span> <span class="o">=</span> <span class="n">is_store_dataset</span>
+        <span class="c1"># Load data set sample files data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">is_store_dataset</span><span class="p">:</span>
+            <span class="c1"># Loop over sample files</span>
+            <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">dataset_sample_files</span><span class="p">:</span>
+                <span class="c1"># Load sample</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set data set file base name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_basename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dataset_basename</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return size of data set (number of samples).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n_sample : int</span>
+<span class="sd">            Data set size (number of samples).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.__getitem__">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return data set sample from corresponding index.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int</span>
+<span class="sd">            Index of returned data set sample (index must be in [0, n_sample]).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pyg_graph : torch_geometric.data.Data</span>
+<span class="sd">            Data set sample defined as a PyG data object describing a</span>
+<span class="sd">            homogeneous graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get data set sample</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_dataset</span><span class="p">:</span>
+            <span class="n">pyg_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pyg_graph</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">pyg_graph</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.get_dataset_directory">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get directory where Graph Neural Network graph data set is stored.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dataset_directory : str</span>
+<span class="sd">            Directory where the Graph Neural Network graph data set is stored</span>
+<span class="sd">            (all data set samples files).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.get_dataset_sample_files">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_sample_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_sample_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get Graph Neural Network graph data set samples files paths.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dataset_sample_files : list[str]</span>
+<span class="sd">            Graph Neural Network graph data set samples files paths. Each</span>
+<span class="sd">            sample file contains a torch_geometric.data.Data object describing</span>
+<span class="sd">            a homogeneous graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.set_dataset_basename">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.set_dataset_basename">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_dataset_basename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_basename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set data set file base name.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_basename : str</span>
+<span class="sd">            Data set file base name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_basename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dataset_basename</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.get_dataset_basename">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_basename">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_basename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get data set file base name.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dataset_basename : str</span>
+<span class="sd">            Data set file base name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_basename</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.save_dataset">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.save_dataset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_append_n_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save Graph Neural Network graph data set to file.</span>
+<span class="sd">        </span>
+<span class="sd">        Graph Neural Network graph data set is stored in dataset_directory as a</span>
+<span class="sd">        pickle file named graph_dataset.pkl or graph_dataset_n&lt; n_sample &gt;.pkl.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        is_append_n_sample : bool, default=True</span>
+<span class="sd">            If True, then data set size (number of samples) is appended to</span>
+<span class="sd">            Graph Neural Network graph data set filename.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dataset_file_path : str</span>
+<span class="sd">            PyTorch data set file path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check data set directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The Graph Neural Network graph data set &#39;</span>
+                               <span class="s1">&#39;directory has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                               <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set Graph Neural Network graph data set file</span>
+        <span class="n">dataset_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_basename</span>
+        <span class="c1"># Append data set size</span>
+        <span class="k">if</span> <span class="n">is_append_n_sample</span><span class="p">:</span>
+            <span class="n">dataset_file</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;_n</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set Graph Neural Network graph data set file path</span>
+        <span class="n">dataset_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span><span class="p">,</span>
+                                         <span class="n">dataset_file</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>   
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Save Graph Neural Network graph data set</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dataset_file</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_file</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">dataset_file_path</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.load_dataset">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.load_dataset">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load PyTorch data set.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_file_path : str</span>
+<span class="sd">            PyTorch data set file path.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dataset : torch.utils.data.Dataset</span>
+<span class="sd">            PyTorch data set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check PyTorch data set file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;PyTorch data set file has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                               <span class="o">+</span> <span class="n">dataset_file_path</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Load PyTorch data set</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dataset_file</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dataset_file</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check PyTorch data set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Loaded data set is not a &#39;</span>
+                               <span class="s1">&#39;torch.utils.data.Dataset.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset._update_dataset_directory">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._update_dataset_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_dataset_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_directory</span><span class="p">,</span>
+                                  <span class="n">is_reload_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update directory where GNN graph data set is stored.</span>
+<span class="sd">        </span>
+<span class="sd">        Stored data set samples files paths directory is updated according</span>
+<span class="sd">        with the new directory.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_directory : str</span>
+<span class="sd">            Directory where the Graph Neural Network graph data set is stored</span>
+<span class="sd">            (all data set samples files).</span>
+<span class="sd">        is_reload_data : bool, default=False</span>
+<span class="sd">            Reload and store data set samples in attribute</span>
+<span class="sd">            dataset_samples_data. Only effective if is_store_dataset=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set new data set directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The new Graph Neural Network graph data set &#39;</span>
+                               <span class="s1">&#39;directory has not been found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                               <span class="o">+</span> <span class="n">dataset_directory</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_directory</span> <span class="o">=</span> <span class="n">dataset_directory</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Loop over samples files</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span><span class="p">):</span>
+            <span class="c1"># Set new sample file path (update directory)</span>
+            <span class="n">new_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">dataset_directory</span><span class="p">),</span>
+                                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="c1"># Update sample file path</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">new_file_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Graph Neural Network graph data set &#39;</span>
+                                   <span class="s1">&#39;sample file is not in new dataset &#39;</span>
+                                   <span class="s1">&#39;directory:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">dataset_directory</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_sample_files</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_file_path</span>
+                <span class="c1"># Reload sample data</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_store_dataset</span> <span class="ow">and</span> <span class="n">is_reload_data</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDataset.update_dataset_file_internal_directory">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.update_dataset_file_internal_directory">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_dataset_file_internal_directory</span><span class="p">(</span>
+        <span class="n">dataset_file_path</span><span class="p">,</span> <span class="n">new_directory</span><span class="p">,</span> <span class="n">is_reload_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update internal directory of stored data set in provided file.</span>
+<span class="sd">        </span>
+<span class="sd">        Update is only performed if the new directory does not match the</span>
+<span class="sd">        internal directory of the stored data set.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_file_path : str</span>
+<span class="sd">            PyTorch data set file path.</span>
+<span class="sd">        new_directory : str</span>
+<span class="sd">            PyTorch data set new directory.</span>
+<span class="sd">        is_reload_data : bool, default=False</span>
+<span class="sd">            Reload and store data set samples in attribute</span>
+<span class="sd">            dataset_samples_data. Only effective if is_store_dataset=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check new data set directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">new_directory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The new data set directory has not been &#39;</span>
+                               <span class="s1">&#39;found:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">new_directory</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Load PyTorch data set</span>
+        <span class="n">loaded_dataset</span> <span class="o">=</span> <span class="n">GNNGraphDataset</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check data set type</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_dataset</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Subset</span><span class="p">):</span>
+            <span class="c1"># Get parent data set</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">loaded_dataset</span><span class="o">.</span><span class="n">dataset</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loaded_dataset</span><span class="p">,</span> <span class="n">GNNGraphDataset</span><span class="p">):</span>
+            <span class="c1"># Get data set</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">loaded_dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The data set must be either &#39;</span>
+                               <span class="s1">&#39;torch.utils.data.Subset (extracted from &#39;</span>
+                               <span class="s1">&#39;GNNGraphDataset data set) or &#39;</span>
+                               <span class="s1">&#39;GNNGraphDataset data set.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Get loaded PyTorch data set internal directory</span>
+        <span class="n">stored_directory</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_dataset_directory</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Update PyTorch data set file if the new directory does not match the</span>
+        <span class="c1"># internal directory of the loaded data set</span>
+        <span class="k">if</span> <span class="n">stored_directory</span> <span class="o">!=</span> <span class="n">new_directory</span><span class="p">:</span>
+            <span class="c1"># Update directory of PyTorch data set</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">_update_dataset_directory</span><span class="p">(</span>
+                <span class="n">new_directory</span><span class="p">,</span> <span class="n">is_reload_data</span><span class="o">=</span><span class="n">is_reload_data</span><span class="p">)</span>
+            <span class="c1"># Save updated PyTorch data set (overwrite existing data set file)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dataset_file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dataset_file</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">loaded_dataset</span><span class="p">,</span> <span class="n">dataset_file</span><span class="p">)</span></div>
+</div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="split_dataset">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.split_dataset.html#graphorge.gnn_base_model.data.graph_dataset.split_dataset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">split_sizes</span><span class="p">,</span> <span class="n">is_save_subsets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">subsets_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsets_basename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly split data set into non-overlapping subsets.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : torch.utils.data.Dataset</span>
+<span class="sd">        Data set.</span>
+<span class="sd">    split_sizes : dict</span>
+<span class="sd">        Size (item, float) of each data subset name (key, str), where size is a</span>
+<span class="sd">        fraction contained between 0 and 1. The sum of all sizes must equal 1.</span>
+<span class="sd">    is_save_subsets : bool, False</span>
+<span class="sd">        If True, then save data subsets to files.</span>
+<span class="sd">    subsets_directory : str, default=None</span>
+<span class="sd">        Directory where the data subsets files are stored.</span>
+<span class="sd">    subset_basename : str, default=None</span>
+<span class="sd">        Subset file base name.</span>
+<span class="sd">    seed : int, default=None</span>
+<span class="sd">        Seed for random data set split generator.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataset_split : dict</span>
+<span class="sd">        Data subsets (key, str, item, torch.utils.data.Subset).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Initialize data subsets names and sizes</span>
+    <span class="n">subsets_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">subsets_sizes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Assemble data subsets names and sizes</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">split_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Check if subset size is valid</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Subset size must be contained between 0 and &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;1. Check subset (size): </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="c1"># Assemble subset name and size</span>
+        <span class="n">subsets_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="n">subsets_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Check if split sizes are valid</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">subsets_sizes</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Sum of subset split sizes must equal 1. &#39;</span>
+                           <span class="sa">f</span><span class="s1">&#39;Current sum: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">subsets_sizes</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Set random split generator</span>
+    <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Randomly split data set into non-overlapping subsets</span>
+    <span class="n">subsets_list</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">random_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">subsets_sizes</span><span class="p">,</span>
+                                                 <span class="n">generator</span><span class="o">=</span><span class="n">generator</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Build data subsets</span>
+    <span class="n">dataset_split</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subsets_names</span><span class="p">):</span>
+        <span class="c1"># Check subset</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subsets_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Subset &quot;</span><span class="si">{</span><span class="n">subset</span><span class="si">}</span><span class="s1">&quot; resulting from data set &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;split is empty.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Assemble data subet</span>
+        <span class="n">dataset_split</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">subset</span><span class="p">)]</span> <span class="o">=</span> <span class="n">subsets_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Save data subsets files</span>
+    <span class="k">if</span> <span class="n">is_save_subsets</span><span class="p">:</span>
+        <span class="c1"># Check subsets directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">subsets_directory</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The data subsets directory has not been &#39;</span>
+                               <span class="s1">&#39;specified or found:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                               <span class="o">+</span> <span class="n">subsets_directory</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Loop over data subsets</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">dataset_split</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Set data subset file name</span>
+            <span class="n">subset_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">subsets_basename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">subset_file</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">subsets_basename</span><span class="si">}</span><span class="s1">_&#39;</span>
+            <span class="n">subset_file</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s1">_n</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="c1"># Set data subset file path</span>
+            <span class="n">subset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subsets_directory</span><span class="p">,</span>
+                                       <span class="n">subset_file</span> <span class="o">+</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Save data subset</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">subset_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">subset_file</span><span class="p">:</span>
+                <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">subset_file</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    </span>
+    <span class="k">return</span> <span class="n">dataset_split</span></div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="get_subset_indices_mapping">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.get_subset_indices_mapping.html#graphorge.gnn_base_model.data.graph_dataset.get_subset_indices_mapping">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_subset_indices_mapping</span><span class="p">(</span><span class="n">subset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get mapping from subset indexes to whole parent data set indices.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    subset : torch.utils.data.Subset</span>
+<span class="sd">        Subset of data set.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    indices_map : dict</span>
+<span class="sd">        Mapping between each subset index (key, str[int]) and the corresponding</span>
+<span class="sd">        whole data set index (item, str[int]).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check subset</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Subset</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The provided subset (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span><span class="si">}</span><span class="s1">) must be of &#39;</span>
+                           <span class="sa">f</span><span class="s1">&#39;type torch.utils.data.Subset.&#39;</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ </span>
+    <span class="c1"># Initialize mapping indices</span>
+    <span class="n">indices_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Loop over subset indices</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subset</span><span class="o">.</span><span class="n">indices</span><span class="p">):</span>
+        <span class="c1"># Assign parent data set index</span>
+        <span class="n">indices_map</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">index</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    </span>
+    <span class="k">return</span> <span class="n">indices_map</span></div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="get_pyg_data_loader">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.get_pyg_data_loader.html#graphorge.gnn_base_model.data.graph_dataset.get_pyg_data_loader">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pyg_data_loader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">is_shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">is_verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get Graph Neural Network graph data set PyG data loader.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : {GNNGraphDataset, list[str]}</span>
+<span class="sd">        Graph Neural Network graph data set. Each sample corresponds to a</span>
+<span class="sd">        torch_geometric.data.Data object describing a homogeneous graph.</span>
+<span class="sd">        Accepts GNNGraphDataset or a list of data set samples files paths,</span>
+<span class="sd">        where each sample file contains a torch_geometric.data.Data object</span>
+<span class="sd">        describing a homogeneous graph.</span>
+<span class="sd">    batch_size : int, default=1</span>
+<span class="sd">        Number of samples loaded per batch.</span>
+<span class="sd">    is_shuffle : bool, default=False</span>
+<span class="sd">        Reshuffle data set at every epoch.</span>
+<span class="sd">    is_verbose : bool, default=False</span>
+<span class="sd">        If True, enable verbose output.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Arguments of torch.utils.data.DataLoader.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_loader : torch_geometric.loader.DataLoader</span>
+<span class="sd">        Graph Neural Network graph data set PyG data loader.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Build GNN-based material patch data loader&#39;</span>
+              <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">------------------------------------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Build data set from list of data set samples files paths</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># Get data set samples files paths</span>
+        <span class="n">dataset_sample_files</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:]</span>
+        <span class="c1"># Get data set directory</span>
+        <span class="n">dataset_directory</span> <span class="o">=</span> \
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dataset_sample_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Build data set</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">GNNGraphDataset</span><span class="p">(</span>
+            <span class="n">dataset_directory</span><span class="p">,</span> <span class="n">dataset_sample_files</span><span class="p">,</span> <span class="n">is_store_dataset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="k">if</span> <span class="n">is_verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; Building data loader...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Graph Neural Network graph data set PyG data loader</span>
+    <span class="n">data_loader</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">is_shuffle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="k">return</span> <span class="n">data_loader</span></div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="write_graph_dataset_summary_file">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.write_graph_dataset_summary_file.html#graphorge.gnn_base_model.data.graph_dataset.write_graph_dataset_summary_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_graph_dataset_summary_file</span><span class="p">(</span>
+    <span class="n">dataset_directory</span><span class="p">,</span> <span class="n">n_sample</span><span class="p">,</span> <span class="n">total_time_sec</span><span class="p">,</span> <span class="n">avg_time_sample</span><span class="p">,</span>
+    <span class="n">node_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edge_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">global_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">node_targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edge_targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">global_targets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write summary data file for GNN-based data set generation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_directory : str</span>
+<span class="sd">        Directory where the Graph Neural Network graph data set is stored (all</span>
+<span class="sd">        data set samples files). All existent files are overridden when saving</span>
+<span class="sd">        sample data files.</span>
+<span class="sd">    n_sample : int</span>
+<span class="sd">        Data set size (number of samples).</span>
+<span class="sd">    total_time_sec : int</span>
+<span class="sd">        Total generation time in seconds.</span>
+<span class="sd">    avg_time_sample : float</span>
+<span class="sd">        Average generation time per sample.</span>
+<span class="sd">    node_features : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set nodes features.</span>
+<span class="sd">    edge_features : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set edges features.</span>
+<span class="sd">    global_features : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set global features.</span>
+<span class="sd">    node_targets : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set nodes targets.</span>
+<span class="sd">    edge_targets : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set edges targets.</span>
+<span class="sd">    global_targets : tuple[str], default=None</span>
+<span class="sd">        Graph Neural Network graph data set global targets.</span>
+<span class="sd">    filename : str, default=&#39;summary&#39;</span>
+<span class="sd">        Summary file name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set summary data</span>
+    <span class="n">summary_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;n_sample&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_sample</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;node_features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_features</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;edge_features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edge_features</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;global_features&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_features</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;node_targets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_targets</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;edge_targets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edge_targets</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;global_targets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_targets</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;Total generation time&#39;</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">total_time_sec</span><span class="p">)))</span>
+    <span class="n">summary_data</span><span class="p">[</span><span class="s1">&#39;Avg. generation time per graph&#39;</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">avg_time_sample</span><span class="p">)))</span>
+    <span class="c1"># Set summary title</span>
+    <span class="n">summary_title</span> <span class="o">=</span> <span class="s1">&#39;Summary: Graph Neural Network graph data set generation&#39;</span>
+    <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+    <span class="c1"># Write summary file</span>
+    <span class="n">write_summary_file</span><span class="p">(</span>
+        <span class="n">summary_directory</span><span class="o">=</span><span class="n">dataset_directory</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+        <span class="n">summary_title</span><span class="o">=</span><span class="n">summary_title</span><span class="p">,</span> <span class="o">**</span><span class="n">summary_data</span><span class="p">)</span></div>
+
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="GNNGraphDatasetInMemory">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GNNGraphDatasetInMemory</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Graph Neural Network graph data set (in-memory storage only).</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _dataset_samples : list</span>
+<span class="sd">        Graph Neural Network graph data set samples data. Each sample is stored</span>
+<span class="sd">        as a torch_geometric.data.Data object describing a homogeneous graph.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    __len__(self):</span>
+<span class="sd">        Return size of data set (number of samples).</span>
+<span class="sd">    __getitem__(self, index)</span>
+<span class="sd">        Return data set sample from corresponding index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GNNGraphDatasetInMemory.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_samples</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters </span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_samples : list</span>
+<span class="sd">            Graph Neural Network graph data set samples data. Each sample is</span>
+<span class="sd">            stored as a torch_geometric.data.Data object describing a</span>
+<span class="sd">            homogeneous graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize data set from base class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GNNGraphDatasetInMemory</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set data set samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset_samples</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return size of data set (number of samples).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n_sample : int</span>
+<span class="sd">            Data set size (number of samples).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GNNGraphDatasetInMemory.__getitem__">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.html#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.__getitem__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return data set sample from corresponding index.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int</span>
+<span class="sd">            Index of returned data set sample (index must be in [0, n_sample]).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pyg_graph : torch_geometric.data.Data</span>
+<span class="sd">            Data set sample defined as a PyG data object describing a</span>
+<span class="sd">            homogeneous graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get data set sample</span>
+        <span class="n">pyg_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_samples</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">pyg_graph</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+graphorge.gnn\_base\_model
+==========================
+
+.. automodule:: graphorge.gnn_base_model
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   data
+   model
+   optimization
+   predict
+   train
+

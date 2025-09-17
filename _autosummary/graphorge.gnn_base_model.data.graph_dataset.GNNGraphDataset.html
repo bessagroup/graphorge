@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory" href="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.html" />
+    <link rel="prev" title="graphorge.gnn_base_model.data.graph_dataset.write_summary_file" href="graphorge.gnn_base_model.data.graph_dataset.write_summary_file.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="graphorge.html">Code</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="graphorge.gnn_base_model.data.html">graphorge.gnn_base_model.data</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="graphorge.gnn_base_model.data.graph_data.html">graphorge.gnn_base_model.data.graph_data</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="graphorge.gnn_base_model.data.graph_dataset.html">graphorge.gnn_base_model.data.graph_dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.model.html">graphorge.gnn_base_model.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.optimization.html">graphorge.gnn_base_model.optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.predict.html">graphorge.gnn_base_model.predict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.train.html">graphorge.gnn_base_model.train</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.ioput.html">graphorge.ioput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.utilities.html">graphorge.utilities</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="graphorge.html">graphorge</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.data.html">graphorge.gnn_base_model.data</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.data.graph_dataset.html">graphorge.gnn_base_model.data.graph_dataset</a></li>
+      <li class="breadcrumb-item active">graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphorge-gnn-base-model-data-graph-dataset-gnngraphdataset">
+<h1>graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset<a class="headerlink" href="#graphorge-gnn-base-model-data-graph-dataset-gnngraphdataset" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GNNGraphDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_sample_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_store_dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>Graph Neural Network graph data set.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_directory">
+<span class="sig-name descname"><span class="pre">_dataset_directory</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Directory where the Graph Neural Network graph data set is stored
+(all data set samples files).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_sample_files">
+<span class="sig-name descname"><span class="pre">_dataset_sample_files</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_sample_files" title="Link to this definition">¶</a></dt>
+<dd><p>Graph Neural Network graph data set samples files paths. Each sample
+file contains a torch_geometric.data.Data object describing a
+homogeneous graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_samples">
+<span class="sig-name descname"><span class="pre">_dataset_samples</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_samples" title="Link to this definition">¶</a></dt>
+<dd><p>Graph Neural Network graph data set samples data. Each sample is stored
+as a torch_geometric.data.Data object describing a homogeneous graph.
+Only populated if _is_store_dataset is True, otherwise is set as an
+empty list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._is_store_dataset">
+<span class="sig-name descname"><span class="pre">_is_store_dataset</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._is_store_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>If True, then the Graph Neural Network graph data set samples are
+loaded and stored in attribute dataset_samples_data. If False, the
+dataset object holds solely the samples data files paths and load the
+corresponding files when accessing a given sample data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a>, default=False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_basename">
+<span class="sig-name descname"><span class="pre">_dataset_basename</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._dataset_basename" title="Link to this definition">¶</a></dt>
+<dd><p>Data set file base name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__len__(self):</span></span></dt>
+<dd><p>Return size of data set (number of samples).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__getitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Return data set sample from corresponding index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_directory">
+<span class="sig-name descname"><span class="pre">get_dataset_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Get directory where the Graph Neural Network graph data set is stored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_sample_files">
+<span class="sig-name descname"><span class="pre">get_dataset_sample_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_sample_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_sample_files" title="Link to this definition">¶</a></dt>
+<dd><p>Get Graph Neural Network graph data set data set samples files paths.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.set_dataset_basename">
+<span class="sig-name descname"><span class="pre">set_dataset_basename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_basename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.set_dataset_basename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.set_dataset_basename" title="Link to this definition">¶</a></dt>
+<dd><p>Set data set file base name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_basename">
+<span class="sig-name descname"><span class="pre">get_dataset_basename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_basename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_basename" title="Link to this definition">¶</a></dt>
+<dd><p>Get data set file base name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.save_dataset">
+<span class="sig-name descname"><span class="pre">save_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.save_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.save_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Save Graph Neural Network graph data set to file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.load_dataset">
+<span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.load_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.load_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Load PyTorch data set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._update_dataset_directory">
+<span class="sig-name descname"><span class="pre">_update_dataset_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_reload_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset._update_dataset_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset._update_dataset_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Update directory where Graph Neural Network graph data set is stored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.update_dataset_file_internal_directory">
+<span class="sig-name descname"><span class="pre">update_dataset_file_internal_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_reload_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.update_dataset_file_internal_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.update_dataset_file_internal_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Update internal directory of stored data set in provided file.</p>
+</dd></dl>
+
+<p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+(all data set samples files).</p></li>
+<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
+file contains a torch_geometric.data.Data object describing a
+homogeneous graph.</p></li>
+<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
+<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
+loaded and stored in attribute dataset_samples_data. If False,
+the dataset object holds solely the samples data files paths and
+load the corresponding files when accessing a given sample data.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">List of Public Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_basename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_basename</span></code></a></p></td>
+<td><p>Get data set file base name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id2" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_directory</span></code></a></p></td>
+<td><p>Get directory where Graph Neural Network graph data set is stored.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id3" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.get_dataset_sample_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataset_sample_files</span></code></a></p></td>
+<td><p>Get Graph Neural Network graph data set samples files paths.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id4" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.load_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_dataset</span></code></a></p></td>
+<td><p>Load PyTorch data set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id5" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.save_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_dataset</span></code></a></p></td>
+<td><p>Save Graph Neural Network graph data set to file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id6" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.set_dataset_basename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dataset_basename</span></code></a></p></td>
+<td><p>Set data set file base name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id7" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.update_dataset_file_internal_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dataset_file_internal_directory</span></code></a></p></td>
+<td><p>Update internal directory of stored data set in provided file.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_sample_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'graph_dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_store_dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_dataset.GNNGraphDataset.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+(all data set samples files).</p></li>
+<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
+file contains a torch_geometric.data.Data object describing a
+homogeneous graph.</p></li>
+<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
+<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
+loaded and stored in attribute dataset_samples_data. If False,
+the dataset object holds solely the samples data files paths and
+load the corresponding files when accessing a given sample data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">_update_dataset_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_reload_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset._update_dataset_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd><p>Update directory where GNN graph data set is stored.</p>
+<p>Stored data set samples files paths directory is updated according
+with the new directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+(all data set samples files).</p></li>
+<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
+dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">get_dataset_basename</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_basename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd><p>Get data set file base name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_basename</strong> – Data set file base name.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">get_dataset_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd><p>Get directory where Graph Neural Network graph data set is stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_directory</strong> – Directory where the Graph Neural Network graph data set is stored
+(all data set samples files).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_dataset_sample_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.get_dataset_sample_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd><p>Get Graph Neural Network graph data set samples files paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_sample_files</strong> – Graph Neural Network graph data set samples files paths. Each
+sample file contains a torch_geometric.data.Data object describing
+a homogeneous graph.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.load_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd><p>Load PyTorch data set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set file path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dataset</strong> – PyTorch data set.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.utils.data.Dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">save_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_append_n_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.save_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd><p>Save Graph Neural Network graph data set to file.</p>
+<p>Graph Neural Network graph data set is stored in dataset_directory as a
+pickle file named graph_dataset.pkl or graph_dataset_n&lt; n_sample &gt;.pkl.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>is_append_n_sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=True</em>) – If True, then data set size (number of samples) is appended to
+Graph Neural Network graph data set filename.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dataset_file_path</strong> – PyTorch data set file path.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">set_dataset_basename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_basename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.set_dataset_basename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd><p>Set data set file base name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Data set file base name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_dataset_file_internal_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_reload_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_dataset.html#GNNGraphDataset.update_dataset_file_internal_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd><p>Update internal directory of stored data set in provided file.</p>
+<p>Update is only performed if the new directory does not match the
+internal directory of the stored data set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set file path.</p></li>
+<li><p><strong>new_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set new directory.</p></li>
+<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
+dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphorge.gnn_base_model.data.graph_dataset.write_summary_file.html" class="btn btn-neutral float-left" title="graphorge.gnn_base_model.data.graph_dataset.write_summary_file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory.html" class="btn btn-neutral float-right" title="graphorge.gnn_base_model.data.graph_dataset.GNNGraphDatasetInMemory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

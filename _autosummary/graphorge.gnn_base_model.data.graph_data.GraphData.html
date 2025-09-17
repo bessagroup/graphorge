@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.gnn_base_model.data.graph_data.GraphData &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="graphorge.gnn_base_model.data.graph_dataset" href="graphorge.gnn_base_model.data.graph_dataset.html" />
+    <link rel="prev" title="graphorge.gnn_base_model.data.graph_data.new_file_path_with_int" href="graphorge.gnn_base_model.data.graph_data.new_file_path_with_int.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="graphorge.html">Code</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="graphorge.gnn_base_model.data.html">graphorge.gnn_base_model.data</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="graphorge.gnn_base_model.data.graph_data.html">graphorge.gnn_base_model.data.graph_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.gnn_base_model.data.graph_dataset.html">graphorge.gnn_base_model.data.graph_dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.model.html">graphorge.gnn_base_model.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.optimization.html">graphorge.gnn_base_model.optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.predict.html">graphorge.gnn_base_model.predict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.train.html">graphorge.gnn_base_model.train</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.ioput.html">graphorge.ioput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.utilities.html">graphorge.utilities</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="graphorge.html">graphorge</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.data.html">graphorge.gnn_base_model.data</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.data.graph_data.html">graphorge.gnn_base_model.data.graph_data</a></li>
+      <li class="breadcrumb-item active">graphorge.gnn_base_model.data.graph_data.GraphData</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphorge-gnn-base-model-data-graph-data-graphdata">
+<h1>graphorge.gnn_base_model.data.graph_data.GraphData<a class="headerlink" href="#graphorge-gnn-base-model-data-graph-data-graphdata" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GraphData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_coords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Graph Neural Network graph data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._n_dim">
+<span class="sig-name descname"><span class="pre">_n_dim</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._n_dim" title="Link to this definition">¶</a></dt>
+<dd><p>Number of spatial dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._nodes_coords">
+<span class="sig-name descname"><span class="pre">_nodes_coords</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._nodes_coords" title="Link to this definition">¶</a></dt>
+<dd><p>Coordinates of nodes stored as a numpy.ndarray(2d) with shape
+(n_nodes, n_dim). Coordinates of i-th node are stored in
+nodes_coords[i, :].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._n_node">
+<span class="sig-name descname"><span class="pre">_n_node</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._n_node" title="Link to this definition">¶</a></dt>
+<dd><p>Number of nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._n_edge">
+<span class="sig-name descname"><span class="pre">_n_edge</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._n_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Number of edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._node_features_matrix">
+<span class="sig-name descname"><span class="pre">_node_features_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._node_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Nodes input features matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_features).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._edge_features_matrix">
+<span class="sig-name descname"><span class="pre">_edge_features_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._edge_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Edges input features matrix stored as a numpy.ndarray(2d) of shape
+(n_edges, n_features).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._global_features_matrix">
+<span class="sig-name descname"><span class="pre">_global_features_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._global_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Global input features matrix stored as a numpy.ndarray(2d) of shape
+(1, n_features).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._node_targets_matrix">
+<span class="sig-name descname"><span class="pre">_node_targets_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._node_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Nodes targets matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_targets).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._edge_targets_matrix">
+<span class="sig-name descname"><span class="pre">_edge_targets_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._edge_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Edges targets matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_targets).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._global_targets_matrix">
+<span class="sig-name descname"><span class="pre">_global_targets_matrix</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._global_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Global targets matrix stored as a numpy.ndarray(2d) of shape
+(1, n_targets).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._edges_indexes">
+<span class="sig-name descname"><span class="pre">_edges_indexes</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._edges_indexes" title="Link to this definition">¶</a></dt>
+<dd><p>Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(n_edges, 2), where the i-th edge is stored in
+edges_indexes[i, :] as (start_node_index, end_node_index).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._metadata">
+<span class="sig-name descname"><span class="pre">_metadata</span></span><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._metadata" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary containing any metadata information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_torch_data_object">
+<span class="sig-name descname"><span class="pre">get_torch_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_torch_data_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_torch_data_object" title="Link to this definition">¶</a></dt>
+<dd><p>Get PyG homogeneous graph data object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_nodes_coords">
+<span class="sig-name descname"><span class="pre">get_nodes_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_nodes_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_nodes_coords" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph node coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_n_node">
+<span class="sig-name descname"><span class="pre">get_n_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_n_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_n_node" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph number of nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_n_edge">
+<span class="sig-name descname"><span class="pre">get_n_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_n_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_n_edge" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph number of edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_graph_edges_indexes">
+<span class="sig-name descname"><span class="pre">set_graph_edges_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connect_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges_indexes_mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_graph_edges_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_graph_edges_indexes" title="Link to this definition">¶</a></dt>
+<dd><p>Set graph edges indexes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_graph_edges_indexes">
+<span class="sig-name descname"><span class="pre">get_graph_edges_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_graph_edges_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_graph_edges_indexes" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph edges indexes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_node_features_matrix">
+<span class="sig-name descname"><span class="pre">set_node_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_node_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_node_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set nodes input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_node_features_matrix">
+<span class="sig-name descname"><span class="pre">get_node_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_node_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_node_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set nodes input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_features_matrix">
+<span class="sig-name descname"><span class="pre">set_edge_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_edge_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set edges input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_features_matrix">
+<span class="sig-name descname"><span class="pre">get_edge_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_edge_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Get edges input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_global_features_matrix">
+<span class="sig-name descname"><span class="pre">set_global_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_global_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_global_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set global input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_global_features_matrix">
+<span class="sig-name descname"><span class="pre">get_global_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_global_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_global_features_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Get global input features matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_node_targets_matrix">
+<span class="sig-name descname"><span class="pre">set_node_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_node_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_node_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set node targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_node_targets_matrix">
+<span class="sig-name descname"><span class="pre">get_node_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_node_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_node_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Get node targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_targets_matrix">
+<span class="sig-name descname"><span class="pre">set_edge_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_edge_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set edge targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_targets_matrix">
+<span class="sig-name descname"><span class="pre">get_edge_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_edge_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Get edge targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_global_targets_matrix">
+<span class="sig-name descname"><span class="pre">set_global_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_global_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_global_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Set global targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_global_targets_matrix">
+<span class="sig-name descname"><span class="pre">get_global_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_global_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_global_targets_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Get global targets matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.set_metadata">
+<span class="sig-name descname"><span class="pre">set_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.set_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Set metadata information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.add_metadata">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.add_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.add_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Add metadata information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Get metadata information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.plot_graph">
+<span class="sig-name descname"><span class="pre">plot_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_show_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_overwrite_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.plot_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.plot_graph" title="Link to this definition">¶</a></dt>
+<dd><p>Generate plot of graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._get_edges_from_local_radius">
+<span class="sig-name descname"><span class="pre">_get_edges_from_local_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connect_radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData._get_edges_from_local_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._get_edges_from_local_radius" title="Link to this definition">¶</a></dt>
+<dd><p>Get edges between nodes that are within a given connectivity radius.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_undirected_unique_edges">
+<span class="sig-name descname"><span class="pre">get_undirected_unique_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges_indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_undirected_unique_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_undirected_unique_edges" title="Link to this definition">¶</a></dt>
+<dd><p>Get set of undirected unique edges indexes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData._check_edges_indexes_matrix">
+<span class="sig-name descname"><span class="pre">_check_edges_indexes_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges_indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData._check_edges_indexes_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData._check_edges_indexes_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Check if given edges indexes matrix is valid.</p>
+</dd></dl>
+
+<p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of spatial dimensions.</p></li>
+<li><p><strong>nodes_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Coordinates of nodes stored as a numpy.ndarray(2d) with shape
+(n_nodes, n_dim). Coordinates of i-th node are stored in
+nodes_coords[i, :].</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">List of Public Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id2" title="graphorge.gnn_base_model.data.graph_data.GraphData.add_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_metadata</span></code></a></p></td>
+<td><p>Add metadata information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#graphorge.gnn_base_model.data.graph_data.GraphData.extract_data_torch_data_object" title="graphorge.gnn_base_model.data.graph_data.GraphData.extract_data_torch_data_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_data_torch_data_object</span></code></a></p></td>
+<td><p>Extract data from PyG homogeneous graph data object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id3" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edge_features_matrix</span></code></a></p></td>
+<td><p>Get edges input features matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id4" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edge_targets_matrix</span></code></a></p></td>
+<td><p>Get edge targets matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_edges_indexes_mesh" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_edges_indexes_mesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edges_indexes_mesh</span></code></a></p></td>
+<td><p>Convert set of mesh connected nodes to edges indexes matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id5" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_global_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_features_matrix</span></code></a></p></td>
+<td><p>Get global input features matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id6" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_global_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_targets_matrix</span></code></a></p></td>
+<td><p>Get global targets matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id7" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_graph_edges_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_graph_edges_indexes</span></code></a></p></td>
+<td><p>Get graph edges indexes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id8" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata</span></code></a></p></td>
+<td><p>Get metadata information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id9" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_n_edge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_n_edge</span></code></a></p></td>
+<td><p>Get graph number of edges.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id10" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_n_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_n_node</span></code></a></p></td>
+<td><p>Get graph number of nodes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id11" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_node_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_features_matrix</span></code></a></p></td>
+<td><p>Set nodes input features matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id12" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_node_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_node_targets_matrix</span></code></a></p></td>
+<td><p>Get node targets matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id13" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_nodes_coords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nodes_coords</span></code></a></p></td>
+<td><p>Get graph node coordinates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id14" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_torch_data_object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_torch_data_object</span></code></a></p></td>
+<td><p>Get PyG homogeneous graph data object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id15" title="graphorge.gnn_base_model.data.graph_data.GraphData.get_undirected_unique_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_undirected_unique_edges</span></code></a></p></td>
+<td><p>Get set of undirected unique edges indexes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#graphorge.gnn_base_model.data.graph_data.GraphData.move_time_dimension_axis" title="graphorge.gnn_base_model.data.graph_data.GraphData.move_time_dimension_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_time_dimension_axis</span></code></a></p></td>
+<td><p>Move time dimension axis in temporal data array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id16" title="graphorge.gnn_base_model.data.graph_data.GraphData.plot_graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_graph</span></code></a></p></td>
+<td><p>Generate plot of graph.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id17" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edge_features_matrix</span></code></a></p></td>
+<td><p>Set edges input features matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id18" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edge_targets_matrix</span></code></a></p></td>
+<td><p>Set edge targets matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id19" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_global_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_features_matrix</span></code></a></p></td>
+<td><p>Set global input features matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id20" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_global_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_global_targets_matrix</span></code></a></p></td>
+<td><p>Set global targets matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id21" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_graph_edges_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_graph_edges_indexes</span></code></a></p></td>
+<td><p>Set graph edges indexes and number of edges.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id22" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_metadata</span></code></a></p></td>
+<td><p>Set metadata information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id23" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_node_features_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_node_features_matrix</span></code></a></p></td>
+<td><p>Set nodes input features matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#id24" title="graphorge.gnn_base_model.data.graph_data.GraphData.set_node_targets_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_node_targets_matrix</span></code></a></p></td>
+<td><p>Set node targets matrix.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_coords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of spatial dimensions.</p></li>
+<li><p><strong>nodes_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Coordinates of nodes stored as a numpy.ndarray(2d) with shape
+(n_nodes, n_dim). Coordinates of i-th node are stored in
+nodes_coords[i, :].</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_check_edges_indexes_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges_indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData._check_edges_indexes_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd><p>Check if given edges indexes matrix is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edges_indexes</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(n_edges, 2), where the i-th edge is stored in edges_indexes[i, :]
+as (start_node_index, end_node_index).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_edges_from_local_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connect_radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData._get_edges_from_local_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd><p>Get edges between nodes that are within a given connectivity radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Coordinates of nodes stored as a numpy.ndarray(2d) with shape
+(n_nodes, n_dim). Coordinates of i-th node are stored in
+nodes_coords[i, :].</p></li>
+<li><p><strong>connect_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Connectivity radius that sets the maximum distance between two
+nodes that leads to an edge.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>edges_indexes</strong> – Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(num_edges, 2), where the i-th edge is stored in
+edges_indexes[i, :] as (start_node_index, end_node_index).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.add_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd><p>Add metadata information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Key of metadata information.</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – Value of metadata information.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.extract_data_torch_data_object">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_data_torch_data_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyg_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.extract_data_torch_data_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.extract_data_torch_data_object" title="Link to this definition">¶</a></dt>
+<dd><p>Extract data from PyG homogeneous graph data object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pyg_graph</strong> (<a class="reference external" href="https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.data.Data.html#torch_geometric.data.Data" title="(in pytorch_geometric v2.7.0)"><em>torch_geometric.data.Data</em></a>) – PyG data object describing a homogeneous graph.</p></li>
+<li><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Attributes to be extracted from PyG data object. Available
+attributes coincide with the attributes of GraphData.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>attributes_data</strong> – Extracted attributes data sorted according with provided attributes
+sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_edge_features_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_edge_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd><p>Get edges input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge_features_matrix</strong> – Edges input features matrix stored as a numpy.ndarray(2d) of shape
+(n_edges, n_features).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">get_edge_targets_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_edge_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd><p>Get edge targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge_targets_matrix</strong> – Edges targets matrix stored as a numpy.ndarray(2d) of shape
+(n_edges, n_targets).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.get_edges_indexes_mesh">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_edges_indexes_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connected_nodes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_edges_indexes_mesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.get_edges_indexes_mesh" title="Link to this definition">¶</a></dt>
+<dd><p>Convert set of mesh connected nodes to edges indexes matrix.</p>
+<p>It is assumed that nodes are labeled from 1 to n_nodes, such that
+node 1 and node n_nodes are associated with indexes 0 and n_nodes-1,
+respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connected_nodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>(</em><em>2</em><em>)</em><em>]</em>) – A set containing all pairs of nodes that are connected by any
+relevant mesh representation (e.g., finite element mesh). Each
+connection is stored a single time as a tuple(node[int], node[int])
+and is independent of the corresponding nodes storage order.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>edges_indexes_mesh</strong> – Edges stemming from any relevant mesh representation (e.g., finite
+element mesh) and that should be accounted for. Edges indexes
+matrix stored as numpy.ndarray[int](2d) with shape (n_edges, 2),
+where the i-th edge is stored in edges_indexes[i, :] as
+(start_node_index, end_node_index).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d), default=None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">get_global_features_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_global_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<dd><p>Get global input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>global_features_matrix</strong> – Global input features matrix stored as a numpy.ndarray(2d) of
+shape (1, n_features).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">get_global_targets_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_global_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id6" title="Link to this definition">¶</a></dt>
+<dd><p>Get global targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>global_targets_matrix</strong> – Global targets matrix stored as a numpy.ndarray(2d) of shape
+(1, n_targets).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">get_graph_edges_indexes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_graph_edges_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id7" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph edges indexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edges_indexes</strong> – Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(num_edges, 2), where the i-th edge is stored in
+edges_indexes[i, :] as (start_node_index, end_node_index).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id8" title="Link to this definition">¶</a></dt>
+<dd><p>Get metadata information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> – Metadata information stored as a dictionary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">get_n_edge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_n_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id9" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph number of edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_edge</strong> – Number of edges.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">get_n_node</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_n_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id10" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph number of nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_node</strong> – Number of nodes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">get_node_features_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_node_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id11" title="Link to this definition">¶</a></dt>
+<dd><p>Set nodes input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_features_matrix</strong> – Nodes input features matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_features).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id12">
+<span class="sig-name descname"><span class="pre">get_node_targets_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_node_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id12" title="Link to this definition">¶</a></dt>
+<dd><p>Get node targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_targets_matrix</strong> – Nodes targets matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_targets).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id13">
+<span class="sig-name descname"><span class="pre">get_nodes_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_nodes_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id13" title="Link to this definition">¶</a></dt>
+<dd><p>Get graph node coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodes_coords</strong> – Coordinates of nodes stored as a numpy.ndarray(2d) with shape
+(n_nodes, n_dim). Coordinates of i-th node are stored in
+nodes_coords[i, :].</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d), default=None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id14">
+<span class="sig-name descname"><span class="pre">get_torch_data_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_torch_data_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id14" title="Link to this definition">¶</a></dt>
+<dd><p>Get PyG homogeneous graph data object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pyg_graph</strong> – PyG data object describing a homogeneous graph.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.data.Data.html#torch_geometric.data.Data" title="(in pytorch_geometric v2.7.0)">torch_geometric.data.Data</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id15">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_undirected_unique_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges_indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.get_undirected_unique_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id15" title="Link to this definition">¶</a></dt>
+<dd><p>Get set of undirected unique edges indexes.</p>
+<p>This function processes the given matrix of edges indexes and
+transforms all edges into undirected edges. In addition, it also
+removes any duplicated edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edges_indexes</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(n_edges, 2), where the i-th edge is stored in
+edges_indexes[i, :] as (start_node_index, end_node_index).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>edges_indexes</strong> – Edges indexes matrix stored as numpy.ndarray[int](2d) with shape
+(n_edges, 2), where the i-th edge is stored in
+edges_indexes[i, :] as (start_node_index, end_node_index).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a>(2d)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.data.graph_data.GraphData.move_time_dimension_axis">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">move_time_dimension_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.move_time_dimension_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.data.graph_data.GraphData.move_time_dimension_axis" title="Link to this definition">¶</a></dt>
+<dd><p>Move time dimension axis in temporal data array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.ndarray</em>) – Temporal data array.</p></li>
+<li><p><strong>source_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Original index of time dimension.</p></li>
+<li><p><strong>dest_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Destination index of time dimension.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>array</strong> – Reshaped temporal data array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id16">
+<span class="sig-name descname"><span class="pre">plot_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_show_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_save_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_overwrite_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.plot_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id16" title="Link to this definition">¶</a></dt>
+<dd><p>Generate plot of graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>is_show_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Display plot of graph if True.</p></li>
+<li><p><strong>is_save_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Save plot of graph. Plot is only saved if <cite>save_directory</cite> is
+provided and exists.</p></li>
+<li><p><strong>save_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Directory where plot of graph is stored.</p></li>
+<li><p><strong>plot_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Filename of graph plot.</p></li>
+<li><p><strong>is_overwrite_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Overwrite plot of graph if True, otherwise generate
+generate non-existent file path by extending the original file path
+with an integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id17">
+<span class="sig-name descname"><span class="pre">set_edge_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_edge_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id17" title="Link to this definition">¶</a></dt>
+<dd><p>Set edges input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge_features_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Edges input features matrix stored as a numpy.ndarray(2d) of shape
+(n_edges, n_features).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id18">
+<span class="sig-name descname"><span class="pre">set_edge_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_edge_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id18" title="Link to this definition">¶</a></dt>
+<dd><p>Set edge targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edge_targets_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Edges targets matrix stored as a numpy.ndarray(2d) of shape
+(n_edges, n_targets).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id19">
+<span class="sig-name descname"><span class="pre">set_global_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_global_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id19" title="Link to this definition">¶</a></dt>
+<dd><p>Set global input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>global_features_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Global input features matrix stored as a numpy.ndarray(2d) of
+shape (1, n_features).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id20">
+<span class="sig-name descname"><span class="pre">set_global_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_global_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id20" title="Link to this definition">¶</a></dt>
+<dd><p>Set global targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>global_targets_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Global targets matrix stored as a numpy.ndarray(2d) of shape
+(1, n_targets).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id21">
+<span class="sig-name descname"><span class="pre">set_graph_edges_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connect_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges_indexes_mesh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_graph_edges_indexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id21" title="Link to this definition">¶</a></dt>
+<dd><p>Set graph edges indexes and number of edges.</p>
+<p>Sets existing edges input features and targets matrices to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connect_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=None</em>) – Connectivity radius that sets the maximum distance between two
+nodes that leads to an edge. If None, then no edges are generated
+from distance-based search.</p></li>
+<li><p><strong>edges_indexes_mesh</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em><em>, </em><em>default=None</em>) – Edges stemming from any relevant mesh representation (e.g., finite
+element mesh) and that should be accounted for. Edges indexes
+matrix stored as numpy.ndarray[int](2d) with shape (n_edges, 2),
+where the i-th edge is stored in edges_indexes[i, :] as
+(start_node_index, end_node_index).</p></li>
+<li><p><strong>is_unique</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=True</em>) – Remove any existent duplicated edges if <cite>True</cite>. Resulting unique
+edges are sorted by ascending order of the corresponding indexes,
+according to ‘numpy.unique’ output. If <cite>False</cite>, edges are kept
+unmodified.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id22">
+<span class="sig-name descname"><span class="pre">set_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id22" title="Link to this definition">¶</a></dt>
+<dd><p>Set metadata information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Any metadata information stored as a dictionary.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Metadata information is useful to store any additional information that
+is not related to the graph data itself but that is relevant for further
+processing or analysis, e,g., sample id, time step, etc.</p>
+</div>
+<p><cite>metadata</cite> is a dictionary that won’t be moved to the GPU when using
+<code class="docutils literal notranslate"><span class="pre">.to(device)</span></code>. Avoid retrieving information from it inside your
+a model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id23">
+<span class="sig-name descname"><span class="pre">set_node_features_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_features_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_node_features_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id23" title="Link to this definition">¶</a></dt>
+<dd><p>Set nodes input features matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_features_matrix</strong> (<em>{numpy.ndarray</em><em>(</em><em>2d</em><em>)</em><em>, </em><em>None}</em>) – Nodes input features matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_features).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id24">
+<span class="sig-name descname"><span class="pre">set_node_targets_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_targets_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/data/graph_data.html#GraphData.set_node_targets_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id24" title="Link to this definition">¶</a></dt>
+<dd><p>Set node targets matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node_targets_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Nodes targets matrix stored as a numpy.ndarray(2d) of shape
+(n_nodes, n_targets).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphorge.gnn_base_model.data.graph_data.new_file_path_with_int.html" class="btn btn-neutral float-left" title="graphorge.gnn_base_model.data.graph_data.new_file_path_with_int" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphorge.gnn_base_model.data.graph_dataset.html" class="btn btn-neutral float-right" title="graphorge.gnn_base_model.data.graph_dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

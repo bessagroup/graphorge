@@ -1,0 +1,81 @@
+graphorge.gnn\_base\_model.model.gnn\_architectures.GraphIndependentNetwork
+===========================================================================
+
+.. currentmodule:: graphorge.gnn_base_model.model.gnn_architectures
+
+.. autoclass:: GraphIndependentNetwork
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: List of Public Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~GraphIndependentNetwork.add_module
+      ~GraphIndependentNetwork.apply
+      ~GraphIndependentNetwork.bfloat16
+      ~GraphIndependentNetwork.buffers
+      ~GraphIndependentNetwork.children
+      ~GraphIndependentNetwork.compile
+      ~GraphIndependentNetwork.cpu
+      ~GraphIndependentNetwork.cuda
+      ~GraphIndependentNetwork.double
+      ~GraphIndependentNetwork.eval
+      ~GraphIndependentNetwork.extra_repr
+      ~GraphIndependentNetwork.float
+      ~GraphIndependentNetwork.forward
+      ~GraphIndependentNetwork.get_buffer
+      ~GraphIndependentNetwork.get_extra_state
+      ~GraphIndependentNetwork.get_parameter
+      ~GraphIndependentNetwork.get_submodule
+      ~GraphIndependentNetwork.half
+      ~GraphIndependentNetwork.ipu
+      ~GraphIndependentNetwork.load_state_dict
+      ~GraphIndependentNetwork.modules
+      ~GraphIndependentNetwork.named_buffers
+      ~GraphIndependentNetwork.named_children
+      ~GraphIndependentNetwork.named_modules
+      ~GraphIndependentNetwork.named_parameters
+      ~GraphIndependentNetwork.parameters
+      ~GraphIndependentNetwork.register_backward_hook
+      ~GraphIndependentNetwork.register_buffer
+      ~GraphIndependentNetwork.register_forward_hook
+      ~GraphIndependentNetwork.register_forward_pre_hook
+      ~GraphIndependentNetwork.register_full_backward_hook
+      ~GraphIndependentNetwork.register_full_backward_pre_hook
+      ~GraphIndependentNetwork.register_load_state_dict_post_hook
+      ~GraphIndependentNetwork.register_module
+      ~GraphIndependentNetwork.register_parameter
+      ~GraphIndependentNetwork.register_state_dict_pre_hook
+      ~GraphIndependentNetwork.requires_grad_
+      ~GraphIndependentNetwork.set_extra_state
+      ~GraphIndependentNetwork.share_memory
+      ~GraphIndependentNetwork.state_dict
+      ~GraphIndependentNetwork.to
+      ~GraphIndependentNetwork.to_empty
+      ~GraphIndependentNetwork.train
+      ~GraphIndependentNetwork.type
+      ~GraphIndependentNetwork.xpu
+      ~GraphIndependentNetwork.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GraphIndependentNetwork.T_destination
+      ~GraphIndependentNetwork.call_super_init
+      ~GraphIndependentNetwork.dump_patches
+      ~GraphIndependentNetwork.training
+   
+   
+
+   .. rubric:: Methods

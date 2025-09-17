@@ -1,0 +1,35 @@
+graphorge.gnn\_base\_model.train
+================================
+
+.. automodule:: graphorge.gnn_base_model.train
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   cross_validation
+   torch_loss
+   training
+   training_plots
+

@@ -1,0 +1,1182 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.gnn_base_model.data.graph_data &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_autosummary/graphorge.html">Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">graphorge.gnn_base_model.data.graph_data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for graphorge.gnn_base_model.data.graph_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Graph Neural Network graph data.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+<span class="sd">GraphData</span>
+<span class="sd">    Graph Neural Network graph data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#                                                                       Modules</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Standard</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="c1"># Third-party</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.spatial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch_geometric.data</span>
+<span class="c1"># Local</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ioput.iostandard</span><span class="w"> </span><span class="kn">import</span> <span class="n">new_file_path_with_int</span>
+<span class="c1">#</span>
+<span class="c1">#                                                          Authorship &amp; Credits</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Bernardo Ferreira (bernardo_ferreira@brown.edu)&#39;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bernardo Ferreira&#39;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Planning&#39;</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1">#</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="GraphData">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GraphData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Graph Neural Network graph data.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _n_dim : int</span>
+<span class="sd">        Number of spatial dimensions.</span>
+<span class="sd">    _nodes_coords : numpy.ndarray(2d)</span>
+<span class="sd">        Coordinates of nodes stored as a numpy.ndarray(2d) with shape</span>
+<span class="sd">        (n_nodes, n_dim). Coordinates of i-th node are stored in</span>
+<span class="sd">        nodes_coords[i, :].</span>
+<span class="sd">    _n_node : int</span>
+<span class="sd">        Number of nodes.</span>
+<span class="sd">    _n_edge : int</span>
+<span class="sd">        Number of edges.</span>
+<span class="sd">    _node_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Nodes input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (n_nodes, n_features).</span>
+<span class="sd">    _edge_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Edges input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (n_edges, n_features).</span>
+<span class="sd">    _global_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Global input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (1, n_features).</span>
+<span class="sd">    _node_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Nodes targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (n_nodes, n_targets).</span>
+<span class="sd">    _edge_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Edges targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (n_nodes, n_targets).</span>
+<span class="sd">    _global_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">        Global targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">        (1, n_targets).</span>
+<span class="sd">    _edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">        Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">        (n_edges, 2), where the i-th edge is stored in</span>
+<span class="sd">        edges_indexes[i, :] as (start_node_index, end_node_index).</span>
+<span class="sd">    _metadata : dict</span>
+<span class="sd">        A dictionary containing any metadata information.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    get_torch_data_object(self)</span>
+<span class="sd">        Get PyG homogeneous graph data object.</span>
+<span class="sd">    get_nodes_coords(self)</span>
+<span class="sd">        Get graph node coordinates.</span>
+<span class="sd">    get_n_node(self)</span>
+<span class="sd">        Get graph number of nodes.</span>
+<span class="sd">    get_n_edge(self)</span>
+<span class="sd">        Get graph number of edges.</span>
+<span class="sd">    set_graph_edges_indexes(self, connect_radius=None, \</span>
+<span class="sd">                            edges_indexes_mesh=None, is_unique=True)</span>
+<span class="sd">        Set graph edges indexes.</span>
+<span class="sd">    get_graph_edges_indexes(self)</span>
+<span class="sd">        Get graph edges indexes.</span>
+<span class="sd">    set_node_features_matrix(self, node_features_matrix)</span>
+<span class="sd">        Set nodes input features matrix.</span>
+<span class="sd">    get_node_features_matrix(self)</span>
+<span class="sd">        Set nodes input features matrix.</span>
+<span class="sd">    set_edge_features_matrix(self, edge_features_matrix)</span>
+<span class="sd">        Set edges input features matrix.</span>
+<span class="sd">    get_edge_features_matrix(self)</span>
+<span class="sd">        Get edges input features matrix.</span>
+<span class="sd">    set_global_features_matrix(self, global_features_matrix)</span>
+<span class="sd">        Set global input features matrix.</span>
+<span class="sd">    get_global_features_matrix(self)</span>
+<span class="sd">        Get global input features matrix.  </span>
+<span class="sd">    set_node_targets_matrix(self, node_targets_matrix)</span>
+<span class="sd">        Set node targets matrix.</span>
+<span class="sd">    get_node_targets_matrix(self)</span>
+<span class="sd">        Get node targets matrix.  </span>
+<span class="sd">    set_edge_targets_matrix(self, edge_targets_matrix)</span>
+<span class="sd">        Set edge targets matrix.   </span>
+<span class="sd">    get_edge_targets_matrix(self)</span>
+<span class="sd">        Get edge targets matrix.</span>
+<span class="sd">    set_global_targets_matrix(self, global_targets_matrix)</span>
+<span class="sd">        Set global targets matrix.</span>
+<span class="sd">    get_global_targets_matrix(self)</span>
+<span class="sd">        Get global targets matrix.</span>
+<span class="sd">    set_metadata(self, metadata)</span>
+<span class="sd">        Set metadata information.</span>
+<span class="sd">    add_metadata(self, key, value)</span>
+<span class="sd">        Add metadata information.</span>
+<span class="sd">    get_metadata(self)</span>
+<span class="sd">        Get metadata information.</span>
+<span class="sd">    plot_graph(self, is_show_plot=False, is_save_plot=False, \</span>
+<span class="sd">               save_directory=None, plot_name=None, is_overwrite_file=False)</span>
+<span class="sd">        Generate plot of graph.</span>
+<span class="sd">    _get_edges_from_local_radius(nodes_coords, connect_radius)</span>
+<span class="sd">        Get edges between nodes that are within a given connectivity radius.</span>
+<span class="sd">    get_undirected_unique_edges(edges_indexes)</span>
+<span class="sd">        Get set of undirected unique edges indexes.</span>
+<span class="sd">    _check_edges_indexes_matrix(edges_indexes)</span>
+<span class="sd">        Check if given edges indexes matrix is valid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GraphData.__init__">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">,</span> <span class="n">nodes_coords</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_dim : int</span>
+<span class="sd">            Number of spatial dimensions.</span>
+<span class="sd">        nodes_coords : numpy.ndarray(2d)</span>
+<span class="sd">            Coordinates of nodes stored as a numpy.ndarray(2d) with shape</span>
+<span class="sd">            (n_nodes, n_dim). Coordinates of i-th node are stored in</span>
+<span class="sd">            nodes_coords[i, :].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_dim</span> <span class="o">=</span> <span class="n">n_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span> <span class="o">=</span> <span class="n">nodes_coords</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n_dim</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Initialize graph edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Initialize features matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Initialize metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------  </span>
+<div class="viewcode-block" id="GraphData.get_torch_data_object">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_torch_data_object">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_torch_data_object</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get PyG homogeneous graph data object.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pyg_graph : torch_geometric.data.Data</span>
+<span class="sd">            PyG data object describing a homogeneous graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set PyG number of nodes</span>
+        <span class="n">num_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set PyG node feature matrix</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span><span class="p">),</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># Set PyG graph connectivity</span>
+        <span class="n">edge_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span><span class="p">)),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="c1"># Set PyG edge feature matrix</span>
+        <span class="n">edge_attr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_attr</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span><span class="p">),</span>
+                                     <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># Set PyG node ground-truth labels</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span><span class="p">),</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># Set PyG node position matrix</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span><span class="p">),</span>
+                               <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set PyG custom attributes:</span>
+        <span class="c1"># Set edge ground-truth labels</span>
+        <span class="n">edge_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_targets_matrix</span> <span class="o">=</span> \
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span><span class="p">),</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># Set global attributes</span>
+        <span class="n">global_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">global_features_matrix</span> <span class="o">=</span> \
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span><span class="p">),</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># Set global ground-truth labels</span>
+        <span class="n">global_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">global_targets_matrix</span> <span class="o">=</span> \
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span><span class="p">),</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set metadata</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Iterate over metadata items</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="c1"># Cast to a tensor if possible</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                    <span class="c1"># If not, copy the value (e.g., strings)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Instantiate PyG homogeneous graph data object</span>
+        <span class="n">pyg_graph</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="o">=</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_attr</span><span class="o">=</span><span class="n">edge_attr</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span>
+            <span class="n">edge_targets_matrix</span><span class="o">=</span><span class="n">edge_targets_matrix</span><span class="p">,</span>
+            <span class="n">global_features_matrix</span><span class="o">=</span><span class="n">global_features_matrix</span><span class="p">,</span>
+            <span class="n">global_targets_matrix</span><span class="o">=</span><span class="n">global_targets_matrix</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="c1"># Validate graph data object</span>
+        <span class="n">pyg_graph</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">raise_on_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">pyg_graph</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.extract_data_torch_data_object">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.extract_data_torch_data_object">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract_data_torch_data_object</span><span class="p">(</span><span class="n">pyg_graph</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract data from PyG homogeneous graph data object.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pyg_graph : torch_geometric.data.Data</span>
+<span class="sd">            PyG data object describing a homogeneous graph.</span>
+<span class="sd">        attributes : tuple</span>
+<span class="sd">            Attributes to be extracted from PyG data object. Available</span>
+<span class="sd">            attributes coincide with the attributes of GraphData.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attributes_data : tuple</span>
+<span class="sd">            Extracted attributes data sorted according with provided attributes</span>
+<span class="sd">            sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check input graph</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pyg_graph</span><span class="p">,</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Input graph is not torch_geometric.data.Data.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set available attributes</span>
+        <span class="n">available_attributes</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="s1">&#39;n_dim&#39;</span><span class="p">,</span> <span class="s1">&#39;n_node&#39;</span><span class="p">,</span> <span class="s1">&#39;n_edge&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes_coords&#39;</span><span class="p">,</span> <span class="s1">&#39;edge_indexes&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;node_features_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;edge_features_matrix&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;global_features_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;node_targets_matrix&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;edge_targets_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;global_targets_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Initialize extracted attributes data</span>
+        <span class="n">attributes_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Loop over attributes</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="c1"># Extract attribute</span>
+            <span class="k">if</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pyg_graph</span><span class="o">.</span><span class="n">pos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;n_node&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pyg_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;n_edge&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pyg_graph</span><span class="o">.</span><span class="n">edge_index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;nodes_coords&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">pos</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;edge_indexes&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">edge_index</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;node_features_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;edge_features_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">edge_attr</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;global_features_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">global_features_matrix</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;node_targets_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;edge_targets_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">edge_targets_matrix</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;global_targets_matrix&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">global_targets_matrix</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">attribute</span> <span class="o">==</span> <span class="s1">&#39;metadata&#39;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">pyg_graph</span><span class="o">.</span><span class="n">metadata</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The attribute </span><span class="si">{</span><span class="n">attribute</span><span class="si">}</span><span class="s1"> is not &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;available. Available attributes:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">available_attributes</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># Store extracted attribute</span>
+            <span class="n">attributes_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">attributes_data</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.set_graph_edges_indexes">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_graph_edges_indexes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_graph_edges_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connect_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">edges_indexes_mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set graph edges indexes and number of edges.</span>
+<span class="sd">        </span>
+<span class="sd">        Sets existing edges input features and targets matrices to None.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connect_radius : float, default=None</span>
+<span class="sd">            Connectivity radius that sets the maximum distance between two</span>
+<span class="sd">            nodes that leads to an edge. If None, then no edges are generated</span>
+<span class="sd">            from distance-based search.</span>
+<span class="sd">        edges_indexes_mesh : numpy.ndarray(2d), default=None</span>
+<span class="sd">            Edges stemming from any relevant mesh representation (e.g., finite</span>
+<span class="sd">            element mesh) and that should be accounted for. Edges indexes</span>
+<span class="sd">            matrix stored as numpy.ndarray[int](2d) with shape (n_edges, 2),</span>
+<span class="sd">            where the i-th edge is stored in edges_indexes[i, :] as</span>
+<span class="sd">            (start_node_index, end_node_index).</span>
+<span class="sd">        is_unique : bool, default=True</span>
+<span class="sd">            Remove any existent duplicated edges if `True`. Resulting unique </span>
+<span class="sd">            edges are sorted by ascending order of the corresponding indexes,</span>
+<span class="sd">            according to &#39;numpy.unique&#39; output. If `False`, edges are kept</span>
+<span class="sd">            unmodified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize edges indexes</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Get edges from distance-based search within given connectivity radius</span>
+        <span class="k">if</span> <span class="n">connect_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_indexes_radius</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_get_edges_from_local_radius</span><span class="p">(</span>
+                <span class="n">nodes_coords</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span><span class="p">,</span> <span class="n">connect_radius</span><span class="o">=</span><span class="n">connect_radius</span><span class="p">)</span>
+            <span class="c1"># Append distance-based edges indexes</span>
+            <span class="n">edges_indexes</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">edge_indexes_radius</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Append given edges stemming from mesh representation</span>
+        <span class="k">if</span> <span class="n">edges_indexes_mesh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Check mesh-based edges indexes</span>
+            <span class="n">GraphData</span><span class="o">.</span><span class="n">_check_edges_indexes_matrix</span><span class="p">(</span><span class="n">edges_indexes_mesh</span><span class="p">)</span>
+            <span class="c1"># Append mesh-based edges indexes</span>
+            <span class="n">edges_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">edges_indexes_mesh</span><span class="p">),</span>
+                                           <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Remove any existent duplicated edges</span>
+        <span class="k">if</span> <span class="n">is_unique</span><span class="p">:</span>
+            <span class="n">edges_indexes</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set number of edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="o">=</span> <span class="n">edges_indexes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Set edges indexes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span> <span class="o">=</span> <span class="n">edges_indexes</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Initialize edges input features and targets matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_nodes_coords">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_nodes_coords">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_nodes_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get graph node coordinates.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nodes_coords : numpy.ndarray(2d), default=None</span>
+<span class="sd">            Coordinates of nodes stored as a numpy.ndarray(2d) with shape</span>
+<span class="sd">            (n_nodes, n_dim). Coordinates of i-th node are stored in</span>
+<span class="sd">            nodes_coords[i, :].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_n_node">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_n_node">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_n_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get graph number of nodes.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n_node : int</span>
+<span class="sd">            Number of nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_n_edge">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_n_edge">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_n_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get graph number of edges.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n_edge : int</span>
+<span class="sd">            Number of edges.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_graph_edges_indexes">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_graph_edges_indexes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_graph_edges_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get graph edges indexes.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">            Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">            (num_edges, 2), where the i-th edge is stored in</span>
+<span class="sd">            edges_indexes[i, :] as (start_node_index, end_node_index).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.set_node_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_node_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_node_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_features_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set nodes input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_features_matrix : {numpy.ndarray(2d), None}</span>
+<span class="sd">            Nodes input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node_features_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check nodes input features matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node_features_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Nodes input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_nodes, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Nodes input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_nodes, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">node_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nodes input features matrix shape &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">) is not &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;compatible with number of nodes &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;of graph.&#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set nodes input features matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">node_features_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_node_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_node_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set nodes input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Nodes input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_features_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.set_edge_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_edge_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_features_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set edges input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edge_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Edges input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">edge_features_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check edges input features matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edge_features_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_edges, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_edges, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                  <span class="ow">and</span> <span class="p">(</span><span class="n">edge_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Edges input features matrix shape &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">edge_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">) is not &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;compatible with number of edges &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;of graph (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set edges input features matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">edge_features_matrix</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set unknown number of edges according with edges input features</span>
+            <span class="c1"># matrix</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_edge_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_edge_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edges input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edge_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Edges input features matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_features_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------   </span>
+<div class="viewcode-block" id="GraphData.set_global_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_global_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_global_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_features_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set global input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        global_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Global input features matrix stored as a numpy.ndarray(2d) of</span>
+<span class="sd">            shape (1, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">global_features_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check global input features matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">global_features_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_features).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">global_features_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global input features matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_features).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set global input features matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span> <span class="o">=</span> \
+                <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">global_features_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------    </span>
+<div class="viewcode-block" id="GraphData.get_global_features_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_global_features_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_global_features_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get global input features matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        global_features_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Global input features matrix stored as a numpy.ndarray(2d) of</span>
+<span class="sd">            shape (1, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_global_features_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------   </span>
+<div class="viewcode-block" id="GraphData.set_node_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_node_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_node_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_targets_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set node targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Nodes targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_nodes, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">node_targets_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check nodes targets matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node_targets_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Nodes targets matrix must be provided &#39;</span>
+                                   <span class="s1">&#39;as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_nodes, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Nodes targets matrix matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_nodes, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">node_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nodes targets matrix shape &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">node_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">) is not &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;compatible with number of nodes of &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;graph (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set nodes targets matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">node_targets_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------    </span>
+<div class="viewcode-block" id="GraphData.get_node_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_node_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Nodes targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_nodes, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_targets_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------   </span>
+<div class="viewcode-block" id="GraphData.set_edge_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_edge_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_edge_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_targets_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set edge targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edge_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Edges targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_edges, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">edge_targets_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check edges targets matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edge_targets_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges targets matrix must be provided &#39;</span>
+                                   <span class="s1">&#39;as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_edges, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges targets matrix matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(n_edges, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                  <span class="ow">and</span> <span class="p">(</span><span class="n">edge_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Edges targets matrix shape &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">edge_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">) is not &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;compatible with number of edges of &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;graph (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set edges targets matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">edge_targets_matrix</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set unknown number of edges according with edges targets matrix</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------    </span>
+<div class="viewcode-block" id="GraphData.get_edge_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_edge_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_edge_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edge targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edge_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Edges targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (n_edges, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edge_targets_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------   </span>
+<div class="viewcode-block" id="GraphData.set_global_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_global_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_global_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">global_targets_matrix</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set global targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        global_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Global targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (1, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">global_targets_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check global targets matrix</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">global_targets_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global targets matrix must be provided &#39;</span>
+                                   <span class="s1">&#39;as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">global_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global targets matrix matrix must be &#39;</span>
+                                   <span class="s1">&#39;provided as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_targets).&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">global_targets_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Global targets matrix must be provided &#39;</span>
+                                   <span class="s1">&#39;as a numpy 2d array of shape &#39;</span>
+                                   <span class="s1">&#39;(1, n_targets).&#39;</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Set global targets matrix</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">global_targets_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------    </span>
+<div class="viewcode-block" id="GraphData.get_global_targets_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_global_targets_matrix">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_global_targets_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get global targets matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        global_targets_matrix : numpy.ndarray(2d)</span>
+<span class="sd">            Global targets matrix stored as a numpy.ndarray(2d) of shape</span>
+<span class="sd">            (1, n_targets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_global_targets_matrix</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.set_metadata">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.set_metadata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set metadata information.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        metadata : dict</span>
+<span class="sd">            Any metadata information stored as a dictionary.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Metadata information is useful to store any additional information that</span>
+<span class="sd">        is not related to the graph data itself but that is relevant for further</span>
+<span class="sd">        processing or analysis, e,g., sample id, time step, etc. </span>
+
+<span class="sd">   </span>
+<span class="sd">        `metadata` is a dictionary that won&#39;t be moved to the GPU when using</span>
+<span class="sd">        ``.to(device)``. Avoid retrieving information from it inside your</span>
+<span class="sd">        a model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check metadata information</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Metadata information must be provided as a &#39;</span>
+                               <span class="s1">&#39;dictionary.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set metadata information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.add_metadata">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.add_metadata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add metadata information.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : str</span>
+<span class="sd">            Key of metadata information.</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            Value of metadata information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check metadata</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Metadata information must be a dictionary.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check key</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Key of metadata information must be a string.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Add metadata information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_metadata">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_metadata">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata information.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        metadata : dict</span>
+<span class="sd">            Metadata information stored as a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphData.plot_graph">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.plot_graph">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">save_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">is_overwrite_file</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate plot of graph.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        is_show_plot : bool, default=False</span>
+<span class="sd">            Display plot of graph if True.</span>
+<span class="sd">        is_save_plot : bool, default=False</span>
+<span class="sd">            Save plot of graph. Plot is only saved if `save_directory` is</span>
+<span class="sd">            provided and exists.</span>
+<span class="sd">        save_directory : str, default=None</span>
+<span class="sd">            Directory where plot of graph is stored.</span>
+<span class="sd">        plot_name : str, default=None</span>
+<span class="sd">            Filename of graph plot.</span>
+<span class="sd">        is_overwrite_file : bool, default=False</span>
+<span class="sd">            Overwrite plot of graph if True, otherwise generate</span>
+<span class="sd">            generate non-existent file path by extending the original file path</span>
+<span class="sd">            with an integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get nodes coordinates  </span>
+        <span class="n">nodes_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_coords</span>
+        <span class="c1"># Get edges</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges_indexes</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Get number of dimensions</span>
+        <span class="n">n_dim</span> <span class="o">=</span> <span class="n">nodes_coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Generate plot according with number of dimensions</span>
+        <span class="k">if</span> <span class="n">n_dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Generate 2D plot</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+            <span class="c1"># Plot nodes</span>
+            <span class="k">if</span> <span class="n">nodes_coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">nodes_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                        <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#d62728&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Nodes&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="c1"># Plot edges</span>
+            <span class="k">if</span> <span class="n">nodes_coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">edges_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">edges_indexes</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">nodes_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+                            <span class="p">[</span><span class="n">nodes_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                            <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#1d77b4&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>          
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#1d77b4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Edges&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># Generate 3D plot</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;projection&#39;</span><span class="p">:</span> <span class="s1">&#39;3d&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;computed_zorder&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+            <span class="c1"># Hide grid lines</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Plot nodes</span>
+            <span class="k">if</span> <span class="n">nodes_coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">nodes_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                           <span class="n">nodes_coords</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#d62728&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Nodes&#39;</span><span class="p">,</span>
+                           <span class="n">depthshade</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="c1"># Plot edges</span>
+            <span class="k">if</span> <span class="n">nodes_coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">edges_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">edges_indexes</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">nodes_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+                            <span class="p">[</span><span class="n">nodes_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+                            <span class="p">[</span><span class="n">nodes_coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">nodes_coords</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+                            <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#1d77b4&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#1d77b4&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Edges&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid number of dimensions.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set plot legend</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">numpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">fancybox</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;inherit&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;inherit&#39;</span><span class="p">,</span>
+                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+                    <span class="n">borderaxespad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Display figure</span>
+        <span class="k">if</span> <span class="n">is_show_plot</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Save figure (pdf format)</span>
+        <span class="k">if</span> <span class="n">is_save_plot</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">save_directory</span><span class="p">)):</span>
+            <span class="c1"># Set default figure name</span>
+            <span class="k">if</span> <span class="n">plot_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plot_name</span> <span class="o">=</span> <span class="s1">&#39;plot_graph&#39;</span>
+            <span class="c1"># Set figure path</span>
+            <span class="n">fig_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">save_directory</span><span class="p">),</span>
+                                    <span class="n">plot_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.pdf&#39;</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fig_path</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_overwrite_file</span><span class="p">:</span>
+                <span class="n">fig_path</span> <span class="o">=</span> <span class="n">new_file_path_with_int</span><span class="p">(</span><span class="n">fig_path</span><span class="p">)</span>
+            <span class="c1"># Set figure size (inches)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_figheight</span><span class="p">(</span><span class="mf">3.6</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_figwidth</span><span class="p">(</span><span class="mf">3.6</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Save figure file</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_path</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                        <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Close plot</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData._get_edges_from_local_radius">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData._get_edges_from_local_radius">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_edges_from_local_radius</span><span class="p">(</span><span class="n">nodes_coords</span><span class="p">,</span> <span class="n">connect_radius</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edges between nodes that are within a given connectivity radius.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nodes_coords : numpy.ndarray(2d)</span>
+<span class="sd">            Coordinates of nodes stored as a numpy.ndarray(2d) with shape</span>
+<span class="sd">            (n_nodes, n_dim). Coordinates of i-th node are stored in</span>
+<span class="sd">            nodes_coords[i, :].</span>
+<span class="sd">        connect_radius : float</span>
+<span class="sd">            Connectivity radius that sets the maximum distance between two</span>
+<span class="sd">            nodes that leads to an edge.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">            Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">            (num_edges, 2), where the i-th edge is stored in</span>
+<span class="sd">            edges_indexes[i, :] as (start_node_index, end_node_index).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize k-d tree</span>
+        <span class="n">kd_tree</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">KDTree</span><span class="p">(</span><span class="n">nodes_coords</span><span class="p">)</span>
+        <span class="c1"># Find all edges between nodes that are at most within a given distance</span>
+        <span class="c1"># between them</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> <span class="n">kd_tree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="n">connect_radius</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                                            <span class="n">output_type</span><span class="o">=</span><span class="s1">&#39;ndarray&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Get undirected edges indexes</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> <span class="n">GraphData</span><span class="o">.</span><span class="n">get_undirected_unique_edges</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">)</span> 
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">edges_indexes</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_edges_indexes_mesh">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_edges_indexes_mesh">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_edges_indexes_mesh</span><span class="p">(</span><span class="n">connected_nodes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert set of mesh connected nodes to edges indexes matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        It is assumed that nodes are labeled from 1 to n_nodes, such that</span>
+<span class="sd">        node 1 and node n_nodes are associated with indexes 0 and n_nodes-1,</span>
+<span class="sd">        respectively.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        connected_nodes : tuple[tuple(2)]</span>
+<span class="sd">            A set containing all pairs of nodes that are connected by any</span>
+<span class="sd">            relevant mesh representation (e.g., finite element mesh). Each</span>
+<span class="sd">            connection is stored a single time as a tuple(node[int], node[int])</span>
+<span class="sd">            and is independent of the corresponding nodes storage order.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edges_indexes_mesh : numpy.ndarray(2d), default=None</span>
+<span class="sd">            Edges stemming from any relevant mesh representation (e.g., finite</span>
+<span class="sd">            element mesh) and that should be accounted for. Edges indexes</span>
+<span class="sd">            matrix stored as numpy.ndarray[int](2d) with shape (n_edges, 2),</span>
+<span class="sd">            where the i-th edge is stored in edges_indexes[i, :] as</span>
+<span class="sd">            (start_node_index, end_node_index).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize mesh edges indexes matrix</span>
+        <span class="n">edges_indexes_mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">connected_nodes</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>        
+        <span class="c1"># Loop over mesh edges</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">connected_nodes</span><span class="p">):</span>
+            <span class="c1"># Assemble edge indexes</span>
+            <span class="n">edges_indexes_mesh</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Get unidirected unique edges indexes</span>
+        <span class="n">edges_indexes_mesh</span> <span class="o">=</span> \
+            <span class="n">GraphData</span><span class="o">.</span><span class="n">get_undirected_unique_edges</span><span class="p">(</span><span class="n">edges_indexes_mesh</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">edges_indexes_mesh</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.get_undirected_unique_edges">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.get_undirected_unique_edges">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_undirected_unique_edges</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get set of undirected unique edges indexes.</span>
+<span class="sd">        </span>
+<span class="sd">        This function processes the given matrix of edges indexes and</span>
+<span class="sd">        transforms all edges into undirected edges. In addition, it also</span>
+<span class="sd">        removes any duplicated edges.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">            Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">            (n_edges, 2), where the i-th edge is stored in</span>
+<span class="sd">            edges_indexes[i, :] as (start_node_index, end_node_index).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">            Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">            (n_edges, 2), where the i-th edge is stored in</span>
+<span class="sd">            edges_indexes[i, :] as (start_node_index, end_node_index).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check provided edges indexes matrix</span>
+        <span class="n">GraphData</span><span class="o">.</span><span class="n">_check_edges_indexes_matrix</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">)</span>
+        <span class="c1"># Transforms all edges into undirected edges</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">edges_indexes</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Remove duplicated edges</span>
+        <span class="n">edges_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">edges_indexes</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData._check_edges_indexes_matrix">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData._check_edges_indexes_matrix">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_edges_indexes_matrix</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if given edges indexes matrix is valid.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edges_indexes : numpy.ndarray(2d)</span>
+<span class="sd">            Edges indexes matrix stored as numpy.ndarray[int](2d) with shape</span>
+<span class="sd">            (n_edges, 2), where the i-th edge is stored in edges_indexes[i, :]</span>
+<span class="sd">            as (start_node_index, end_node_index).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges indexes matrix is not a numpy.array.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">edges_indexes</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges indexes matrix is not a numpy.array &#39;</span>
+                               <span class="s1">&#39;of dtype int.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges_indexes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges indexes matrix is not a numpy.array &#39;</span>
+                               <span class="s1">&#39;of shape (n_edges, 2).&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">edges_indexes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Edges indexes matrix is not a numpy.array &#39;</span>
+                               <span class="s1">&#39;of shape (n_edges, 2).&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="GraphData.move_time_dimension_axis">
+<a class="viewcode-back" href="../../../../_autosummary/graphorge.gnn_base_model.data.graph_data.GraphData.html#graphorge.gnn_base_model.data.graph_data.GraphData.move_time_dimension_axis">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_time_dimension_axis</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">source_dim</span><span class="p">,</span> <span class="n">dest_dim</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move time dimension axis in temporal data array.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        array : np.ndarray</span>
+<span class="sd">            Temporal data array.</span>
+<span class="sd">        source_dim : int</span>
+<span class="sd">            Original index of time dimension.</span>
+<span class="sd">        dest_dim : int</span>
+<span class="sd">            Destination index of time dimension.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array : np.ndarray</span>
+<span class="sd">            Reshaped temporal data array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check temporal data array</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Temporal data array must be numpy.ndarray, &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Move temporal dimension axis</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">source_dim</span><span class="p">,</span> <span class="n">dest_dim</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">array</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

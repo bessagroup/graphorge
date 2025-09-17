@@ -1,0 +1,33 @@
+graphorge.gnn\_base\_model.data
+===============================
+
+.. automodule:: graphorge.gnn_base_model.data
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   graph_data
+   graph_dataset
+

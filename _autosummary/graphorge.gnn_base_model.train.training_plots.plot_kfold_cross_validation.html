@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.gnn_base_model.train.training_plots.plot_kfold_cross_validation &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="graphorge.gnn_base_model.train.training_plots.plot_loss_convergence_test" href="graphorge.gnn_base_model.train.training_plots.plot_loss_convergence_test.html" />
+    <link rel="prev" title="graphorge.gnn_base_model.train.training_plots.grouped_bar_chart" href="graphorge.gnn_base_model.train.training_plots.grouped_bar_chart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="graphorge.html">Code</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.data.html">graphorge.gnn_base_model.data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.model.html">graphorge.gnn_base_model.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.optimization.html">graphorge.gnn_base_model.optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphorge.gnn_base_model.predict.html">graphorge.gnn_base_model.predict</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="graphorge.gnn_base_model.train.html">graphorge.gnn_base_model.train</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="graphorge.gnn_base_model.train.cross_validation.html">graphorge.gnn_base_model.train.cross_validation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.gnn_base_model.train.torch_loss.html">graphorge.gnn_base_model.train.torch_loss</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.gnn_base_model.train.training.html">graphorge.gnn_base_model.train.training</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="graphorge.gnn_base_model.train.training_plots.html">graphorge.gnn_base_model.train.training_plots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.ioput.html">graphorge.ioput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.utilities.html">graphorge.utilities</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="graphorge.html">graphorge</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.train.html">graphorge.gnn_base_model.train</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.gnn_base_model.train.training_plots.html">graphorge.gnn_base_model.train.training_plots</a></li>
+      <li class="breadcrumb-item active">graphorge.gnn_base_model.train.training_plots.plot_kfold_cross_validation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphorge-gnn-base-model-train-training-plots-plot-kfold-cross-validation">
+<h1>graphorge.gnn_base_model.train.training_plots.plot_kfold_cross_validation<a class="headerlink" href="#graphorge-gnn-base-model-train-training-plots-plot-kfold-cross-validation" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphorge.gnn_base_model.train.training_plots.plot_kfold_cross_validation">
+<span class="sig-name descname"><span class="pre">plot_kfold_cross_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_fold_loss_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kfold_cross_validation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_save_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_stdout_display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_latex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/train/training_plots.html#plot_kfold_cross_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.train.training_plots.plot_kfold_cross_validation" title="Link to this definition">¶</a></dt>
+<dd><p>Plot k-fold cross-validation results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k_fold_loss_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – k-fold cross-validation loss array. For the i-th fold,
+data_array[i, 0] stores the best training loss and data_array[i, 1]
+stores the average prediction loss per sample.</p></li>
+<li><p><strong>loss_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Loss type. If provided, then loss type is added to the y-axis label.</p></li>
+<li><p><strong>loss_scale</strong> (<em>{'linear'</em><em>, </em><em>'log'}</em><em>, </em><em>default='linear'</em>) – Loss axis scale type.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default='prediction_vs_groundtruth'</em>) – Figure name.</p></li>
+<li><p><strong>save_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Directory where figure is saved. If None, then figure is saved in
+current working directory.</p></li>
+<li><p><strong>is_save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Save figure.</p></li>
+<li><p><strong>is_stdout_display</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – True if displaying figure to standard output device, False otherwise.</p></li>
+<li><p><strong>is_latex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then render all strings in LaTeX. If LaTex is not available,
+then this option is silently set to False and all input strings are
+processed to remove $(…)$ enclosure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphorge.gnn_base_model.train.training_plots.grouped_bar_chart.html" class="btn btn-neutral float-left" title="graphorge.gnn_base_model.train.training_plots.grouped_bar_chart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphorge.gnn_base_model.train.training_plots.plot_loss_convergence_test.html" class="btn btn-neutral float-right" title="graphorge.gnn_base_model.train.training_plots.plot_loss_convergence_test" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

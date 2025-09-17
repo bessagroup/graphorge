@@ -1,0 +1,35 @@
+graphorge.gnn\_base\_model.model
+================================
+
+.. automodule:: graphorge.gnn_base_model.model
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   gnn_architectures
+   gnn_epd_model
+   gnn_model
+   model_summary
+

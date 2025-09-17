@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphorge.ioput.plots &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="graphorge.ioput.plots.grouped_bar_chart" href="graphorge.ioput.plots.grouped_bar_chart.html" />
+    <link rel="prev" title="graphorge.ioput.iostandard.write_summary_file" href="graphorge.ioput.iostandard.write_summary_file.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="graphorge.html">Code</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphorge.gnn_base_model.html">graphorge.gnn_base_model</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="graphorge.ioput.html">graphorge.ioput</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="graphorge.ioput.iostandard.html">graphorge.ioput.iostandard</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">graphorge.ioput.plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.grouped_bar_chart.html">graphorge.ioput.plots.grouped_bar_chart</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_boxplots.html">graphorge.ioput.plots.plot_boxplots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_histogram.html">graphorge.ioput.plots.plot_histogram</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_histogram_2d.html">graphorge.ioput.plots.plot_histogram_2d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_xny_data.html">graphorge.ioput.plots.plot_xny_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_xy2_data.html">graphorge.ioput.plots.plot_xy2_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_xy_data.html">graphorge.ioput.plots.plot_xy_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.plot_xyz_data.html">graphorge.ioput.plots.plot_xyz_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.save_figure.html">graphorge.ioput.plots.save_figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.scatter_xy_data.html">graphorge.ioput.plots.scatter_xy_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphorge.ioput.plots.tex_str.html">graphorge.ioput.plots.tex_str</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphorge.utilities.html">graphorge.utilities</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="graphorge.html">graphorge</a></li>
+          <li class="breadcrumb-item"><a href="graphorge.ioput.html">graphorge.ioput</a></li>
+      <li class="breadcrumb-item active">graphorge.ioput.plots</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-graphorge.ioput.plots">
+<span id="graphorge-ioput-plots"></span><h1>graphorge.ioput.plots<a class="headerlink" href="#module-graphorge.ioput.plots" title="Link to this heading">¶</a></h1>
+<p>General plotting tools.</p>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>plot_xy_data</dt><dd><p>Plot data in xy axes.</p>
+</dd>
+<dt>plot_xy2_data</dt><dd><p>Plot data in xy axes with two y axes.</p>
+</dd>
+<dt>plot_xny_data</dt><dd><p>Plot data in xy axes with given range of y-values for each x-value.</p>
+</dd>
+<dt>plot_xyz_data</dt><dd><p>Plot data in xyz axes.</p>
+</dd>
+<dt>scatter_xy_data</dt><dd><p>Scatter data in xy axes.</p>
+</dd>
+<dt>grouped_bar_chart</dt><dd><p>Plot grouped bar chart.</p>
+</dd>
+<dt>plot_boxplots</dt><dd><p>Plot set of box plots.</p>
+</dd>
+<dt>plot_histogram</dt><dd><p>Plot 1D histogram.</p>
+</dd>
+<dt>plot_histogram_2d</dt><dd><p>Plot 2D histogram.</p>
+</dd>
+<dt>save_figure</dt><dd><p>Save Matplotlib figure.</p>
+</dd>
+<dt>tex_str</dt><dd><p>Format string according with LaTeX rendering option.</p>
+</dd>
+</dl>
+</section>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.grouped_bar_chart.html#graphorge.ioput.plots.grouped_bar_chart" title="graphorge.ioput.plots.grouped_bar_chart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grouped_bar_chart</span></code></a>(groups_labels, groups_data)</p></td>
+<td><p>Plot grouped bar chart.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_boxplots.html#graphorge.ioput.plots.plot_boxplots" title="graphorge.ioput.plots.plot_boxplots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_boxplots</span></code></a>(data_boxplots[, data_labels, ...])</p></td>
+<td><p>Plot set of box plots.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_histogram.html#graphorge.ioput.plots.plot_histogram" title="graphorge.ioput.plots.plot_histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_histogram</span></code></a>(data[, data_labels, bins, ...])</p></td>
+<td><p>Plot 1D histogram.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_histogram_2d.html#graphorge.ioput.plots.plot_histogram_2d" title="graphorge.ioput.plots.plot_histogram_2d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_histogram_2d</span></code></a>(data[, bins, bins_range, ...])</p></td>
+<td><p>Plot 2D histogram.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_xny_data.html#graphorge.ioput.plots.plot_xny_data" title="graphorge.ioput.plots.plot_xny_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_xny_data</span></code></a>(data_xy_list[, range_type, ...])</p></td>
+<td><p>Plot data in xy axes with given range of y-values for each x-value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_xy2_data.html#graphorge.ioput.plots.plot_xy2_data" title="graphorge.ioput.plots.plot_xy2_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_xy2_data</span></code></a>(data_xy1, data_xy2[, x_lims, ...])</p></td>
+<td><p>Plot data in xy axes with two y axes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_xy_data.html#graphorge.ioput.plots.plot_xy_data" title="graphorge.ioput.plots.plot_xy_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_xy_data</span></code></a>(data_xy[, data_labels, ...])</p></td>
+<td><p>Plot data in xy axes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graphorge.ioput.plots.plot_xyz_data.html#graphorge.ioput.plots.plot_xyz_data" title="graphorge.ioput.plots.plot_xyz_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_xyz_data</span></code></a>(data_xyz[, data_labels, ...])</p></td>
+<td><p>Plot data in xyz axes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.save_figure.html#graphorge.ioput.plots.save_figure" title="graphorge.ioput.plots.save_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_figure</span></code></a>(figure, filename[, format, ...])</p></td>
+<td><p>Save Matplotlib figure.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graphorge.ioput.plots.scatter_xy_data.html#graphorge.ioput.plots.scatter_xy_data" title="graphorge.ioput.plots.scatter_xy_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter_xy_data</span></code></a>(data_xy[, data_labels, ...])</p></td>
+<td><p>Scatter data in xy axes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="graphorge.ioput.plots.tex_str.html#graphorge.ioput.plots.tex_str" title="graphorge.ioput.plots.tex_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tex_str</span></code></a>(x, is_latex)</p></td>
+<td><p>Format string conveniently according with LaTeX rendering option.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphorge.ioput.iostandard.write_summary_file.html" class="btn btn-neutral float-left" title="graphorge.ioput.iostandard.write_summary_file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphorge.ioput.plots.grouped_bar_chart.html" class="btn btn-neutral float-right" title="graphorge.ioput.plots.grouped_bar_chart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

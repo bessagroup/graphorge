@@ -1,0 +1,992 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gnn_base_model.model.gnn_epd_model &mdash; graphorge 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/readthedocs-custom.css?v=0fedbe66" />
+
+  
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            graphorge
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/getting_started/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/getting_started/installation.html#package-manager">Package manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/getting_started/installation.html#from-source">From source</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/readme.html">Graphorge example directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/graphorge.html">Code</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">MIT License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">graphorge</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gnn_base_model.model.gnn_epd_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gnn_base_model.model.gnn_epd_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Graph Neural Network based Encoder-Process-Decoder model.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+<span class="sd">EncodeProcessDecode(torch.nn.Module)</span>
+<span class="sd">    GNN-based Encoder-Process-Decoder model.</span>
+<span class="sd">Encoder(GraphIndependentNetwork)</span>
+<span class="sd">    GNN-based encoder.</span>
+<span class="sd">Processor(torch_geometric.nn.MessagePassing)</span>
+<span class="sd">    GNN-based processor.</span>
+<span class="sd">Decoder(torch.nn.Module)</span>
+<span class="sd">    FNN-based decoder.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#                                                                       Modules</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Third-party</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch_geometric.nn</span>
+<span class="c1"># Local</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gnn_base_model.model.gnn_architectures</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_fnn</span><span class="p">,</span> \
+    <span class="n">build_rnn</span><span class="p">,</span> <span class="n">GraphIndependentNetwork</span><span class="p">,</span> <span class="n">GraphInteractionNetwork</span>
+<span class="c1">#</span>
+<span class="c1">#                                                          Authorship &amp; Credits</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Bernardo Ferreira (bernardo_ferreira@brown.edu)&#39;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bernardo Ferreira&#39;</span><span class="p">,</span> <span class="s1">&#39;Rui Barreira&#39;</span><span class="p">]</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s1">&#39;Planning&#39;</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1">#</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="EncodeProcessDecode">
+<a class="viewcode-back" href="../../../_autosummary/graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode.html#graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EncodeProcessDecode</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;GNN-based Encoder-Process-Decoder model.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _n_message_steps : int</span>
+<span class="sd">        Number of message-passing steps.</span>
+<span class="sd">    _encoder : Encoder</span>
+<span class="sd">        GNN-based encoder.</span>
+<span class="sd">    _processor : Processor</span>
+<span class="sd">        GNN-based processor.</span>
+<span class="sd">    _decoder : Decoder</span>
+<span class="sd">        GNN-based decoder.</span>
+<span class="sd">    _n_node_out : int</span>
+<span class="sd">        Number of node output features.</span>
+<span class="sd">    _n_edge_out : int</span>
+<span class="sd">        Number of edge output features.</span>
+<span class="sd">    _n_global_out : int</span>
+<span class="sd">        Number of node output features.</span>
+<span class="sd">    _n_time_node : int</span>
+<span class="sd">        Number of discrete time steps of nodal features.</span>
+<span class="sd">        If greater than 0, then nodal input features include a time</span>
+<span class="sd">        dimension and message passing layers are RNNs.</span>
+<span class="sd">    _n_time_edge : int</span>
+<span class="sd">        Number of discrete time steps of edge features.</span>
+<span class="sd">        If greater than 0, then edge input features include a time </span>
+<span class="sd">        dimension and message passing layers are RNNs.</span>
+<span class="sd">    _n_time_global : int</span>
+<span class="sd">        Number of discrete time steps of global features.</span>
+<span class="sd">        If greater than 0, then global input features include a time</span>
+<span class="sd">        dimension and message passing layers are RNNs.</span>
+<span class="sd">    </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    forward(self, node_features_in, edge_features_in, edges_indexes, \</span>
+<span class="sd">            global_features_in)</span>
+<span class="sd">        Forward propagation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="EncodeProcessDecode.__init__">
+<a class="viewcode-back" href="../../../_autosummary/graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode.html#graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_message_steps</span><span class="p">,</span> <span class="n">n_node_out</span><span class="p">,</span> <span class="n">n_edge_out</span><span class="p">,</span>
+                 <span class="n">n_global_out</span><span class="p">,</span> <span class="n">enc_n_hidden_layers</span><span class="p">,</span> <span class="n">pro_n_hidden_layers</span><span class="p">,</span>
+                 <span class="n">dec_n_hidden_layers</span><span class="p">,</span> <span class="n">hidden_layer_size</span><span class="p">,</span>
+                 <span class="n">n_node_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_edge_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_global_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">n_time_node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_time_edge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_time_global</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">pro_edge_to_node_aggr</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">pro_node_to_global_aggr</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span>
+                 <span class="n">enc_node_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">enc_node_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">enc_edge_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">enc_edge_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">enc_global_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">enc_global_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_node_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_node_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_edge_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_edge_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_global_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">pro_global_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_node_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_node_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_edge_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_edge_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_global_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">dec_global_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">is_node_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_edge_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_global_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_message_steps : int</span>
+<span class="sd">            Number of message-passing steps. Setting number of message-passing</span>
+<span class="sd">            steps to 0 results in Encoder-Decoder model (Processor is not</span>
+<span class="sd">            initialized).</span>
+<span class="sd">        n_node_out : int</span>
+<span class="sd">            Number of node output features.</span>
+<span class="sd">        n_edge_out : int</span>
+<span class="sd">            Number of edge output features.</span>
+<span class="sd">        n_global_out : int</span>
+<span class="sd">            Number of node output features.</span>
+<span class="sd">        n_time_node : int, default=0</span>
+<span class="sd">            Number of discrete time steps of nodal features.</span>
+<span class="sd">            If greater than 0, then nodal input features include a time </span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        n_time_edge : int, default=0</span>
+<span class="sd">            Number of discrete time steps of edge features.</span>
+<span class="sd">            If greater than 0, then edge input features include a time</span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        n_time_global : int, default=0</span>
+<span class="sd">            Number of discrete time steps of global features.</span>
+<span class="sd">            If greater than 0, then global input features include a time</span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        enc_n_hidden_layers : int</span>
+<span class="sd">            Encoder: Number of hidden layers of multilayer feed-forward/</span>
+<span class="sd">            recurrent neural network update functions.</span>
+<span class="sd">        pro_n_hidden_layers : int</span>
+<span class="sd">            Processor: Number of hidden layers of multilayer feed-forward/</span>
+<span class="sd">            recurrent neural network update functions.</span>
+<span class="sd">        dec_n_hidden_layers : int</span>
+<span class="sd">            Decoder: Number of hidden layers of multilayer feed-forward/</span>
+<span class="sd">            recurrent neural network update functions.</span>
+<span class="sd">        hidden_layer_size : int</span>
+<span class="sd">            Number of neurons of hidden layers of multilayer feed-forward/</span>
+<span class="sd">            recurrent neural network update functions.</span>
+<span class="sd">        n_node_in : int, default=0</span>
+<span class="sd">            Number of node input features.</span>
+<span class="sd">        n_edge_in : int, default=0</span>
+<span class="sd">            Number of edge input features.</span>
+<span class="sd">        n_global_in : int, default=0</span>
+<span class="sd">            Number of global input features.</span>
+<span class="sd">        pro_edge_to_node_aggr : {&#39;add&#39;,}, default=&#39;add&#39;</span>
+<span class="sd">            Processor: Edge-to-node aggregation scheme.</span>
+<span class="sd">        pro_node_to_global_aggr : {&#39;add&#39;, &#39;mean&#39;}, default=&#39;add&#39;</span>
+<span class="sd">            Processor: Node-to-global aggregation scheme.</span>
+<span class="sd">        enc_node_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Hidden unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        enc_node_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Output unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        enc_edge_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Hidden unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        enc_edge_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Output unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        enc_global_hidden_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Hidden unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        enc_global_output_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Encoder: Output unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        pro_node_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Processor: Hidden unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        pro_node_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Processor: Output unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        pro_edge_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Processor: Hidden unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        pro_edge_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Processor: Output unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        pro_global_hidden_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Processor: Hidden unit activation function of global update</span>
+<span class="sd">            function (multilayer feed-forward neural network). Defaults to</span>
+<span class="sd">            identity (linear) unit activation function.</span>
+<span class="sd">        pro_global_output_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Processor: Output unit activation function of global update</span>
+<span class="sd">            function (multilayer feed-forward neural network). Defaults to</span>
+<span class="sd">            identity (linear) unit activation function.</span>
+<span class="sd">        dec_node_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Hidden unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        dec_node_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Output unit activation function of node update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        dec_edge_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Hidden unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        dec_edge_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Output unit activation function of edge update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        dec_global_hidden_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Hidden unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        dec_global_output_activation : torch.nn.Module, \</span>
+<span class="sd">                default=torch.nn.Identity</span>
+<span class="sd">            Decoder: Output unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        is_node_res_connect : bool, default=False</span>
+<span class="sd">            Processor: Add residual connections between nodes input and</span>
+<span class="sd">            output features if True, False otherwise. Number of input and</span>
+<span class="sd">            output features must match to process residual connections.</span>
+<span class="sd">            Automatically set to False if number of node input features is</span>
+<span class="sd">            zero.</span>
+<span class="sd">        is_edge_res_connect : bool, default=False</span>
+<span class="sd">            Processor: Add residual connections in between edges input and</span>
+<span class="sd">            output features if True, False otherwise. Number of input and</span>
+<span class="sd">            output features must match to process residual connections.</span>
+<span class="sd">            Automatically set to False if number of edge input features is</span>
+<span class="sd">            zero.</span>
+<span class="sd">        is_global_res_connect : bool, default=False</span>
+<span class="sd">            Processor: Add residual connections in between global input and</span>
+<span class="sd">            output features if True, False otherwise. Number of input and</span>
+<span class="sd">            output features must match to process residual connections.</span>
+<span class="sd">            Automatically set to False if number of global input features is</span>
+<span class="sd">            zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize from base class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EncodeProcessDecode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check number of input features</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_node_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_edge_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_global_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Impossible to setup model without node &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">n_node_in</span><span class="p">)</span><span class="si">}</span><span class="s1">), edge (</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">n_edge_in</span><span class="p">)</span><span class="si">}</span><span class="s1">) &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;and global (</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">n_global_in</span><span class="p">)</span><span class="si">}</span><span class="s1">) input &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;features.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Store number of message-passing steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_message_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_message_steps</span><span class="p">)</span>
+        <span class="c1"># Store number of output features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_out</span> <span class="o">=</span> <span class="n">n_node_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_out</span> <span class="o">=</span> <span class="n">n_edge_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_out</span> <span class="o">=</span> <span class="n">n_global_out</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set node update function hidden layer input size</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_node_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Overwrite hidden layer input size when number of node input</span>
+            <span class="c1"># features is zero</span>
+            <span class="n">n_node_hidden_in</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Turn off node residual connections</span>
+            <span class="n">is_node_res_connect</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_node_hidden_in</span> <span class="o">=</span> <span class="n">hidden_layer_size</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set edge update function hidden layer input size</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_edge_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Overwrite hidden layer input size when number of edge input</span>
+            <span class="c1"># features is zero</span>
+            <span class="n">n_edge_hidden_in</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Turn off edge residual connections</span>
+            <span class="n">is_edge_res_connect</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_edge_hidden_in</span> <span class="o">=</span> <span class="n">hidden_layer_size</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set global update function hidden layer input size</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_global_in</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Overwrite hidden layer input size when number of global input</span>
+            <span class="c1"># features is zero</span>
+            <span class="n">n_global_hidden_in</span> <span class="o">=</span> <span class="mi">0</span>            
+            <span class="c1"># Turn off global residual connections</span>
+            <span class="n">is_global_res_connect</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_global_hidden_in</span> <span class="o">=</span> <span class="n">hidden_layer_size</span>
+        <span class="c1"># Set global update function hidden layer output size</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_global_out</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Overwrite hidden layer output size when number of global output</span>
+            <span class="c1"># features is zero</span>
+            <span class="n">n_global_hidden_out</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_global_hidden_out</span> <span class="o">=</span> <span class="n">hidden_layer_size</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set encoder normalization layer</span>
+        <span class="n">is_enc_norm_layer</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Set processor normalization layer</span>
+        <span class="n">is_pro_norm_layer</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Set decoder normalization layer</span>
+        <span class="n">is_dec_norm_layer</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set model encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span> <span class="o">=</span> \
+            <span class="n">Encoder</span><span class="p">(</span><span class="n">n_hidden_layers</span><span class="o">=</span><span class="n">enc_n_hidden_layers</span><span class="p">,</span>
+                    <span class="n">hidden_layer_size</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                    <span class="n">n_node_in</span><span class="o">=</span><span class="n">n_node_in</span><span class="p">,</span> <span class="n">n_node_out</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                    <span class="n">n_time_node</span><span class="o">=</span><span class="n">n_time_node</span><span class="p">,</span>
+                    <span class="n">n_edge_in</span><span class="o">=</span><span class="n">n_edge_in</span><span class="p">,</span> <span class="n">n_edge_out</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                    <span class="n">n_time_edge</span><span class="o">=</span><span class="n">n_time_edge</span><span class="p">,</span>
+                    <span class="n">n_global_in</span><span class="o">=</span><span class="n">n_global_in</span><span class="p">,</span> <span class="n">n_global_out</span><span class="o">=</span><span class="n">n_global_hidden_out</span><span class="p">,</span>
+                    <span class="n">n_time_global</span><span class="o">=</span><span class="n">n_time_global</span><span class="p">,</span>
+                    <span class="n">node_hidden_activation</span><span class="o">=</span><span class="n">enc_node_hidden_activation</span><span class="p">,</span>
+                    <span class="n">node_output_activation</span><span class="o">=</span><span class="n">enc_node_output_activation</span><span class="p">,</span>
+                    <span class="n">edge_hidden_activation</span><span class="o">=</span><span class="n">enc_edge_hidden_activation</span><span class="p">,</span>
+                    <span class="n">edge_output_activation</span><span class="o">=</span><span class="n">enc_edge_output_activation</span><span class="p">,</span>
+                    <span class="n">global_hidden_activation</span><span class="o">=</span><span class="n">enc_global_hidden_activation</span><span class="p">,</span>
+                    <span class="n">global_output_activation</span><span class="o">=</span><span class="n">enc_global_output_activation</span><span class="p">,</span>
+                    <span class="n">is_norm_layer</span><span class="o">=</span><span class="n">is_enc_norm_layer</span><span class="p">,</span> <span class="n">is_skip_unset_update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Set model processor if positive number of message-passing steps</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_message_steps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span> <span class="o">=</span> \
+                <span class="n">Processor</span><span class="p">(</span><span class="n">n_message_steps</span><span class="o">=</span><span class="n">n_message_steps</span><span class="p">,</span>
+                          <span class="n">n_node_out</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                          <span class="n">n_edge_out</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                          <span class="n">n_global_out</span><span class="o">=</span><span class="n">n_global_hidden_out</span><span class="p">,</span>
+                          <span class="n">n_hidden_layers</span><span class="o">=</span><span class="n">pro_n_hidden_layers</span><span class="p">,</span>
+                          <span class="n">hidden_layer_size</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                          <span class="n">n_node_in</span><span class="o">=</span><span class="n">n_node_hidden_in</span><span class="p">,</span>
+                          <span class="n">n_edge_in</span><span class="o">=</span><span class="n">n_edge_hidden_in</span><span class="p">,</span>
+                          <span class="n">n_global_in</span><span class="o">=</span><span class="n">n_global_hidden_in</span><span class="p">,</span>
+                          <span class="n">edge_to_node_aggr</span><span class="o">=</span><span class="n">pro_edge_to_node_aggr</span><span class="p">,</span>
+                          <span class="n">node_to_global_aggr</span><span class="o">=</span><span class="n">pro_node_to_global_aggr</span><span class="p">,</span>
+                          <span class="n">node_hidden_activation</span><span class="o">=</span><span class="n">pro_node_hidden_activation</span><span class="p">,</span>
+                          <span class="n">node_output_activation</span><span class="o">=</span><span class="n">pro_node_output_activation</span><span class="p">,</span>
+                          <span class="n">edge_hidden_activation</span><span class="o">=</span><span class="n">pro_edge_hidden_activation</span><span class="p">,</span>
+                          <span class="n">edge_output_activation</span><span class="o">=</span><span class="n">pro_edge_output_activation</span><span class="p">,</span>
+                          <span class="n">global_hidden_activation</span><span class="o">=</span>\
+                              <span class="n">pro_global_hidden_activation</span><span class="p">,</span>
+                          <span class="n">global_output_activation</span><span class="o">=</span>\
+                              <span class="n">pro_global_output_activation</span><span class="p">,</span>
+                          <span class="n">n_time_node</span><span class="o">=</span><span class="n">n_time_node</span><span class="p">,</span>
+                          <span class="n">n_time_edge</span><span class="o">=</span><span class="n">n_time_edge</span><span class="p">,</span>
+                          <span class="n">n_time_global</span><span class="o">=</span><span class="n">n_time_global</span><span class="p">,</span>
+                          <span class="n">is_norm_layer</span><span class="o">=</span><span class="n">is_pro_norm_layer</span><span class="p">,</span>
+                          <span class="n">is_node_res_connect</span><span class="o">=</span><span class="n">is_node_res_connect</span><span class="p">,</span>
+                          <span class="n">is_edge_res_connect</span><span class="o">=</span><span class="n">is_edge_res_connect</span><span class="p">,</span>
+                          <span class="n">is_global_res_connect</span><span class="o">=</span><span class="n">is_global_res_connect</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># If nodes/edges encode time series data, and the remaining features</span>
+        <span class="c1"># do not, then, after passing through the process, i.e., a graph</span>
+        <span class="c1"># interaction network, the remaining features also become time series </span>
+        <span class="k">if</span> <span class="n">n_time_edge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">n_time_node</span> <span class="o">=</span> <span class="n">n_time_edge</span>
+            <span class="n">n_time_global</span> <span class="o">=</span> <span class="n">n_time_edge</span>
+        <span class="k">elif</span> <span class="n">n_time_node</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">n_time_edge</span> <span class="o">=</span> <span class="n">n_time_node</span>
+            <span class="n">n_time_global</span> <span class="o">=</span> <span class="n">n_time_node</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set model decoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> \
+            <span class="n">Decoder</span><span class="p">(</span><span class="n">n_hidden_layers</span><span class="o">=</span><span class="n">dec_n_hidden_layers</span><span class="p">,</span>
+                    <span class="n">hidden_layer_size</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                    <span class="n">n_node_in</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                    <span class="n">n_edge_in</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span> 
+                    <span class="n">n_global_in</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span> 
+                    <span class="n">n_node_out</span><span class="o">=</span><span class="n">n_node_out</span><span class="p">,</span>
+                    <span class="n">n_edge_out</span><span class="o">=</span><span class="n">n_edge_out</span><span class="p">,</span>
+                    <span class="n">n_global_out</span><span class="o">=</span><span class="n">n_global_out</span><span class="p">,</span>
+                    <span class="n">node_hidden_activation</span><span class="o">=</span><span class="n">dec_node_hidden_activation</span><span class="p">,</span>
+                    <span class="n">node_output_activation</span><span class="o">=</span><span class="n">dec_node_output_activation</span><span class="p">,</span>
+                    <span class="n">edge_hidden_activation</span><span class="o">=</span><span class="n">dec_edge_hidden_activation</span><span class="p">,</span>
+                    <span class="n">edge_output_activation</span><span class="o">=</span><span class="n">dec_edge_output_activation</span><span class="p">,</span>
+                    <span class="n">global_hidden_activation</span><span class="o">=</span><span class="n">dec_global_hidden_activation</span><span class="p">,</span>
+                    <span class="n">global_output_activation</span><span class="o">=</span><span class="n">dec_global_output_activation</span><span class="p">,</span>
+                    <span class="n">n_time_node</span><span class="o">=</span><span class="n">n_time_node</span><span class="p">,</span> <span class="n">n_time_edge</span><span class="o">=</span><span class="n">n_time_edge</span><span class="p">,</span>
+                    <span class="n">n_time_global</span><span class="o">=</span><span class="n">n_time_global</span><span class="p">,</span>
+                    <span class="n">is_norm_layer</span><span class="o">=</span><span class="n">is_dec_norm_layer</span><span class="p">,</span>
+                    <span class="n">is_skip_unset_update</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+<div class="viewcode-block" id="EncodeProcessDecode.forward">
+<a class="viewcode-back" href="../../../_autosummary/graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode.html#graphorge.gnn_base_model.model.gnn_model.EncodeProcessDecode.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges_indexes</span><span class="p">,</span> <span class="n">node_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">edge_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">global_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">batch_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward propagation.</span>
+<span class="sd">        </span>
+<span class="sd">        Processor is skipped if number of message-passing steps is set to zero.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edges_indexes : torch.Tensor</span>
+<span class="sd">            Edges indexes matrix stored as torch.Tensor(2d) with shape</span>
+<span class="sd">            (2, n_edges), where the i-th edge is stored in edges_indexes[:, i]</span>
+<span class="sd">            as (start_node_index, end_node_index).</span>
+<span class="sd">        node_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Nodes features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features).</span>
+<span class="sd">        edge_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Edges features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        global_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Global features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (1, n_features). Ignored if global update function is not setup.</span>
+<span class="sd">        batch_vector : torch.Tensor, default=None</span>
+<span class="sd">            Batch vector stored as torch.Tensor(1d) of shape (n_nodes,),</span>
+<span class="sd">            assigning each node to a specific batch subgraph. Required to</span>
+<span class="sd">            process a graph holding multiple isolated subgraphs when batch</span>
+<span class="sd">            size is greater than 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_features_out : {torch.Tensor, None}</span>
+<span class="sd">            Nodes features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features).</span>
+<span class="sd">        edge_features_out : {torch.Tensor, None}</span>
+<span class="sd">            Edges features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        global_features_out : {torch.Tensor, None}</span>
+<span class="sd">            Global features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (1, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check input features matrices</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">node_features_in</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">edge_features_in</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">global_features_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Impossible to compute forward propagation of &#39;</span>
+                               <span class="s1">&#39;model without node (None), edge (None) and &#39;</span>
+                               <span class="s1">&#39;global (None) input features matrices.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Perform encoding</span>
+        <span class="n">node_features</span><span class="p">,</span> <span class="n">edge_features</span><span class="p">,</span> <span class="n">global_features</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_encoder</span><span class="p">(</span><span class="n">node_features_in</span><span class="o">=</span><span class="n">node_features_in</span><span class="p">,</span>
+                          <span class="n">edge_features_in</span><span class="o">=</span><span class="n">edge_features_in</span><span class="p">,</span>
+                          <span class="n">global_features_in</span><span class="o">=</span><span class="n">global_features_in</span><span class="p">,</span>
+                          <span class="n">batch_vector</span><span class="o">=</span><span class="n">batch_vector</span><span class="p">)</span>
+        <span class="c1"># Perform processing (message-passing steps)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_message_steps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Compute message-passing step</span>
+            <span class="n">node_features</span><span class="p">,</span> <span class="n">edge_features</span><span class="p">,</span> <span class="n">global_features</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span><span class="p">(</span><span class="n">edges_indexes</span><span class="o">=</span><span class="n">edges_indexes</span><span class="p">,</span>
+                                <span class="n">node_features_in</span><span class="o">=</span><span class="n">node_features</span><span class="p">,</span>
+                                <span class="n">edge_features_in</span><span class="o">=</span><span class="n">edge_features</span><span class="p">,</span>
+                                <span class="n">global_features_in</span><span class="o">=</span><span class="n">global_features</span><span class="p">,</span>
+                                <span class="n">batch_vector</span><span class="o">=</span><span class="n">batch_vector</span><span class="p">)</span>
+        <span class="n">node_features_out</span><span class="p">,</span> <span class="n">edge_features_out</span><span class="p">,</span> <span class="n">global_features_out</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">(</span><span class="n">node_features_in</span><span class="o">=</span><span class="n">node_features</span><span class="p">,</span>
+                          <span class="n">edge_features_in</span><span class="o">=</span><span class="n">edge_features</span><span class="p">,</span>
+                          <span class="n">global_features_in</span><span class="o">=</span><span class="n">global_features</span><span class="p">,</span>
+                          <span class="n">batch_vector</span><span class="o">=</span><span class="n">batch_vector</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Discard unsolicited output features</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_out</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">node_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_out</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">edge_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_out</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">global_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">node_features_out</span><span class="p">,</span> <span class="n">edge_features_out</span><span class="p">,</span> <span class="n">global_features_out</span></div>
+</div>
+
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Encoder</span><span class="p">(</span><span class="n">GraphIndependentNetwork</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;GNN-based encoder.</span>
+<span class="sd">    </span>
+<span class="sd">    Encodes input state graph data into latent graph by means of a Graph</span>
+<span class="sd">    Independent Network. Node, edge and global features update functions are</span>
+<span class="sd">    implemented as multilayer feed-forward or recurrent neural networks and are</span>
+<span class="sd">    independent (no aggregation).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Processor</span><span class="p">(</span><span class="n">torch_geometric</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MessagePassing</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;GNN-based processor.</span>
+<span class="sd">    </span>
+<span class="sd">    Performs a given number of graph message-passing steps to generate a</span>
+<span class="sd">    sequence of updated latent graphs as the information is propagated through</span>
+<span class="sd">    the graph neural network. All message-passing steps are performed by means</span>
+<span class="sd">    of an identical Graph Interaction Network (unshared parameters), where</span>
+<span class="sd">    node, edge and global features update functions are implemented as</span>
+<span class="sd">    multilayer feed-forward or recurrent neural networks.</span>
+<span class="sd">    </span>
+<span class="sd">    Residual connections are adopted between the input and output latent</span>
+<span class="sd">    features of both nodes and edges at each message-passing step.</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _processor : torch.nn.ModuleList</span>
+<span class="sd">        Sequence of graph neural networks.</span>
+<span class="sd">    _n_node_in : int</span>
+<span class="sd">        Number of node input features.</span>
+<span class="sd">    _n_node_out : int</span>
+<span class="sd">        Number of node output features.</span>
+<span class="sd">    _n_edge_in : int</span>
+<span class="sd">        Number of edge input features.</span>
+<span class="sd">    _n_edge_out : int</span>
+<span class="sd">        Number of edge output features.</span>
+<span class="sd">    _n_global_in : int</span>
+<span class="sd">        Number of global input features.</span>
+<span class="sd">    _n_global_out : int</span>
+<span class="sd">        Number of global output features.</span>
+<span class="sd">    _n_time_node : int</span>
+<span class="sd">        Number of discrete time steps of nodal features.</span>
+<span class="sd">        If greater than 0, then nodal input features include a time</span>
+<span class="sd">        dimension, and message passing layers are RNNs.</span>
+<span class="sd">    _n_time_edge : int</span>
+<span class="sd">        Number of discrete time steps of edge features.</span>
+<span class="sd">        If greater than 0, then edge input features include a time </span>
+<span class="sd">        dimension, and message passing layers are RNNs.</span>
+<span class="sd">    _n_time_global : int</span>
+<span class="sd">        Number of discrete time steps of global features.</span>
+<span class="sd">        If greater than 0, then global input features include a time</span>
+<span class="sd">        dimension, and message passing layers are RNNs.</span>
+<span class="sd">        </span>
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    forward(self, edges_indexes, node_features_in=None, edge_features_in=None)</span>
+<span class="sd">        Forward propagation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_message_steps</span><span class="p">,</span> <span class="n">n_node_out</span><span class="p">,</span> <span class="n">n_edge_out</span><span class="p">,</span>
+                 <span class="n">n_hidden_layers</span><span class="p">,</span> <span class="n">hidden_layer_size</span><span class="p">,</span>
+                 <span class="n">n_node_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_edge_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_global_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_global_out</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">n_time_node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_time_edge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_time_global</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">edge_to_node_aggr</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">node_to_global_aggr</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span>
+                 <span class="n">node_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">node_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">edge_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">edge_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">global_hidden_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">global_output_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span>
+                 <span class="n">is_norm_layer</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">is_node_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_edge_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_global_res_connect</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_message_steps : int</span>
+<span class="sd">            Number of message-passing steps.</span>
+<span class="sd">        n_node_out : int</span>
+<span class="sd">            Number of node output features.</span>
+<span class="sd">        n_edge_out : int</span>
+<span class="sd">            Number of edge output features.</span>
+<span class="sd">        n_hidden_layers : int</span>
+<span class="sd">            Number of hidden layers of multilayer feed-forward neural network</span>
+<span class="sd">            update functions.</span>
+<span class="sd">        hidden_layer_size : int</span>
+<span class="sd">            Number of neurons of hidden layers of multilayer feed-forward</span>
+<span class="sd">            neural network update functions.</span>
+<span class="sd">        n_node_in : int, default=0</span>
+<span class="sd">            Number of node input features.</span>
+<span class="sd">        n_edge_in : int, default=0</span>
+<span class="sd">            Number of edge input features.</span>
+<span class="sd">        n_global_in : int, default=0</span>
+<span class="sd">            Number of global input features.</span>
+<span class="sd">        n_global_out : int, default=0</span>
+<span class="sd">            Number of global output features.</span>
+<span class="sd">        edge_to_node_aggr : {&#39;add&#39;,}, default=&#39;add&#39;</span>
+<span class="sd">            Edge-to-node aggregation scheme.</span>
+<span class="sd">        node_to_global_aggr : {&#39;add&#39;, &#39;mean&#39;}, default=&#39;add&#39;</span>
+<span class="sd">            Node-to-global aggregation scheme.</span>
+<span class="sd">        node_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Hidden unit activation function of node update function (multilayer</span>
+<span class="sd">            feed-forward neural network). Defaults to identity (linear) unit</span>
+<span class="sd">            activation function.</span>
+<span class="sd">        node_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Output unit activation function of node update function (multilayer</span>
+<span class="sd">            feed-forward neural network). Defaults to identity (linear) unit</span>
+<span class="sd">            activation function.</span>
+<span class="sd">        edge_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Hidden unit activation function of edge update function (multilayer</span>
+<span class="sd">            feed-forward neural network). Defaults to identity (linear) unit</span>
+<span class="sd">            activation function.</span>
+<span class="sd">        edge_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Output unit activation function of edge update function (multilayer</span>
+<span class="sd">            feed-forward neural network). Defaults to identity (linear) unit</span>
+<span class="sd">            activation function.</span>
+<span class="sd">        global_hidden_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Hidden unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        global_output_activation : torch.nn.Module, default=torch.nn.Identity</span>
+<span class="sd">            Output unit activation function of global update function</span>
+<span class="sd">            (multilayer feed-forward neural network). Defaults to identity</span>
+<span class="sd">            (linear) unit activation function.</span>
+<span class="sd">        n_time_node : int, default=0</span>
+<span class="sd">            Number of discrete time steps of nodal features.</span>
+<span class="sd">            If greater than 0, then nodal input features include a time </span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        n_time_edge : int, default=0</span>
+<span class="sd">            Number of discrete time steps of edge features.</span>
+<span class="sd">            If greater than 0, then edge input features include a time</span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        n_time_global : int, default=0</span>
+<span class="sd">            Number of discrete time steps of global features.</span>
+<span class="sd">            If greater than 0, then global input features include a time</span>
+<span class="sd">            dimension and message passing layers are RNNs.</span>
+<span class="sd">        is_norm_layer : bool, default=False</span>
+<span class="sd">            If True, then add normalization layer to node, edge and global</span>
+<span class="sd">            update functions.</span>
+<span class="sd">        is_node_res_connect : bool, default=False</span>
+<span class="sd">            Add residual connections between nodes input and output features</span>
+<span class="sd">            if True, False otherwise. Number of input and output features must</span>
+<span class="sd">            match to process residual connections.</span>
+<span class="sd">        is_edge_res_connect : bool, default=False</span>
+<span class="sd">            Add residual connections between edges input and output features</span>
+<span class="sd">            if True, False otherwise. Number of input and output features must</span>
+<span class="sd">            match to process residual connections.</span>
+<span class="sd">        is_global_res_connect : bool, default=False</span>
+<span class="sd">            Add residual connections between global input and output features</span>
+<span class="sd">            if True, False otherwise. Number of input and output features must</span>
+<span class="sd">            match to process residual connections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize from base class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Processor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set number of features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_node_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_node_out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_edge_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_edge_out</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_global_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_global_out</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set input with time dimension</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_node</span> <span class="o">=</span> <span class="n">n_time_node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_edge</span> <span class="o">=</span> <span class="n">n_time_edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_global</span> <span class="o">=</span> <span class="n">n_time_global</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check number of input features</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">&lt;</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Impossible to setup model without node &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span><span class="si">}</span><span class="s1">), edge &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span><span class="si">}</span><span class="s1">), or global &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span><span class="si">}</span><span class="s1">) input features.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check number of output features</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_out</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_out</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of node (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node_out</span><span class="si">}</span><span class="s1">) and &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;edge (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_out</span><span class="si">}</span><span class="s1">) output features &#39;</span>
+                               <span class="sa">f</span><span class="s1">&#39;must be greater than 0.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Check number of message-passing steps</span>
+        <span class="k">if</span> <span class="n">n_message_steps</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Number of message-passing steps must be at &#39;</span>
+                               <span class="s1">&#39;least 1.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">n_message_steps</span> <span class="o">&gt;</span> <span class="mi">1</span>
+              <span class="ow">and</span> <span class="p">((</span><span class="n">n_node_in</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_node_in</span> <span class="o">!=</span> <span class="n">n_node_out</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">n_edge_in</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_edge_in</span> <span class="o">!=</span> <span class="n">n_edge_out</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">n_global_in</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_global_in</span> <span class="o">!=</span> <span class="n">n_global_out</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Number of node/edge/global input and output &#39;</span>
+                               <span class="s1">&#39;features must match to process multiple &#39;</span>
+                               <span class="s1">&#39;message-passing steps in sequence.&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set node residual connections</span>
+        <span class="k">if</span> <span class="n">is_node_res_connect</span> <span class="ow">and</span> <span class="n">n_node_in</span> <span class="o">!=</span> <span class="n">n_node_out</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Number of node input and output features &#39;</span>
+                               <span class="s1">&#39;must match to process residual &#39;</span>
+                               <span class="s1">&#39;connections.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_node_res_connect</span> <span class="o">=</span> <span class="n">is_node_res_connect</span>
+        <span class="c1"># Set edge residual connections</span>
+        <span class="k">if</span> <span class="n">is_edge_res_connect</span> <span class="ow">and</span> <span class="n">n_edge_in</span> <span class="o">!=</span> <span class="n">n_edge_out</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Number of edge input and output features &#39;</span>
+                               <span class="s1">&#39;must match to process residual &#39;</span>
+                               <span class="s1">&#39;connections.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_edge_res_connect</span> <span class="o">=</span> <span class="n">is_edge_res_connect</span>
+        <span class="c1"># Set global residual connections</span>
+        <span class="k">if</span> <span class="n">is_global_res_connect</span> <span class="ow">and</span> <span class="n">n_global_in</span> <span class="o">!=</span> <span class="n">n_global_out</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Number of global input and output features &#39;</span>
+                               <span class="s1">&#39;must match to process residual connections.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_global_res_connect</span> <span class="o">=</span> <span class="n">is_global_res_connect</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Set sequence of identical Graph Interaction Networks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_processor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">GraphInteractionNetwork</span><span class="p">(</span>
+                <span class="n">n_node_out</span><span class="o">=</span><span class="n">n_node_out</span><span class="p">,</span> <span class="n">n_edge_out</span><span class="o">=</span><span class="n">n_edge_out</span><span class="p">,</span>
+                <span class="n">n_hidden_layers</span><span class="o">=</span><span class="n">n_hidden_layers</span><span class="p">,</span>
+                <span class="n">hidden_layer_size</span><span class="o">=</span><span class="n">hidden_layer_size</span><span class="p">,</span>
+                <span class="n">n_node_in</span><span class="o">=</span><span class="n">n_node_in</span><span class="p">,</span> <span class="n">n_edge_in</span><span class="o">=</span><span class="n">n_edge_in</span><span class="p">,</span>
+                <span class="n">n_global_in</span><span class="o">=</span><span class="n">n_global_in</span><span class="p">,</span> <span class="n">n_global_out</span><span class="o">=</span><span class="n">n_global_out</span><span class="p">,</span>
+                <span class="n">edge_to_node_aggr</span><span class="o">=</span><span class="n">edge_to_node_aggr</span><span class="p">,</span>
+                <span class="n">node_to_global_aggr</span><span class="o">=</span><span class="n">node_to_global_aggr</span><span class="p">,</span>
+                <span class="n">node_hidden_activation</span><span class="o">=</span><span class="n">node_hidden_activation</span><span class="p">,</span>
+                <span class="n">node_output_activation</span><span class="o">=</span><span class="n">node_output_activation</span><span class="p">,</span>
+                <span class="n">edge_hidden_activation</span><span class="o">=</span><span class="n">edge_hidden_activation</span><span class="p">,</span>
+                <span class="n">edge_output_activation</span><span class="o">=</span><span class="n">edge_output_activation</span><span class="p">,</span>
+                <span class="n">n_time_node</span> <span class="o">=</span> <span class="n">n_time_node</span><span class="p">,</span>
+                <span class="n">n_time_edge</span> <span class="o">=</span> <span class="n">n_time_edge</span><span class="p">,</span>
+                <span class="n">n_time_global</span> <span class="o">=</span> <span class="n">n_time_global</span><span class="p">,</span>
+                <span class="n">is_norm_layer</span><span class="o">=</span><span class="n">is_norm_layer</span><span class="p">,</span>
+                <span class="n">global_hidden_activation</span><span class="o">=</span><span class="n">global_hidden_activation</span><span class="p">,</span>
+                <span class="n">global_output_activation</span><span class="o">=</span><span class="n">global_output_activation</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_message_steps</span><span class="p">)])</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges_indexes</span><span class="p">,</span> <span class="n">node_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">edge_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">global_features_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">batch_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward propagation.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        edges_indexes : torch.Tensor</span>
+<span class="sd">            Edges indexes matrix stored as torch.Tensor(2d) with shape</span>
+<span class="sd">            (2, n_edges), where the i-th edge is stored in edges_indexes[:, i]</span>
+<span class="sd">            as (start_node_index, end_node_index).</span>
+<span class="sd">        node_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Nodes features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features). If None, the edge-to-node aggregation is</span>
+<span class="sd">            only built up to the highest receiver node index according with</span>
+<span class="sd">            edges_indexes. To preserve total number of nodes in edge-to-node</span>
+<span class="sd">            aggregation, pass torch.empty(n_nodes, 0) instead of None.</span>
+<span class="sd">        edge_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Edges features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        global_features_in : torch.Tensor, default=None</span>
+<span class="sd">            Global features input matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (1, n_features).</span>
+<span class="sd">        batch_vector : torch.Tensor, default=None</span>
+<span class="sd">            Batch vector stored as torch.Tensor(1d) of shape (n_nodes,),</span>
+<span class="sd">            assigning each node to a specific batch subgraph. Required to</span>
+<span class="sd">            process a graph holding multiple isolated subgraphs when batch</span>
+<span class="sd">            size is greater than 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_features_out : torch.Tensor</span>
+<span class="sd">            Nodes features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_nodes, n_features).</span>
+<span class="sd">        edge_features_out : torch.Tensor</span>
+<span class="sd">            Edges features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (n_edges, n_features).</span>
+<span class="sd">        global_features_out : {torch.Tensor, None}</span>
+<span class="sd">            Global features output matrix stored as a torch.Tensor(2d) of shape</span>
+<span class="sd">            (1, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check number of nodal, edge and global features</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_node</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> \
+                    <span class="ow">and</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_time_node</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of node &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;features of model &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_time_node</span><span class="si">}</span><span class="s1">) &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;and nodes input features &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;matrix (</span><span class="si">{</span><span class="n">node_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> \
+                    <span class="ow">and</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of node &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;features of model (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span><span class="si">}</span><span class="s1">) &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;and nodes input features &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;matrix (</span><span class="si">{</span><span class="n">node_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_edge</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">edge_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="n">edge_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_edge</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of edge &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;features of model &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_time_edge</span><span class="si">}</span><span class="s1">) &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;and edges input features &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;matrix (</span><span class="si">{</span><span class="n">edge_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">edge_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="n">edge_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of edge features of &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;model (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span><span class="si">}</span><span class="s1">) and edges &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;input features matrix &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">edge_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_time_global</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">global_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="n">global_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_time_global</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of global features of &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;model (&#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_time_global</span><span class="si">}</span><span class="s1">) &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39; and global input features matrix &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">global_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>  
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">global_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                    <span class="ow">and</span> <span class="n">global_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Mismatch of number of global features of &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;model (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span><span class="si">}</span><span class="s1">) and global  &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;input features matrix &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">global_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Collect number of nodes to preserve total number of nodes in</span>
+        <span class="c1"># edge-to-node aggregation when number of node input features is zero</span>
+        <span class="n">n_nodes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">node_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Initialize residual update node features</span>
+        <span class="n">node_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">node_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node_features_out</span> <span class="o">=</span> <span class="n">node_features_in</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="c1"># Initialize residual update edge features</span>
+        <span class="n">edge_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">edge_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_features_out</span> <span class="o">=</span> <span class="n">edge_features_in</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="c1"># Initialize residual update global features</span>
+        <span class="n">global_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">global_features_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">global_features_out</span> <span class="o">=</span> <span class="n">global_features_in</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="c1"># Loop over message-passing steps</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">gnn_model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processor</span><span class="p">):</span>
+            <span class="c1"># Save features matrix (residual connection)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_node_res_connect</span><span class="p">:</span>
+                <span class="n">node_features_res</span> <span class="o">=</span> <span class="n">node_features_out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_edge_res_connect</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">edge_features_res</span> <span class="o">=</span> <span class="n">edge_features_out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_global_res_connect</span><span class="p">:</span>
+                <span class="n">global_features_res</span> <span class="o">=</span> <span class="n">global_features_out</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Perform graph neural network message-passing step</span>
+            <span class="n">node_features_out</span><span class="p">,</span> <span class="n">edge_features_out</span><span class="p">,</span> <span class="n">global_features_out</span> <span class="o">=</span> \
+                <span class="n">gnn_model</span><span class="p">(</span><span class="n">edges_indexes</span><span class="o">=</span><span class="n">edges_indexes</span><span class="p">,</span>
+                          <span class="n">node_features_in</span><span class="o">=</span><span class="n">node_features_out</span><span class="p">,</span>
+                          <span class="n">edge_features_in</span><span class="o">=</span><span class="n">edge_features_out</span><span class="p">,</span>
+                          <span class="n">global_features_in</span><span class="o">=</span><span class="n">global_features_out</span><span class="p">,</span>
+                          <span class="n">batch_vector</span><span class="o">=</span><span class="n">batch_vector</span><span class="p">)</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Check if last message-passing step</span>
+            <span class="n">is_last_step</span> <span class="o">=</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_processor</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="c1"># Discard node features output matrix except in the last</span>
+            <span class="c1"># message-passing step</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_last_step</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">node_features_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">node_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Discard edge features output matrix except in the last</span>
+            <span class="c1"># message-passing step</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_last_step</span><span class="p">:</span>
+                <span class="n">edge_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Discard global features output matrix except in the last</span>
+            <span class="c1"># message-passing step</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_last_step</span><span class="p">:</span>
+                <span class="n">global_features_out</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+            <span class="c1"># Add residual connections to features output</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_node_res_connect</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_node_in</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">node_features_out</span> <span class="o">+=</span> <span class="n">node_features_res</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_edge_res_connect</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_edge_in</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">edge_features_out</span> <span class="o">+=</span> <span class="n">edge_features_res</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_global_res_connect</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_global_in</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">global_features_out</span> <span class="o">+=</span> <span class="n">global_features_res</span>
+        <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+        <span class="k">return</span> <span class="n">node_features_out</span><span class="p">,</span> <span class="n">edge_features_out</span><span class="p">,</span> <span class="n">global_features_out</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Decoder</span><span class="p">(</span><span class="n">GraphIndependentNetwork</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;GNN-based decoder.</span>
+<span class="sd">    </span>
+<span class="sd">    Decodes latent graph into output graph by means of a Graph Independent</span>
+<span class="sd">    Network. Node, edge and global features update functions are implemented as</span>
+<span class="sd">    multilayer feed-forward or recurrent neural networks and are independent</span>
+<span class="sd">    (no aggregation).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernardo Ferreira.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

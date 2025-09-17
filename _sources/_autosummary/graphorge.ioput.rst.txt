@@ -1,0 +1,33 @@
+graphorge.ioput
+===============
+
+.. automodule:: graphorge.ioput
+  
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   iostandard
+   plots
+
