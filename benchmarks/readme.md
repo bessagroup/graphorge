@@ -16,4 +16,5 @@ The provided examples can be ran:
 
 |Example|Code|Field|Concepts covered|
 | --- | --- | --- | --- |
-|[Shell buckling](./mechanics/gnn_shell_buckling/gnn_shell_buckling)|[Github](./mechanics/gnn_shell_buckling)|Mechanics|Graphorge basics, regression on a global target.|
+|[Shell buckling](./mechanics/gnn_shell_buckling/gnn_shell_buckling)|[Github](https://github.com/bessagroup/graphorge/tree/main/benchmarks/mechanics/gnn_shell_buckling.ipynb)|Mechanics|Graphorge basics, regression on a global target.|
+|[Permeability of a porous medium](./cfd/gnn_porous_medium/gnn_porous_medium)|[Github](https://github.com/bessagroup/graphorge/tree/main/benchmarks/cfd/gnn_porous_medium/gnn_porous_medium.ipynb)|CFD|Graphorge basics, regression on a global target.|
