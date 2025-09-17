@@ -31,11 +31,11 @@ For an overview of the package, how to install it, and several documented applic
 
 # Community Support
 
-If you find any **issues**, **bugs** or **problems** with Graphorge, please use the [GitHub issue tracker](https://github.com/BernardoFerreira/graphorge/issues) to report them. Provide a clear description of the problem, as well as a complete report on the underlying details, so that it can be easily reproduced and (hopefully) fixed!
+If you find any **issues**, **bugs** or **problems** with Graphorge, please use the [GitHub issue tracker](https://github.com/bessagroup/graphorge/issues) to report them. Provide a clear description of the problem, as well as a complete report on the underlying details, so that it can be easily reproduced and (hopefully) fixed!
 
-You are also welcome to post there any **questions**, **comments** or **suggestions** for improvement in the [GitHub discussions](https://github.com/BernardoFerreira/graphorge/discussions) space!
+You are also welcome to post there any **questions**, **comments** or **suggestions** for improvement in the [GitHub discussions](https://github.com/bessagroup/graphorge/discussions) space!
 
-Please refer to Graphorge's [Code of Conduct](https://github.com/BernardoFerreira/graphorge/blob/master/CODE_OF_CONDUCT.md).
+Please refer to Graphorge's [Code of Conduct](https://github.com/bessagroup/graphorge/blob/master/CODE_OF_CONDUCT.md).
 
 
 # Credits
