@@ -46,6 +46,6 @@ Graphorge is built on the graph neural network conceptual framework established 
 
 # Acknowledgements
 
-Bernardo P. Ferreira and Miguel A. Bessa would like to acknowledge that this effort was undertaken in part with the support from the Department of the Navy, Office of Naval Research, award number N00014-23-1-2688. We would also like to acknowledge the support from Dassault Systèmes.
+Bernardo P. Ferreira and Miguel A. Bessa would like to acknowledge that this effort was undertaken in part with the support from the Department of the Navy, Office of Naval Research, award number N00014-21-2670. We would also like to acknowledge the support from Dassault Systèmes.
 
 # References
