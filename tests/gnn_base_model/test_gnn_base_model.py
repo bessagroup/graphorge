@@ -1180,7 +1180,7 @@ def test_torch_standard_scaler_setters(n_features, mean, std):
 @pytest.mark.parametrize('n_features, tensor, is_bessel',
                          [(1, torch.rand(2, 1), True),
                           (2, torch.rand(3, 2), False),
-                          (3, torch.rand(1, 3), True),
+                          (3, torch.rand(4, 3), True),
                           ])
 def test_torch_standard_scaler_fit(n_features, tensor, is_bessel):
     """Test PyTorch tensor standardization data scaler fitting."""
