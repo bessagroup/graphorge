@@ -48,7 +48,6 @@ import copy
 # Third-party
 import torch
 import torch_geometric.loader
-from tqdm import tqdm
 import numpy as np
 # Local
 from gnn_base_model.model.gnn_model import GNNEPDBaseModel
@@ -72,7 +71,7 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
                 is_early_stopping=False, early_stopping_kwargs={},
                 load_model_state=None, save_every=None, save_loss_every=None,
                 dataset_file_path=None, device_type='cpu', seed=None,
-                is_verbose=False):
+                is_verbose=False, tqdm_flavor='default'):
     """Training of Graph Neural Network model.
     
     Parameters
@@ -168,6 +167,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         reproducibility. Does also set workers seed in PyTorch data loaders.
     is_verbose : bool, default=False
         If True, enable verbose output.
+    tqdm_flavor : {'default', 'notebook'}, default='default'
+        Type of tqdm progress bar to use when is_verbose=True.
         
     Returns
     -------
@@ -178,6 +179,13 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
     best_training_epoch : int
         Training epoch corresponding to best loss during training process.
     """
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Import tqdm
+    if tqdm_flavor == 'notebook':
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Set random number generators initialization for reproducibility
     if isinstance(seed, int):
         torch.manual_seed(seed)
@@ -236,7 +244,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         is_model_out_normalized = model.is_model_out_normalized
         # Fit model data scalers  
         if is_model_in_normalized or is_model_out_normalized:
-            model.fit_data_scalers(dataset, is_verbose=is_verbose)
+            model.fit_data_scalers(dataset, is_verbose=is_verbose,
+                                   tqdm_flavor=tqdm_flavor)
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     # Save model initial state
     model.save_model_init_state()
@@ -319,6 +328,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         print(f'\n> Output data normalization: {output_normalization_str}')
         print('\n\n> Starting training process...\n')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        if tqdm_flavor == 'notebook':
+            from tqdm.notebook import tqdm
         pbar = tqdm(total=n_max_epochs, 
                     mininterval=1,
                     maxinterval=300,
@@ -494,7 +505,8 @@ def train_model(n_max_epochs, dataset, model_init_args, lr_init,
         # Increment epoch counter
         epoch += 1
         # Update progress bar
-        pbar.update(1)
+        if is_verbose:
+            pbar.update(1)
         # Check training process flow
         if epoch == n_max_epochs:
             # Completed maximum number of epochs

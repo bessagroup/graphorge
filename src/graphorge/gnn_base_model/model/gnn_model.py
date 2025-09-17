@@ -23,7 +23,6 @@ import torch
 import torch_geometric.nn
 import torch_geometric.data
 import torch_geometric.loader
-from tqdm import tqdm
 import sklearn.preprocessing
 # Local
 from gnn_base_model.model.gnn_epd_model import EncodeProcessDecode
@@ -1485,7 +1484,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         if self._is_save_model_init_file:
             self.save_model_init_file() 
     # -------------------------------------------------------------------------
-    def fit_data_scalers(self, dataset, is_verbose=False):
+    def fit_data_scalers(self, dataset, is_verbose=False, 
+                         tqdm_flavor='default'):
         """Fit model data scalers.
         
         Data scalars are set a standard scalers where features are normalized
@@ -1500,6 +1500,8 @@ class GNNEPDBaseModel(torch.nn.Module):
             torch_geometric.data.Data object describing a homogeneous graph.
         is_verbose : bool, default=False
             If True, enable verbose output.
+        tqdm_flavor : {'default', 'notebook'}, default='default'
+            Type of tqdm progress bar to use when is_verbose=True.
         """
         if is_verbose:
             print('\nFitting GNN-based model data scalers'
@@ -1573,14 +1575,14 @@ class GNNEPDBaseModel(torch.nn.Module):
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_in',
                     n_features=self._n_node_in*self._n_time_node,
-                    is_verbose=is_verbose)
+                    is_verbose=is_verbose, tqdm_flavor=tqdm_flavor)
                 scaler_node_in.set_mean_and_std(mean, std)     
             # Get scaling parameters and fit data scalers: node output features
             if self._n_node_out > 0:
                 mean, std = graph_standard_partial_fit(
                     dataset, features_type='node_features_out',
                     n_features=self._n_node_out*self._n_time_node,
-                    is_verbose=is_verbose)
+                    is_verbose=is_verbose, tqdm_flavor=tqdm_flavor)
                 scaler_node_out.set_mean_and_std(mean, std)   
         else:
             # No time series data
@@ -1812,7 +1814,7 @@ class GNNEPDBaseModel(torch.nn.Module):
                                'normalization procedures available.')
 # =============================================================================
 def graph_standard_partial_fit(dataset, features_type, n_features,
-                               is_verbose=False):
+                               is_verbose=False, tqdm_flavor='default'):
     """Perform batch fitting of standardization data scalers.
     
     Parameters
@@ -1839,6 +1841,8 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
         Number of features to standardize.
     is_verbose : bool, default=False
         If True, enable verbose output.
+    tqdm_flavor : {'default', 'notebook'}, default='default'
+        Type of tqdm progress bar to use when is_verbose=True.
     
     Returns
     -------
@@ -1854,6 +1858,13 @@ def graph_standard_partial_fit(dataset, features_type, n_features,
     A biased estimator is used to compute the standard deviation according with
     scikit-learn 1.3.2 documentation (sklearn.preprocessing.StandardScaler).
     """
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Import tqdm
+    if tqdm_flavor == 'notebook':
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Instantiate data scaler
     data_scaler = sklearn.preprocessing.StandardScaler()
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

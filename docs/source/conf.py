@@ -39,7 +39,11 @@ extensions = ['sphinx.ext.duration',
 			  'sphinx.ext.autosummary',
 			  'sphinx.ext.intersphinx',
 			  'sphinx.ext.viewcode',
-			  'sphinx_autodoc_typehints']
+			  'sphinx_autodoc_typehints',
+              'myst_nb',
+              'sphinx_copybutton',
+              'sphinxcontrib.collections',
+              'sphinx_design']
 
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-source_suffix
 source_suffix = {'.rst': 'restructuredtext',}
@@ -89,10 +93,21 @@ autosummary_imported_members = True
 
 # intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#module-sphinx.ext.intersphinx
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None)}
+    'python': ('https://docs.python.org/3/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'torch_geometric': ('https://pytorch-geometric.readthedocs.io/en/latest/', None)}
 
+# Configure Sphinx collections, used to import executed notebooks
+collections = {
+    'examples': {
+        'driver': 'symlink',
+        'source': '../../benchmarks/',
+    }
+}
+
+# Disable the execution of notebooks when building the documentation
+nb_execution_mode = 'off'
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -100,13 +115,13 @@ intersphinx_mapping = {
 # Source: https://docs.readthedocs.io/en/stable/faq.html#how-do-i-change-behavior-when-building-with-read-the-docs
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_theme
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_theme_path
-if importlib.util.find_spec("sphinx_rtd_theme") is not None:
-    html_theme = "sphinx_rtd_theme"
+if importlib.util.find_spec('sphinx_rtd_theme') is not None:
+    html_theme = 'sphinx_rtd_theme'
     # requires installation of Python package 'sphinx_rtd_theme'
     import sphinx_rtd_theme
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 else:
-    html_theme = "default"
+    html_theme = 'default'
 
 # Source: https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_static_path
 html_static_path = ['_static',]

@@ -1,3 +1,8 @@
 sphinx
 sphinx_rtd_theme
 sphinx_autodoc_typehints
+myst-nb
+sphinx-collections
+sphinx-copybutton
+sphinx_rtd_theme
+sphinx-design

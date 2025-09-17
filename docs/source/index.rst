@@ -84,10 +84,9 @@ Graphorge is a free and open-source software published under a :doc:`MIT License
    :includehidden:
 
    rst_doc_files/examples/example_workflow.rst
-   rst_doc_files/examples/example_1.rst
-   rst_doc_files/examples/example_2.rst
-   rst_doc_files/examples/example_3.rst
-
+   _collections/examples/readme.md
+   _collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.ipynb
+   _collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.ipynb
 
 .. toctree::
    :name: apitoc
