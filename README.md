@@ -4,9 +4,9 @@
 
 # What is Graphorge?
 
-[**Docs**](https://)
-| [**Installation**](https://)
-| [**GitHub**](https://)
+[**Docs**](https://bessagroup.github.io/graphorge/  )
+| [**Installation**](https://bessagroup.github.io/graphorge/rst_doc_files/getting_started/installation.html)
+| [**GitHub**](https://github.com/bessagroup/graphorge)
 
 ### Summary
 
