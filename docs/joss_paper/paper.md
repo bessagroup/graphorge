@@ -12,7 +12,7 @@ authors:
     affiliation: 1
   - name: Guillaume Broggi
     orcid: 0000-0001-6001-6328
-    affiliation: 1
+    affiliation: "1, 2"
   - name: Miguel A. Bessa
     orcid: 0000-0002-6216-0355
     corresponding: true
@@ -20,6 +20,8 @@ authors:
 affiliations:
  - name: School of Engineering, Brown University, United States of America
    index: 1
+ - name: Aerospace Structures and Materials Department, Faculty of Aerospace Engineering, Delft University of Technology, The Netherlands
+   index: 2
 date: 15 June 2025
 bibliography: references.bib
 
