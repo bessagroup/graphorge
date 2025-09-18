@@ -27,7 +27,7 @@ Graphorge was originally developed by Bernardo P. Ferreira<sup>[1](#f1)</sup>.
 
 # Getting started
 
-For an overview of the package, how to install it, and several documented application examples, please refer to [Graphorge's documentation]()!
+For an overview of the package, how to install it, and several documented application examples, please refer to [Graphorge's documentation](https://bessagroup.github.io/graphorge/)!
 
 # Community Support
 
