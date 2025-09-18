@@ -168,7 +168,7 @@ cython_debug/
 # Local projects
 projects/
 
-# Benchmark
+# Benchmarks
 !benchmarks/readme.me
 !benchmarks/utils/utils.py
 benchmarks/mechanics/gnn_shell_buckling/*
@@ -178,8 +178,6 @@ benchmarks/cfd/gnn_porous_medium/*
 !benchmarks/cfd/gnn_porous_medium/gnn_porous_medium.ipynb
 !benchmarks/cfd/gnn_porous_medium/gnn_porous_medium.svg
 
-# Local projects
-projects/
-
-# Documentation
+# Sphinx docs
 docs/source/_autosummary
+docs/source/_collections

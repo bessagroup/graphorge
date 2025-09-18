@@ -24,8 +24,11 @@ jobs:
           pip install -r requirements.txt
           pip install -r docs/requirements.txt
 
+      # creates the _collections folder to avoid the error documented in 
+      # https://github.com/useblocks/sphinx-collections/issues/22
       - name: Build documentation
-        run: |
+        run: | 
+          mkdir ./docs/source/_collections
           sphinx-build -b html ./docs/source ./docs/build/html
 
       - name: Upload artifacts
