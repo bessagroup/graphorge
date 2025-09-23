@@ -46,7 +46,7 @@ Graphorge is not packaged.
 ---
 ## From source
 
-To install Graphorge from source, clone the related Github repository:
+To install Graphorge from source, clone the related GitHub repository:
 
 ```{code-block} console
     git clone git@github.com:bessagroup/graphorge.git
@@ -56,6 +56,11 @@ Then, `pip install` from the newly created directory (see [pip documentation](ht
 
 ```{code-block} console
     pip install .
+```
+
+Or, without cloning permanently the repository:
+```{code-block} console
+    pip install git+https://github.com/bessagroup/graphorge.git
 ```
 
 ````{note}
