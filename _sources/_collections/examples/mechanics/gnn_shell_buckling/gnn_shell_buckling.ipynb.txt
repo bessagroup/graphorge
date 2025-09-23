@@ -28,7 +28,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1,
+   "execution_count": null,
    "id": "aa64cae3",
    "metadata": {},
    "outputs": [],
@@ -45,7 +45,7 @@
     "    %pip install torch_geometric==2.6.1 -f https://data.pyg.org/whl/torch-2.4.1+cu124.html\n",
     "    \n",
     "    # Install Graphorge\n",
-    "    %pip install graphorge\n",
+    "    %pip install git+https://github.com/bessagroup/graphorge.git\n",
     "except:\n",
     "    pass"
    ]
