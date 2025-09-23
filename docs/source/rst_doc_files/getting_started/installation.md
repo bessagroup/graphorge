@@ -39,16 +39,12 @@ Most requirements will be automatically installed when installing Graphorge. How
 `````
 
 ---
-# Package manager
+## Package manager
 
-To install Graphorge, use the supported package manager [pip](https://pypi.org/project/pip/) and simply run `pip install`:
-
-```{code-block} console
-    pip install Graphorge
-```
+Graphorge is not packaged.
 
 ---
-# From source
+## From source
 
 To install Graphorge from source, clone the related Github repository:
 
