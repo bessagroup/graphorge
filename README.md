@@ -6,6 +6,7 @@
 
 [**Docs**](https://bessagroup.github.io/graphorge/)
 | [**Installation**](https://bessagroup.github.io/graphorge/rst_doc_files/getting_started/installation.html)
+| [**Examples**](https://bessagroup.github.io/graphorge/_collections/examples/readme.html)
 | [**GitHub**](https://github.com/bessagroup/graphorge)
 
 ### Summary
