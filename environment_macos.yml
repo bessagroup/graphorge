@@ -6,11 +6,11 @@ channels:
   - pytorch
   - pyg
 dependencies:
-  - python=3.9.18
+  - python=3.11.9
   - pip=23.3
   - cycler=0.11.0
   - matplotlib=3.8.0
-  - numpy=1.23.3
+  - numpy=1.26.4
   - pandas=2.1.1
   - pytest=7.1.2
   - coverage=7.3.2
