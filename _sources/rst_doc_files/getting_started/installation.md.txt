@@ -41,7 +41,7 @@ Most requirements will be automatically installed when installing Graphorge. How
 ---
 ## Package manager
 
-Graphorge is not packaged.
+At the moment, the Graphorge package has not been uploaded to the Python Package Index (PyPI).
 
 ---
 ## From source
