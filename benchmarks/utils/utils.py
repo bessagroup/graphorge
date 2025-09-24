@@ -8,8 +8,6 @@ import logging
 import pickle
 
 from itertools import count
-import pyvista as pv
-
 
 class DownloadProgressBar(tqdm):
     """
