@@ -117,7 +117,8 @@
     <span class="o">%</span><span class="k">pip</span> install torch_geometric==2.6.1 -f https://data.pyg.org/whl/torch-2.4.1+cu124.html
     
     <span class="c1"># Install Graphorge</span>
-    <span class="o">%</span><span class="k">pip</span> install git+https://github.com/bessagroup/graphorge.git
+    <span class="o">%</span><span class="k">git</span> clone https://github.com/bessagroup/graphorge.git
+    <span class="o">%</span><span class="k">pip</span> install -e ./graphorge
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -147,9 +148,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">graphorge.gnn_base_model.predict.prediction</span><span class="w"> </span><span class="kn">import</span> <span class="n">predict</span>
 
 <span class="c1"># Make utilities available in the path</span>
-<span class="n">utils_path</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span>
-<span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Check if running in Google Colab</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">google.colab</span>
+    <span class="n">utils_path</span> <span class="o">=</span> <span class="p">(</span>
+      <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;graphorge&quot;</span> <span class="o">/</span> <span class="s2">&quot;benchmarks&quot;</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span>
+    <span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">utils_path</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span>
+    <span class="p">)</span> 
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">utils_path</span><span class="p">))</span>
 
 <span class="c1"># Import required utilities</span>
