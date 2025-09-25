@@ -263,10 +263,17 @@ def plot_interactive_graph(graph_data):
     # Create a 3D scatter plot for nodes and lines for edges
     figure = go.Figure()
 
+    # Extract node coordinates
+    node_coords = graph_data.get_nodes_coords()
+
+    if node_coords.shape[1] == 3:
+        # 3D graph
+        is_3d = True
+    else:
+        is_3d = False
+
     # Prepare edge coordinates by indexing node coordinates with edge indexes
-    edge_x = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
-        :, :, 0
-    ].ravel()
+    edge_x = node_coords[graph_data.get_graph_edges_indexes()][:, :, 0].ravel()
 
     # We need to insert None values between edges to avoid connecting them
     # in the plotly scatter3d while adding only one trace
@@ -274,28 +281,92 @@ def plot_interactive_graph(graph_data):
     edge_x = np.insert(edge_x, insert_index, None)
 
     # Prepare y edge coordinates
-    edge_y = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
-        :, :, 1
-    ].ravel()
+    edge_y = node_coords[graph_data.get_graph_edges_indexes()][:, :, 1].ravel()
     edge_y = np.insert(edge_y, insert_index, None)
 
     # Prepare z edge coordinates
-    edge_z = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
-        :, :, 2
-    ].ravel()
-    edge_z = np.insert(edge_z, insert_index, None)
+    if is_3d:
+        edge_z = node_coords[graph_data.get_graph_edges_indexes()][:, :, 2].ravel()
+        edge_z = np.insert(edge_z, insert_index, None)
+
+    # Prepare hovertemplate for edge features, if any
+    edge_feature_names = graph_data.get_metadata().get("edge_feature_names", [])
+    hovertemplate_edge_features = "".join(
+        [
+            f"<br>{name}: %{{customdata[{i}]:.2f}}"
+            for i, name in enumerate(edge_feature_names)
+        ]
+    )
 
     # Add edges
-    figure.add_scatter3d(
-        x=edge_x,
-        y=edge_y,
-        z=edge_z,
-        mode="lines",
-        line_color="#ef6f7f",
-        line_width=2,
-        name="Edges",
-        hoverinfo="none",
-    )
+    if is_3d:
+        figure.add_scatter3d(
+            x=edge_x,
+            y=edge_y,
+            z=edge_z,
+            mode="lines",
+            line_color="#ef6f7f",
+            line_width=2,
+            name="Edges",
+            hoverinfo="none",
+        )
+
+        if hovertemplate_edge_features:
+            # Add invisible scatter for edge features hover at mid edge position
+            mid_edge_x = node_coords[graph_data.get_graph_edges_indexes()][
+                :, :, 0
+            ].mean(axis=1)
+            mid_edge_y = node_coords[graph_data.get_graph_edges_indexes()][
+                :, :, 1
+            ].mean(axis=1)
+            mid_edge_z = node_coords[graph_data.get_graph_edges_indexes()][
+                :, :, 2
+            ].mean(axis=1)
+
+            figure.add_scatter3d(
+                x=mid_edge_x,
+                y=mid_edge_y,
+                z=mid_edge_z,
+                mode="markers",
+                marker_size=0.000000001,
+                marker_color="#ef6f7f",
+                line_color="#ef6f7f",
+                hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
+                customdata=graph_data.get_edge_features_matrix(),
+                showlegend=False,
+            )
+
+    else:
+        figure.add_scatter(
+            x=edge_x,
+            y=edge_y,
+            mode="lines",
+            line_color="#ef6f7f",
+            line_width=2,
+            name="Edges",
+            hoverinfo="none",
+        )
+
+        if hovertemplate_edge_features:
+            # Add invisible scatter for edge features hover at mid edge position
+            mid_edge_x = node_coords[graph_data.get_graph_edges_indexes()][
+                :, :, 0
+            ].mean(axis=1)
+            mid_edge_y = node_coords[graph_data.get_graph_edges_indexes()][
+                :, :, 1
+            ].mean(axis=1)
+
+            figure.add_scatter(
+                x=mid_edge_x,
+                y=mid_edge_y,
+                mode="markers",
+                marker_size=0.000000001,
+                marker_color="#ef6f7f",
+                line_color="#ef6f7f",
+                hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
+                customdata=graph_data.get_edge_features_matrix(),
+                showlegend=False,
+            )
 
     # Prepare hovertemplate for node features, if any
     node_feature_names = graph_data.get_metadata().get("node_feature_names", [])
@@ -307,28 +378,55 @@ def plot_interactive_graph(graph_data):
     )
 
     # Add nodes
-    figure.add_scatter3d(
-        x=graph_data.get_nodes_coords()[:, 0],
-        y=graph_data.get_nodes_coords()[:, 1],
-        z=graph_data.get_nodes_coords()[:, 2],
-        text=[f"Node {i}" for i in range(graph_data.get_n_node())],
-        mode="markers",
-        marker_color="#4477aa",
-        marker_line_color="black",
-        marker_line_width=1,
-        marker_size=10,
-        customdata=graph_data.get_node_features_matrix(),
-        hovertemplate=(
-            "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
-            + hovertemplate_features
-            + "<extra></extra>"
-        ),
-        name="Nodes",
-    )
+    if is_3d:
+        figure.add_scatter3d(
+            x=node_coords[:, 0],
+            y=node_coords[:, 1],
+            z=node_coords[:, 2],
+            text=[f"Node {i}" for i in range(graph_data.get_n_node())],
+            mode="markers",
+            marker_color="#4477aa",
+            marker_line_color="black",
+            marker_line_width=1,
+            marker_size=10,
+            customdata=graph_data.get_node_features_matrix(),
+            hovertemplate=(
+                "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
+                + hovertemplate_features
+                + "<extra></extra>"
+            ),
+            name="Nodes",
+        )
 
-    figure.update_layout(
-        **plotly_layout, scene_aspectmode="data", width=800, height=400
-    )
+        figure.update_layout(
+            **plotly_layout, scene_aspectmode="data", width=800, height=400
+        )
+
+    else:
+        figure.add_scatter(
+            x=node_coords[:, 0],
+            y=node_coords[:, 1],
+            text=[f"Node {i}" for i in range(graph_data.get_n_node())],
+            mode="markers",
+            marker_color="#4477aa",
+            marker_line_color="black",
+            marker_line_width=1,
+            marker_size=10,
+            customdata=graph_data.get_node_features_matrix(),
+            hovertemplate=(
+                "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}"
+                + hovertemplate_features
+                + "<extra></extra>"
+            ),
+            name="Nodes",
+        )
+
+        figure.update_layout(**plotly_layout, width=500, height=500)
+
+        figure.update_yaxes(
+            scaleanchor="x",
+            scaleratio=1,
+        )
 
     return figure
 
