@@ -9,6 +9,7 @@ import pickle
 
 from itertools import count
 
+
 class DownloadProgressBar(tqdm):
     """
     Provides a progress bar compatible with the urlretrieve hook.
@@ -67,7 +68,9 @@ def download_file(file, base_url, dest_path, overwrite=False):
     # Check if the file already exists and use it if overwrite is False
     if (dest_path / file).exists() and not overwrite:
         # Logging
-        logging.info(msg=f"Using '{file}' cached in in {dest_path}")
+        logging.info(
+            msg=f"Using '{file}' cached in in {dest_path.relative_to(Path.cwd())}"
+        )
         return
 
     # Create the destination directory if it doesn't exist
@@ -95,6 +98,7 @@ def download_file(file, base_url, dest_path, overwrite=False):
         # total_size's units does not seem to be in bytes
         pbar.total = pbar.n
 
+
 def get_critical_buckling_wavelength(poisson, shell_radius, shell_thickness):
     """Compute shell critical buckling wavelength.
 
@@ -119,7 +123,6 @@ def get_critical_buckling_wavelength(poisson, shell_radius, shell_thickness):
         * ((12 * (1 - poisson**2)) ** (-1 / 4))
         * ((shell_radius * shell_thickness) ** (1 / 2))
     )
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return critical_bw
 
 
@@ -179,8 +182,6 @@ def parse_tensorflow_dataset(dataset_name, dataset_directory):
             pickle.dump(sample_data, file)
 
 
-
-
 def _parse_tensorflow_sample(sample, metadata):
     """
     Parses a single sample from the TensorFlow dataset.
@@ -207,15 +208,11 @@ def _parse_tensorflow_sample(sample, metadata):
         )
         raise ImportError(err_msg)
 
-    feature_dict = {
-        k: tf.io.VarLenFeature(tf.string) for k in metadata["field_names"]
-    }
+    feature_dict = {k: tf.io.VarLenFeature(tf.string) for k in metadata["field_names"]}
     features = tf.io.parse_single_example(sample, feature_dict)
     sample_data = {}
     for key, field in metadata["features"].items():
-        data = tf.io.decode_raw(
-            features[key].values, getattr(tf, field["dtype"])
-        )
+        data = tf.io.decode_raw(features[key].values, getattr(tf, field["dtype"]))
         data = tf.reshape(data, field["shape"])
         if field["type"] == "static":
             data = data[0]
@@ -225,6 +222,115 @@ def _parse_tensorflow_sample(sample, metadata):
         sample_data[key] = data.numpy()
 
     return sample_data
+
+
+plotly_layout = dict(
+    template="plotly_white",
+    font_family="Arial",
+    font_size=10,
+    xaxis_showgrid=False,
+    xaxis_ticks="inside",
+    xaxis_mirror="allticks",
+    xaxis_zeroline=False,
+    xaxis_showline=True,
+    xaxis_linecolor="black",
+    yaxis_showgrid=False,
+    yaxis_ticks="inside",
+    yaxis_mirror="allticks",
+    yaxis_zeroline=False,
+    yaxis_showline=True,
+    yaxis_linecolor="black",
+    colorway=["#4477aa", "#ef6f7f", "#288b39", "#288b39", "#aa3377", "#000000"],
+    xaxis_title_standoff=3,
+    yaxis_title_standoff=3,
+    margin=dict(l=40, r=10, t=10, b=40),
+    yaxis_automargin=True,
+)
+"""A Plotly layout dictionary for consistent figure styling."""
+
+
+def plot_interactive_graph(graph_data):
+    """
+    Plots the graph using Plotly.
+
+    Parameters
+    ----------
+    graph_data : GraphData
+        The graph data to plot.
+    """
+    import plotly.graph_objects as go
+
+    # Create a 3D scatter plot for nodes and lines for edges
+    figure = go.Figure()
+
+    # Prepare edge coordinates by indexing node coordinates with edge indexes
+    edge_x = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
+        :, :, 0
+    ].ravel()
+
+    # We need to insert None values between edges to avoid connecting them
+    # in the plotly scatter3d while adding only one trace
+    insert_index = np.arange(0, edge_x.shape[0], 2)
+    edge_x = np.insert(edge_x, insert_index, None)
+
+    # Prepare y edge coordinates
+    edge_y = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
+        :, :, 1
+    ].ravel()
+    edge_y = np.insert(edge_y, insert_index, None)
+
+    # Prepare z edge coordinates
+    edge_z = graph_data.get_nodes_coords()[graph_data.get_graph_edges_indexes()][
+        :, :, 2
+    ].ravel()
+    edge_z = np.insert(edge_z, insert_index, None)
+
+    # Add edges
+    figure.add_scatter3d(
+        x=edge_x,
+        y=edge_y,
+        z=edge_z,
+        mode="lines",
+        line_color="#ef6f7f",
+        line_width=2,
+        name="Edges",
+        hoverinfo="none",
+    )
+
+    # Prepare hovertemplate for node features, if any
+    node_feature_names = graph_data.get_metadata().get("node_feature_names", [])
+    hovertemplate_features = "".join(
+        [
+            f"<br>{name}: %{{customdata[{i}]:.2f}}"
+            for i, name in enumerate(node_feature_names)
+        ]
+    )
+
+    # Add nodes
+    figure.add_scatter3d(
+        x=graph_data.get_nodes_coords()[:, 0],
+        y=graph_data.get_nodes_coords()[:, 1],
+        z=graph_data.get_nodes_coords()[:, 2],
+        text=[f"Node {i}" for i in range(graph_data.get_n_node())],
+        mode="markers",
+        marker_color="#4477aa",
+        marker_line_color="black",
+        marker_line_width=1,
+        marker_size=10,
+        customdata=graph_data.get_node_features_matrix(),
+        hovertemplate=(
+            "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
+            + hovertemplate_features
+            + "<extra></extra>"
+        ),
+        name="Nodes",
+    )
+
+    figure.update_layout(
+        **plotly_layout, scene_aspectmode="data", width=800, height=400
+    )
+
+    return figure
 
 
 def graph_to_pyvista_mesh(graph):
