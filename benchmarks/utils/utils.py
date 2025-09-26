@@ -8,6 +8,7 @@ import logging
 import pickle
 
 from itertools import count
+from graphorge.gnn_base_model.data.graph_data import GraphData
 
 
 class DownloadProgressBar(tqdm):
@@ -249,7 +250,7 @@ plotly_layout = dict(
 """A Plotly layout dictionary for consistent figure styling."""
 
 
-def plot_interactive_graph(graph_data):
+def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
     """
     Plots the graph using Plotly.
 
@@ -388,7 +389,7 @@ def plot_interactive_graph(graph_data):
             marker_color="#4477aa",
             marker_line_color="black",
             marker_line_width=1,
-            marker_size=10,
+            marker_size=node_size,
             customdata=graph_data.get_node_features_matrix(),
             hovertemplate=(
                 "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
@@ -411,7 +412,7 @@ def plot_interactive_graph(graph_data):
             marker_color="#4477aa",
             marker_line_color="black",
             marker_line_width=1,
-            marker_size=10,
+            marker_size=node_size,
             customdata=graph_data.get_node_features_matrix(),
             hovertemplate=(
                 "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}"
