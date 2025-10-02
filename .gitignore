@@ -178,7 +178,7 @@ benchmarks/cfd/gnn_porous_medium/*
 !benchmarks/cfd/gnn_porous_medium/gnn_porous_medium.ipynb
 !benchmarks/cfd/gnn_porous_medium/_assets
 benchmarks/cfd/mgn_cylinder_flow/*
-!benchmarks/cfd/mgn_cylinder_flow/gnn_cylinder_flow.ipynb
+!benchmarks/cfd/mgn_cylinder_flow/mgn_cylinder_flow.ipynb
 !benchmarks/cfd/mgn_cylinder_flow/_assets
 
 # Sphinx docs

@@ -160,9 +160,8 @@ def predict(dataset, model_directory, model=None, predict_directory=None,
             print('\n> Loading Graph Neural Network model...')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Initialize Graph Neural Network model
-        model = GNNEPDBaseModel.init_model_from_file(model_directory)
-        # Set model device
-        model.set_device(device_type)
+        model = GNNEPDBaseModel.init_model_from_file(
+            model_directory=model_directory, device_type=device_type)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Load Graph Neural Network model state
         _ = model.load_model_state(load_model_state=load_model_state,

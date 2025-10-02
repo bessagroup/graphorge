@@ -9,6 +9,7 @@ import pickle
 
 from itertools import count
 from graphorge.gnn_base_model.data.graph_data import GraphData
+from torch_geometric.data import Data
 
 
 class DownloadProgressBar(tqdm):
@@ -250,13 +251,13 @@ plotly_layout = dict(
 """A Plotly layout dictionary for consistent figure styling."""
 
 
-def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
+def plot_interactive_graph(graph_data: GraphData | Data, node_size: int = 10):
     """
     Plots the graph using Plotly.
 
     Parameters
     ----------
-    graph_data : GraphData
+    graph_data : GraphData | Data
         The graph data to plot.
     """
     import plotly.graph_objects as go
@@ -265,7 +266,10 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
     figure = go.Figure()
 
     # Extract node coordinates
-    node_coords = graph_data.get_nodes_coords()
+    if isinstance(graph_data, GraphData):
+        node_coords = graph_data.get_nodes_coords()
+    else:
+        node_coords = graph_data.pos
 
     if node_coords.shape[1] == 3:
         # 3D graph
@@ -273,8 +277,13 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
     else:
         is_3d = False
 
+    # Extract edge indexes
+    if isinstance(graph_data, GraphData):
+        edge_indexes = graph_data.get_graph_edges_indexes()
+    else:
+        edge_indexes = graph_data.edge_index.T
     # Prepare edge coordinates by indexing node coordinates with edge indexes
-    edge_x = node_coords[graph_data.get_graph_edges_indexes()][:, :, 0].ravel()
+    edge_x = node_coords[edge_indexes][:, :, 0].ravel()
 
     # We need to insert None values between edges to avoid connecting them
     # in the plotly scatter3d while adding only one trace
@@ -282,22 +291,32 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
     edge_x = np.insert(edge_x, insert_index, None)
 
     # Prepare y edge coordinates
-    edge_y = node_coords[graph_data.get_graph_edges_indexes()][:, :, 1].ravel()
+    edge_y = node_coords[edge_indexes][:, :, 1].ravel()
     edge_y = np.insert(edge_y, insert_index, None)
 
     # Prepare z edge coordinates
     if is_3d:
-        edge_z = node_coords[graph_data.get_graph_edges_indexes()][:, :, 2].ravel()
+        edge_z = node_coords[edge_indexes][:, :, 2].ravel()
         edge_z = np.insert(edge_z, insert_index, None)
 
     # Prepare hovertemplate for edge features, if any
-    edge_feature_names = graph_data.get_metadata().get("edge_feature_names", [])
+    if isinstance(graph_data, GraphData):
+        edge_feature_names = graph_data.get_metadata().get("edge_feature_names", [])
+    else:
+        edge_feature_names = graph_data.metadata.get("edge_feature_names", [])
+
     hovertemplate_edge_features = "".join(
         [
             f"<br>{name}: %{{customdata[{i}]:.2f}}"
             for i, name in enumerate(edge_feature_names)
         ]
     )
+
+    # Extract edge features, if any
+    if isinstance(graph_data, GraphData):
+        edge_features = graph_data.get_edge_features_matrix()
+    else:
+        edge_features = graph_data.edge_attr
 
     # Add edges
     if is_3d:
@@ -314,15 +333,9 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
 
         if hovertemplate_edge_features:
             # Add invisible scatter for edge features hover at mid edge position
-            mid_edge_x = node_coords[graph_data.get_graph_edges_indexes()][
-                :, :, 0
-            ].mean(axis=1)
-            mid_edge_y = node_coords[graph_data.get_graph_edges_indexes()][
-                :, :, 1
-            ].mean(axis=1)
-            mid_edge_z = node_coords[graph_data.get_graph_edges_indexes()][
-                :, :, 2
-            ].mean(axis=1)
+            mid_edge_x = node_coords[edge_indexes][:, :, 0].mean(axis=1)
+            mid_edge_y = node_coords[edge_indexes][:, :, 1].mean(axis=1)
+            mid_edge_z = node_coords[edge_indexes][:, :, 2].mean(axis=1)
 
             figure.add_scatter3d(
                 x=mid_edge_x,
@@ -333,7 +346,7 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
                 marker_color="#ef6f7f",
                 line_color="#ef6f7f",
                 hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
-                customdata=graph_data.get_edge_features_matrix(),
+                customdata=edge_features,
                 showlegend=False,
             )
 
@@ -350,12 +363,8 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
 
         if hovertemplate_edge_features:
             # Add invisible scatter for edge features hover at mid edge position
-            mid_edge_x = node_coords[graph_data.get_graph_edges_indexes()][
-                :, :, 0
-            ].mean(axis=1)
-            mid_edge_y = node_coords[graph_data.get_graph_edges_indexes()][
-                :, :, 1
-            ].mean(axis=1)
+            mid_edge_x = node_coords[edge_indexes][:, :, 0].mean(axis=1)
+            mid_edge_y = node_coords[edge_indexes][:, :, 1].mean(axis=1)
 
             figure.add_scatter(
                 x=mid_edge_x,
@@ -365,12 +374,16 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
                 marker_color="#ef6f7f",
                 line_color="#ef6f7f",
                 hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
-                customdata=graph_data.get_edge_features_matrix(),
+                customdata=edge_features,
                 showlegend=False,
             )
 
     # Prepare hovertemplate for node features, if any
-    node_feature_names = graph_data.get_metadata().get("node_feature_names", [])
+    if isinstance(graph_data, GraphData):
+        node_feature_names = graph_data.get_metadata().get("node_feature_names", [])
+    else:
+        node_feature_names = graph_data.metadata.get("node_feature_names", [])
+
     hovertemplate_features = "".join(
         [
             f"<br>{name}: %{{customdata[{i}]:.2f}}"
@@ -378,19 +391,25 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
         ]
     )
 
+    # Extract node features
+    if isinstance(graph_data, GraphData):
+        node_features = graph_data.get_node_features_matrix()
+    else:
+        node_features = graph_data.x
+
     # Add nodes
     if is_3d:
         figure.add_scatter3d(
             x=node_coords[:, 0],
             y=node_coords[:, 1],
             z=node_coords[:, 2],
-            text=[f"Node {i}" for i in range(graph_data.get_n_node())],
+            text=[f"Node {i}" for i in range(len(node_coords))],
             mode="markers",
             marker_color="#4477aa",
             marker_line_color="black",
             marker_line_width=1,
             marker_size=node_size,
-            customdata=graph_data.get_node_features_matrix(),
+            customdata=node_features,
             hovertemplate=(
                 "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
                 + hovertemplate_features
@@ -407,13 +426,13 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
         figure.add_scatter(
             x=node_coords[:, 0],
             y=node_coords[:, 1],
-            text=[f"Node {i}" for i in range(graph_data.get_n_node())],
+            text=[f"Node {i}" for i in range(len(node_coords))],
             mode="markers",
             marker_color="#4477aa",
             marker_line_color="black",
             marker_line_width=1,
             marker_size=node_size,
-            customdata=graph_data.get_node_features_matrix(),
+            customdata=node_features,
             hovertemplate=(
                 "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}"
                 + hovertemplate_features
@@ -432,24 +451,17 @@ def plot_interactive_graph(graph_data: GraphData, node_size: int = 10):
     return figure
 
 
-def graph_to_pyvista_mesh(graph):
+def graph_to_pyvista_mesh(graph: GraphData | Data) -> "pv.PolyData":
     import pyvista as pv
 
     # Get the mesh vertices, add a third dimension with zeros to make it 3D
     mesh_vertices = np.insert(arr=graph.pos.numpy(), obj=2, values=0, axis=1)
 
-    # Get the raw sample data which define the mesh cells
-    raw_data_file = (
-        Path("data")
-        / graph.metadata["dataset_name"]
-        / f"{graph.metadata['dataset_name']}"
-        f"_sample_{graph.metadata['sample_id']}.pkl"
-    )
-    with open(raw_data_file, "rb") as file:
-        sample = pickle.load(file)
-
     # Extract the cells
-    cells = sample["cells"]
+    try:
+        cells = graph.metadata["cells"]
+    except KeyError:
+        raise ValueError("The graph does not contain cell connectivity information.")
 
     # The cell are already defined as a list of 3 vertices
     # Add the number of vertices to the beginning of each cell to comply with the
@@ -458,11 +470,5 @@ def graph_to_pyvista_mesh(graph):
 
     # Create the mesh
     mesh = pv.PolyData(mesh_vertices, faces=vtk_faces)
-
-    # Add the velocity as point data
-    mesh.point_data["velocity"] = graph.x[:, :2].numpy()
-
-    # Add the pressure as point data
-    mesh.point_data["pressure"] = graph.x[:, 2:3].numpy()
 
     return mesh
