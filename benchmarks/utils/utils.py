@@ -259,6 +259,14 @@ def plot_interactive_graph(graph_data: GraphData | Data, node_size: int = 10):
     ----------
     graph_data : GraphData | Data
         The graph data to plot.
+
+    node_size : int, optional
+        The size of the nodes in the plot.
+
+    Returns
+    -------
+    figure : go.Figure
+        The Plotly figure containing the graph plot.
     """
     import plotly.graph_objects as go
 
@@ -451,7 +459,76 @@ def plot_interactive_graph(graph_data: GraphData | Data, node_size: int = 10):
     return figure
 
 
+def plot_loss_history(loss_file: str | Path):
+    """
+    Plots the training and validation loss history from a pickle file.
+
+    Parameters
+    ----------
+    loss_file : str | Path
+        Path to the pickle file containing the loss history.
+
+    Returns
+    -------
+    figure : go.Figure
+        The Plotly figure containing the loss history plot."""
+    import plotly.graph_objects as go
+
+    with open(loss_file, "rb") as f:
+        loss_history_record = pickle.load(f)
+
+    # Plot the loss history
+    figure = go.Figure()
+    figure.add_scatter(
+        y=loss_history_record["training_loss_history"],
+        mode="lines",
+        name="Training loss",
+        hovertemplate="Epoch: %{x}<br>%{fullData.name}: %{y:.4f}<extra></extra>",
+        line_width=2,
+    )
+
+    figure.add_scatter(
+        y=loss_history_record["validation_loss_history"],
+        mode="lines",
+        name="Validation loss",
+        hovertemplate="Epoch: %{x}<br>%{fullData.name}: %{y:.4f}<extra></extra>",
+        line_width=2,
+        line_dash="dot",
+    )
+    figure.update_layout(
+        **plotly_layout,
+        xaxis_title="Epochs",
+        yaxis_title="Loss",
+        xaxis_range=[0, len(loss_history_record["training_loss_history"]) - 1],
+        legend=dict(
+            yanchor="top",
+            y=0.98,
+            xanchor="right",
+            x=0.98,
+            title_text=None,
+            traceorder="normal",
+        ),
+        width=800,
+        height=400,
+    )
+    return figure
+
+
 def graph_to_pyvista_mesh(graph: GraphData | Data) -> "pv.PolyData":
+    """
+    Converts a graph to a PyVista mesh.
+
+    Parameters
+    ----------
+    graph : GraphData | Data
+        The graph to convert. The cells connectivity must be stored in the
+        graph metadata under the 'cells' key.
+
+    Returns
+    -------
+    mesh : pv.PolyData
+        The PyVista mesh.
+    """
     import pyvista as pv
 
     # Get the mesh vertices, add a third dimension with zeros to make it 3D
