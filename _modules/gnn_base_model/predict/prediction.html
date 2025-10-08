@@ -53,8 +53,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -254,9 +255,8 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; Loading Graph Neural Network model...&#39;</span><span class="p">)</span>
         <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
         <span class="c1"># Initialize Graph Neural Network model</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">GNNEPDBaseModel</span><span class="o">.</span><span class="n">init_model_from_file</span><span class="p">(</span><span class="n">model_directory</span><span class="p">)</span>
-        <span class="c1"># Set model device</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="n">device_type</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">GNNEPDBaseModel</span><span class="o">.</span><span class="n">init_model_from_file</span><span class="p">(</span>
+            <span class="n">model_directory</span><span class="o">=</span><span class="n">model_directory</span><span class="p">,</span> <span class="n">device_type</span><span class="o">=</span><span class="n">device_type</span><span class="p">)</span>
         <span class="c1"># ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
         <span class="c1"># Load Graph Neural Network model state</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">load_model_state</span><span class="p">(</span><span class="n">load_model_state</span><span class="o">=</span><span class="n">load_model_state</span><span class="p">,</span>

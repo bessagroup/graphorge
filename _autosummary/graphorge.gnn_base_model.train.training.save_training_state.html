@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -134,10 +135,10 @@ model_directory under the name &lt; model_name &gt;_optim-best.pt or
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Model.</p></li>
 <li><p><strong>optimizer</strong> (<em>torch.optim.Optimizer</em>) – PyTorch optimizer.</p></li>
-<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=None</em>) – Training epoch.</p></li>
-<li><p><strong>is_best_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, save material patch model state file corresponding to the best
+<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=None</em>) – Training epoch.</p></li>
+<li><p><strong>is_best_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, save material patch model state file corresponding to the best
 performance instead of regular state file.</p></li>
-<li><p><strong>is_remove_posterior</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=True</em>) – Remove material patch model and optimizer state files corresponding to
+<li><p><strong>is_remove_posterior</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=True</em>) – Remove material patch model and optimizer state files corresponding to
 training epochs posterior to the saved state file. Effective only if
 saved epoch is known.</p></li>
 </ul>

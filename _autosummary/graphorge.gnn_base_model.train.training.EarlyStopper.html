@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -118,7 +119,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="graphorge.gnn_base_model.train.training.EarlyStopper">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EarlyStopper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation_dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">improvement_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/gnn_base_model/train/training.html#EarlyStopper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.gnn_base_model.train.training.EarlyStopper" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Early stopping procedure (implicit regularizaton).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphorge.gnn_base_model.train.training.EarlyStopper._validation_size">
@@ -127,7 +128,7 @@
 size is a fraction of the whole data set contained between 0 and 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -140,7 +141,7 @@ training epochs at which model is validated to evaluate early stopping
 criterion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -152,7 +153,7 @@ criterion.</p>
 improvement to trigger early stopping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -164,7 +165,7 @@ improvement to trigger early stopping.</p>
 improvement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -175,7 +176,7 @@ improvement.</p>
 <dd><p>Validation steps history.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -186,7 +187,7 @@ improvement.</p>
 <dd><p>Validation loss history.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -197,7 +198,7 @@ improvement.</p>
 <dd><p>Minimum validation loss.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,7 +209,7 @@ improvement.</p>
 <dd><p>Number of consecutive model validations without improvement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -219,7 +220,7 @@ improvement.</p>
 <dd><p>Model state corresponding to the best performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -230,7 +231,7 @@ improvement.</p>
 <dd><p>Optimizer state corresponding to the best performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,7 +242,7 @@ improvement.</p>
 <dd><p>Training epoch corresponding to the best performance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,12 +287,12 @@ loss_kwargs={}, device_type=’cpu’)</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>validation_dataset</strong> (<em>torch.utils.data.Dataset</em>) – Graph Neural Network graph data set. Each sample corresponds to a
 torch_geometric.data.Data object describing a homogeneous graph.</p></li>
-<li><p><strong>validation_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Frequency of validation procedures, i.e., frequency with respect to
+<li><p><strong>validation_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Frequency of validation procedures, i.e., frequency with respect to
 training epochs at which model is validated to evaluate early
 stopping criterion.</p></li>
-<li><p><strong>trigger_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of consecutive model validation procedures without
+<li><p><strong>trigger_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of consecutive model validation procedures without
 performance improvement to trigger early stopping.</p></li>
-<li><p><strong>improvement_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=1e-2</em>) – Minimum relative improvement required to count as a performance
+<li><p><strong>improvement_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1e-2</em>) – Minimum relative improvement required to count as a performance
 improvement.</p></li>
 </ul>
 </dd>
@@ -323,12 +324,12 @@ improvement.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>validation_dataset</strong> (<em>torch.utils.data.Dataset</em>) – Graph Neural Network graph data set. Each sample corresponds to a
 torch_geometric.data.Data object describing a homogeneous graph.</p></li>
-<li><p><strong>validation_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Frequency of validation procedures, i.e., frequency with respect to
+<li><p><strong>validation_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Frequency of validation procedures, i.e., frequency with respect to
 training epochs at which model is validated to evaluate early
 stopping criterion.</p></li>
-<li><p><strong>trigger_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of consecutive model validation procedures without
+<li><p><strong>trigger_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of consecutive model validation procedures without
 performance improvement to trigger early stopping.</p></li>
-<li><p><strong>improvement_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>default=1e-2</em>) – Minimum relative improvement required to count as a performance
+<li><p><strong>improvement_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default=1e-2</em>) – Minimum relative improvement required to count as a performance
 improvement.</p></li>
 </ul>
 </dd>
@@ -344,7 +345,7 @@ improvement.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Graph Neural Network model.</p></li>
 <li><p><strong>optimizer</strong> (<em>torch.optim.Optimizer</em>) – PyTorch optimizer.</p></li>
-<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Training epoch.</p></li>
+<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Training epoch.</p></li>
 <li><p><strong>loss_nature</strong> (<em>{'node_features_out'</em><em>, </em><em>'global_features_out'}</em><em>,                     </em><em>default='node_features_out'</em>) – <p>Loss nature:</p>
 <p>’node_features_out’ : Based on node output features</p>
 <p>’global_features_out’ : Based on global output features</p>
@@ -352,8 +353,8 @@ improvement.</p></li>
 <li><p><strong>loss_type</strong> (<em>{'mse'</em><em>,</em><em>}</em><em>, </em><em>default='mse'</em>) – <p>Loss function type:</p>
 <p>’mse’  : MSE (torch.nn.MSELoss)</p>
 </p></li>
-<li><p><strong>loss_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>default={}</em>) – Arguments of torch.nn._Loss initializer.</p></li>
-<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of samples loaded per batch.</p></li>
+<li><p><strong>loss_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>default={}</em>) – Arguments of torch.nn._Loss initializer.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of samples loaded per batch.</p></li>
 <li><p><strong>device_type</strong> (<em>{'cpu'</em><em>, </em><em>'cuda'}</em><em>, </em><em>default='cpu'</em>) – Type of device on which torch.Tensor is allocated.</p></li>
 </ul>
 </dd>
@@ -361,7 +362,7 @@ improvement.</p></li>
 <dd class="field-even"><p><strong>avg_predict_loss</strong> – Average prediction loss per sample.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -375,7 +376,7 @@ improvement.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>torch.nn.Module</em>) – Graph Neural Network model.</p></li>
 <li><p><strong>optimizer</strong> (<em>torch.optim.Optimizer</em>) – PyTorch optimizer.</p></li>
-<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Training epoch.</p></li>
+<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Training epoch.</p></li>
 <li><p><strong>loss_nature</strong> (<em>{'node_features_out'</em><em>, </em><em>'global_features_out'}</em><em>,                     </em><em>default='node_features_out'</em>) – <p>Loss nature:</p>
 <p>’node_features_out’ : Based on node output features</p>
 <p>’global_features_out’ : Based on global output features</p>
@@ -383,8 +384,8 @@ improvement.</p></li>
 <li><p><strong>loss_type</strong> (<em>{'mse'</em><em>,</em><em>}</em><em>, </em><em>default='mse'</em>) – <p>Loss function type:</p>
 <p>’mse’  : MSE (torch.nn.MSELoss)</p>
 </p></li>
-<li><p><strong>loss_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>default={}</em>) – Arguments of torch.nn._Loss initializer.</p></li>
-<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of samples loaded per batch.</p></li>
+<li><p><strong>loss_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>default={}</em>) – Arguments of torch.nn._Loss initializer.</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – Number of samples loaded per batch.</p></li>
 <li><p><strong>device_type</strong> (<em>{'cpu'</em><em>, </em><em>'cuda'}</em><em>, </em><em>default='cpu'</em>) – Type of device on which torch.Tensor is allocated.</p></li>
 </ul>
 </dd>
@@ -393,7 +394,7 @@ improvement.</p></li>
 otherwise.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -407,7 +408,7 @@ otherwise.</p>
 <dd class="field-odd"><p><strong>validation_loss_history</strong> – Validation loss history.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -418,14 +419,14 @@ otherwise.</p>
 <dd><p>Check whether to evaluate early stopping criterion.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Training epoch.</p>
+<dd class="field-odd"><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Training epoch.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>is_evaluate_criterion</strong> – If True, then early stopping criterion should be evaluated, False
 otherwise.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -446,7 +447,7 @@ otherwise.</p>
 <dd class="field-even"><p><strong>best_training_epoch</strong> – Training epoch corresponding to the best performance.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>

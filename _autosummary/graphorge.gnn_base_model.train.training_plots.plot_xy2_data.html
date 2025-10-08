@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -126,13 +127,13 @@
 stored columnwise as (x_i, y_i).</p></li>
 <li><p><strong>data_xy2</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em>(</em><em>2d</em><em>)</em>) – Data array containing the plot data associated with the second y-axis
 stored columnwise as (x_i, y_i).</p></li>
-<li><p><strong>x_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – x-axis limits in data coordinates.</p></li>
-<li><p><strong>y1_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – y1-axis limits in data coordinates.</p></li>
-<li><p><strong>y2_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – y2-axis limits in data coordinates.</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Plot title.</p></li>
-<li><p><strong>x_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – x-axis label.</p></li>
-<li><p><strong>y1_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – y1-axis label.</p></li>
-<li><p><strong>y2_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – y2-axis label.</p></li>
+<li><p><strong>x_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – x-axis limits in data coordinates.</p></li>
+<li><p><strong>y1_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – y1-axis limits in data coordinates.</p></li>
+<li><p><strong>y2_lims</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>, </em><em>default=</em><em>(</em><em>None</em><em>, </em><em>None</em><em>)</em>) – y2-axis limits in data coordinates.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – Plot title.</p></li>
+<li><p><strong>x_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – x-axis label.</p></li>
+<li><p><strong>y1_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – y1-axis label.</p></li>
+<li><p><strong>y2_label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – y2-axis label.</p></li>
 <li><p><strong>x_scale</strong> (<em>str {'linear'</em><em>, </em><em>'log'}</em><em>, </em><em>default='linear'</em>) – x-axis scale. If None or invalid format, then default scale is set.
 Scale ‘log’ overrides any x-axis ticks formatting.</p></li>
 <li><p><strong>y1_scale</strong> (<em>str {'linear'</em><em>, </em><em>'log'}</em><em>, </em><em>default='linear'</em>) – y1-axis scale. If None or invalid format, then default scale is set.
@@ -145,7 +146,7 @@ formatting is set.</p></li>
 formatting is set.</p></li>
 <li><p><strong>y2_tick_format</strong> (<em>{'int'</em><em>, </em><em>'float'</em><em>, </em><em>'exp'}</em><em>, </em><em>default=None</em>) – y2-axis ticks formatting. If None or invalid format, then default
 formatting is set.</p></li>
-<li><p><strong>is_latex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then render all strings in LaTeX. If LaTex is not available,
+<li><p><strong>is_latex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then render all strings in LaTeX. If LaTex is not available,
 then this option is silently set to False and all input strings are
 processed to remove $(…)$ enclosure.</p></li>
 </ul>

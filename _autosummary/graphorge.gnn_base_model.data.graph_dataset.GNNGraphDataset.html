@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -125,7 +126,7 @@
 (all data set samples files).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -138,7 +139,7 @@ file contains a torch_geometric.data.Data object describing a
 homogeneous graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -152,7 +153,7 @@ Only populated if _is_store_dataset is True, otherwise is set as an
 empty list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -166,7 +167,7 @@ dataset object holds solely the samples data files paths and load the
 corresponding files when accessing a given sample data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a>, default=False</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a>, default=False</p>
 </dd>
 </dl>
 </dd></dl>
@@ -177,7 +178,7 @@ corresponding files when accessing a given sample data.</p>
 <dd><p>Data set file base name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,13 +247,13 @@ corresponding files when accessing a given sample data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
 (all data set samples files).</p></li>
-<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
+<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
 file contains a torch_geometric.data.Data object describing a
 homogeneous graph.</p></li>
-<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
-<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
+<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
+<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
 loaded and stored in attribute dataset_samples_data. If False,
 the dataset object holds solely the samples data files paths and
 load the corresponding files when accessing a given sample data.</p></li>
@@ -293,13 +294,13 @@ load the corresponding files when accessing a given sample data.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
 (all data set samples files).</p></li>
-<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
+<li><p><strong>dataset_sample_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>]</em>) – Graph Neural Network graph data set samples file paths. Each sample
 file contains a torch_geometric.data.Data object describing a
 homogeneous graph.</p></li>
-<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
-<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
+<li><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default='graph_dataset'</em>) – Data set file base name.</p></li>
+<li><p><strong>is_store_dataset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then the Graph Neural Network graph data set samples are
 loaded and stored in attribute dataset_samples_data. If False,
 the dataset object holds solely the samples data files paths and
 load the corresponding files when accessing a given sample data.</p></li>
@@ -317,9 +318,9 @@ with the new directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
+<li><p><strong>dataset_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Directory where the Graph Neural Network graph data set is stored
 (all data set samples files).</p></li>
-<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
+<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
 dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
 </ul>
 </dd>
@@ -335,7 +336,7 @@ dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
 <dd class="field-odd"><p><strong>dataset_basename</strong> – Data set file base name.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -350,7 +351,7 @@ dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
 (all data set samples files).</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -366,7 +367,7 @@ sample file contains a torch_geometric.data.Data object describing
 a homogeneous graph.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -377,7 +378,7 @@ a homogeneous graph.</p>
 <dd><p>Load PyTorch data set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set file path.</p>
+<dd class="field-odd"><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – PyTorch data set file path.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>dataset</strong> – PyTorch data set.</p>
@@ -396,14 +397,14 @@ a homogeneous graph.</p>
 pickle file named graph_dataset.pkl or graph_dataset_n&lt; n_sample &gt;.pkl.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>is_append_n_sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=True</em>) – If True, then data set size (number of samples) is appended to
+<dd class="field-odd"><p><strong>is_append_n_sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=True</em>) – If True, then data set size (number of samples) is appended to
 Graph Neural Network graph data set filename.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>dataset_file_path</strong> – PyTorch data set file path.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -414,7 +415,7 @@ Graph Neural Network graph data set filename.</p>
 <dd><p>Set data set file base name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Data set file base name.</p>
+<dd class="field-odd"><p><strong>dataset_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Data set file base name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -428,9 +429,9 @@ internal directory of the stored data set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set file path.</p></li>
-<li><p><strong>new_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – PyTorch data set new directory.</p></li>
-<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
+<li><p><strong>dataset_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – PyTorch data set file path.</p></li>
+<li><p><strong>new_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – PyTorch data set new directory.</p></li>
+<li><p><strong>is_reload_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – Reload and store data set samples in attribute
 dataset_samples_data. Only effective if is_store_dataset=True.</p></li>
 </ul>
 </dd>

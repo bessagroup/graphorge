@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -123,23 +124,23 @@ data formatted as &lt; optim_metric &gt;: &lt; value &gt;.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>optim_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – One or more multi-run optimization processes (key, str) jobs
+<li><p><strong>optim_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – One or more multi-run optimization processes (key, str) jobs
 directories (item, str). The multi-run job directory is set in
 Hydra configuration file (hydra.sweep.dir). Dictionary keys are taken
 as labels in the corresponding optimization processes history plot.</p></li>
-<li><p><strong>optim_metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The metric whose optimization process history is to be plotted.
+<li><p><strong>optim_metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The metric whose optimization process history is to be plotted.
 Must be available from all optimization processes jobs summary
 data files in the format &lt; optim_metric &gt;: &lt; value &gt;.</p></li>
-<li><p><strong>is_log_metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Applies logarithm to optimization metric values if True, keeps
+<li><p><strong>is_log_metric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – Applies logarithm to optimization metric values if True, keeps
 original metric values otherwise.</p></li>
 <li><p><strong>objective_scale</strong> (<em>{'linear'</em><em>, </em><em>'log'}</em><em>, </em><em>default='linear'</em>) – Optimization metric values axis scale type.</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Figure name. If None, then figure name is set as
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – Figure name. If None, then figure name is set as
 optimization_history_{optim_metric}.</p></li>
-<li><p><strong>save_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default=None</em>) – Directory where figure is saved. If None, then figure is saved in
+<li><p><strong>save_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=None</em>) – Directory where figure is saved. If None, then figure is saved in
 current working directory.</p></li>
-<li><p><strong>is_save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – Save figure.</p></li>
-<li><p><strong>is_stdout_display</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – True if displaying figure to standard output device, False otherwise.</p></li>
-<li><p><strong>is_latex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then render all strings in LaTeX. If LaTex is not available,
+<li><p><strong>is_save_fig</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – Save figure.</p></li>
+<li><p><strong>is_stdout_display</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – True if displaying figure to standard output device, False otherwise.</p></li>
+<li><p><strong>is_latex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then render all strings in LaTeX. If LaTex is not available,
 then this option is silently set to False and all input strings are
 processed to remove $(…)$ enclosure.</p></li>
 </ul>

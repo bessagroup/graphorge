@@ -56,8 +56,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../rst_doc_files/examples/example_workflow.html">Basic workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_collections/examples/readme.html">Graphorge example directory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A surrogate to estimate the knock-down factor of imperfect shells</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/mechanics/gnn_shell_buckling/gnn_shell_buckling.html">A GNN surrogate to estimate the knock-down factor of imperfect shells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/gnn_porous_medium/gnn_porous_medium.html">A GNN surrogate to estimate the flow rate through a porous medium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_collections/examples/cfd/mgn_cylinder_flow/mgn_cylinder_flow.html">Re-implementation of MeshGraphNet for turbulent flow around a cylinder</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -112,7 +113,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="graphorge.utilities.data_scalers.TorchStandardScaler">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TorchStandardScaler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/graphorge/utilities/data_scalers.html#TorchStandardScaler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graphorge.utilities.data_scalers.TorchStandardScaler" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>PyTorch tensor standardization data scaler.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphorge.utilities.data_scalers.TorchStandardScaler._n_features">
@@ -120,7 +121,7 @@
 <dd><p>Number of features to standardize.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -218,7 +219,7 @@ torch.Tensor with shape (n_features,).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of features to standardize.</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of features to standardize.</p></li>
 <li><p><strong>mean</strong> (<em>torch.Tensor</em><em>, </em><em>default=None</em>) – Features standardization mean tensor stored as a torch.Tensor with
 shape (n_features,).</p></li>
 <li><p><strong>std</strong> (<em>torch.Tensor</em><em>, </em><em>default=None</em>) – Features standardization standard deviation tensor stored as a
@@ -261,7 +262,7 @@ torch.Tensor with shape (n_features,).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of features to standardize.</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of features to standardize.</p></li>
 <li><p><strong>mean</strong> (<em>torch.Tensor</em><em>, </em><em>default=None</em>) – Features standardization mean tensor stored as a torch.Tensor with
 shape (n_features,).</p></li>
 <li><p><strong>std</strong> (<em>torch.Tensor</em><em>, </em><em>default=None</em>) – Features standardization standard deviation tensor stored as a
@@ -335,7 +336,7 @@ whole sequence length data for each feature.</p>
 <li><p><strong>tensor</strong> (<em>torch.Tensor</em>) – Features PyTorch tensor stored as torch.Tensor with shape
 (n_samples, n_features) or as torch.Tensor with shape
 (sequence_length, n_samples, n_features).</p></li>
-<li><p><strong>is_bessel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, apply Bessel’s correction to compute standard deviation,
+<li><p><strong>is_bessel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, apply Bessel’s correction to compute standard deviation,
 False otherwise.</p></li>
 </ul>
 </dd>
@@ -355,7 +356,7 @@ whole sequence length data for each feature.</p>
 <li><p><strong>tensor</strong> (<em>torch.Tensor</em>) – Standardized features PyTorch tensor stored as torch.Tensor with
 shape (n_samples, n_features) or as torch.Tensor with shape
 (sequence_length, n_samples, n_features).</p></li>
-<li><p><strong>is_check_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then check transformed tensor data.</p></li>
+<li><p><strong>is_check_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then check transformed tensor data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -436,7 +437,7 @@ whole sequence length data for each feature.</p>
 <li><p><strong>tensor</strong> (<em>torch.Tensor</em>) – Features PyTorch tensor stored as torch.Tensor with shape
 (n_samples, n_features) or as torch.Tensor with shape
 (sequence_length, n_samples, n_features).</p></li>
-<li><p><strong>is_check_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then check transformed tensor data.</p></li>
+<li><p><strong>is_check_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default=False</em>) – If True, then check transformed tensor data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
