@@ -8,6 +8,9 @@ import logging
 import pickle
 
 from itertools import count
+from graphorge.gnn_base_model.data.graph_data import GraphData
+from torch_geometric.data import Data
+
 
 class DownloadProgressBar(tqdm):
     """
@@ -67,7 +70,9 @@ def download_file(file, base_url, dest_path, overwrite=False):
     # Check if the file already exists and use it if overwrite is False
     if (dest_path / file).exists() and not overwrite:
         # Logging
-        logging.info(msg=f"Using '{file}' cached in in {dest_path}")
+        logging.info(
+            msg=f"Using '{file}' cached in in {dest_path.relative_to(Path.cwd())}"
+        )
         return
 
     # Create the destination directory if it doesn't exist
@@ -95,6 +100,7 @@ def download_file(file, base_url, dest_path, overwrite=False):
         # total_size's units does not seem to be in bytes
         pbar.total = pbar.n
 
+
 def get_critical_buckling_wavelength(poisson, shell_radius, shell_thickness):
     """Compute shell critical buckling wavelength.
 
@@ -119,7 +125,6 @@ def get_critical_buckling_wavelength(poisson, shell_radius, shell_thickness):
         * ((12 * (1 - poisson**2)) ** (-1 / 4))
         * ((shell_radius * shell_thickness) ** (1 / 2))
     )
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return critical_bw
 
 
@@ -179,8 +184,6 @@ def parse_tensorflow_dataset(dataset_name, dataset_directory):
             pickle.dump(sample_data, file)
 
 
-
-
 def _parse_tensorflow_sample(sample, metadata):
     """
     Parses a single sample from the TensorFlow dataset.
@@ -207,15 +210,11 @@ def _parse_tensorflow_sample(sample, metadata):
         )
         raise ImportError(err_msg)
 
-    feature_dict = {
-        k: tf.io.VarLenFeature(tf.string) for k in metadata["field_names"]
-    }
+    feature_dict = {k: tf.io.VarLenFeature(tf.string) for k in metadata["field_names"]}
     features = tf.io.parse_single_example(sample, feature_dict)
     sample_data = {}
     for key, field in metadata["features"].items():
-        data = tf.io.decode_raw(
-            features[key].values, getattr(tf, field["dtype"])
-        )
+        data = tf.io.decode_raw(features[key].values, getattr(tf, field["dtype"]))
         data = tf.reshape(data, field["shape"])
         if field["type"] == "static":
             data = data[0]
@@ -227,24 +226,319 @@ def _parse_tensorflow_sample(sample, metadata):
     return sample_data
 
 
-def graph_to_pyvista_mesh(graph):
+plotly_layout = dict(
+    template="plotly_white",
+    font_family="Arial",
+    font_size=10,
+    xaxis_showgrid=False,
+    xaxis_ticks="inside",
+    xaxis_mirror="allticks",
+    xaxis_zeroline=False,
+    xaxis_showline=True,
+    xaxis_linecolor="black",
+    yaxis_showgrid=False,
+    yaxis_ticks="inside",
+    yaxis_mirror="allticks",
+    yaxis_zeroline=False,
+    yaxis_showline=True,
+    yaxis_linecolor="black",
+    colorway=["#4477aa", "#ef6f7f", "#288b39", "#288b39", "#aa3377", "#000000"],
+    xaxis_title_standoff=3,
+    yaxis_title_standoff=3,
+    margin=dict(l=40, r=10, t=10, b=40),
+    yaxis_automargin=True,
+)
+"""A Plotly layout dictionary for consistent figure styling."""
+
+
+def plot_interactive_graph(graph_data: GraphData | Data, node_size: int = 10):
+    """
+    Plots the graph using Plotly.
+
+    Parameters
+    ----------
+    graph_data : GraphData | Data
+        The graph data to plot.
+
+    node_size : int, optional
+        The size of the nodes in the plot.
+
+    Returns
+    -------
+    figure : go.Figure
+        The Plotly figure containing the graph plot.
+    """
+    import plotly.graph_objects as go
+
+    # Create a 3D scatter plot for nodes and lines for edges
+    figure = go.Figure()
+
+    # Extract node coordinates
+    if isinstance(graph_data, GraphData):
+        node_coords = graph_data.get_nodes_coords()
+    else:
+        node_coords = graph_data.pos
+
+    if node_coords.shape[1] == 3:
+        # 3D graph
+        is_3d = True
+    else:
+        is_3d = False
+
+    # Extract edge indexes
+    if isinstance(graph_data, GraphData):
+        edge_indexes = graph_data.get_graph_edges_indexes()
+    else:
+        edge_indexes = graph_data.edge_index.T
+    # Prepare edge coordinates by indexing node coordinates with edge indexes
+    edge_x = node_coords[edge_indexes][:, :, 0].ravel()
+
+    # We need to insert None values between edges to avoid connecting them
+    # in the plotly scatter3d while adding only one trace
+    insert_index = np.arange(0, edge_x.shape[0], 2)
+    edge_x = np.insert(edge_x, insert_index, None)
+
+    # Prepare y edge coordinates
+    edge_y = node_coords[edge_indexes][:, :, 1].ravel()
+    edge_y = np.insert(edge_y, insert_index, None)
+
+    # Prepare z edge coordinates
+    if is_3d:
+        edge_z = node_coords[edge_indexes][:, :, 2].ravel()
+        edge_z = np.insert(edge_z, insert_index, None)
+
+    # Prepare hovertemplate for edge features, if any
+    if isinstance(graph_data, GraphData):
+        edge_feature_names = graph_data.get_metadata().get("edge_feature_names", [])
+    else:
+        edge_feature_names = graph_data.metadata.get("edge_feature_names", [])
+
+    hovertemplate_edge_features = "".join(
+        [
+            f"<br>{name}: %{{customdata[{i}]:.2f}}"
+            for i, name in enumerate(edge_feature_names)
+        ]
+    )
+
+    # Extract edge features, if any
+    if isinstance(graph_data, GraphData):
+        edge_features = graph_data.get_edge_features_matrix()
+    else:
+        edge_features = graph_data.edge_attr
+
+    # Add edges
+    if is_3d:
+        figure.add_scatter3d(
+            x=edge_x,
+            y=edge_y,
+            z=edge_z,
+            mode="lines",
+            line_color="#ef6f7f",
+            line_width=2,
+            name="Edges",
+            hoverinfo="none",
+        )
+
+        if hovertemplate_edge_features:
+            # Add invisible scatter for edge features hover at mid edge position
+            mid_edge_x = node_coords[edge_indexes][:, :, 0].mean(axis=1)
+            mid_edge_y = node_coords[edge_indexes][:, :, 1].mean(axis=1)
+            mid_edge_z = node_coords[edge_indexes][:, :, 2].mean(axis=1)
+
+            figure.add_scatter3d(
+                x=mid_edge_x,
+                y=mid_edge_y,
+                z=mid_edge_z,
+                mode="markers",
+                marker_size=0.000000001,
+                marker_color="#ef6f7f",
+                line_color="#ef6f7f",
+                hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
+                customdata=edge_features,
+                showlegend=False,
+            )
+
+    else:
+        figure.add_scatter(
+            x=edge_x,
+            y=edge_y,
+            mode="lines",
+            line_color="#ef6f7f",
+            line_width=2,
+            name="Edges",
+            hoverinfo="none",
+        )
+
+        if hovertemplate_edge_features:
+            # Add invisible scatter for edge features hover at mid edge position
+            mid_edge_x = node_coords[edge_indexes][:, :, 0].mean(axis=1)
+            mid_edge_y = node_coords[edge_indexes][:, :, 1].mean(axis=1)
+
+            figure.add_scatter(
+                x=mid_edge_x,
+                y=mid_edge_y,
+                mode="markers",
+                marker_size=0.000000001,
+                marker_color="#ef6f7f",
+                line_color="#ef6f7f",
+                hovertemplate=f"{hovertemplate_edge_features}<extra></extra>",
+                customdata=edge_features,
+                showlegend=False,
+            )
+
+    # Prepare hovertemplate for node features, if any
+    if isinstance(graph_data, GraphData):
+        node_feature_names = graph_data.get_metadata().get("node_feature_names", [])
+    else:
+        node_feature_names = graph_data.metadata.get("node_feature_names", [])
+
+    hovertemplate_features = "".join(
+        [
+            f"<br>{name}: %{{customdata[{i}]:.2f}}"
+            for i, name in enumerate(node_feature_names)
+        ]
+    )
+
+    # Extract node features
+    if isinstance(graph_data, GraphData):
+        node_features = graph_data.get_node_features_matrix()
+    else:
+        node_features = graph_data.x
+
+    # Add nodes
+    if is_3d:
+        figure.add_scatter3d(
+            x=node_coords[:, 0],
+            y=node_coords[:, 1],
+            z=node_coords[:, 2],
+            text=[f"Node {i}" for i in range(len(node_coords))],
+            mode="markers",
+            marker_color="#4477aa",
+            marker_line_color="black",
+            marker_line_width=1,
+            marker_size=node_size,
+            customdata=node_features,
+            hovertemplate=(
+                "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}<br>z: %{z:.2f}"
+                + hovertemplate_features
+                + "<extra></extra>"
+            ),
+            name="Nodes",
+        )
+
+        figure.update_layout(
+            **plotly_layout, scene_aspectmode="data", width=800, height=400
+        )
+
+    else:
+        figure.add_scatter(
+            x=node_coords[:, 0],
+            y=node_coords[:, 1],
+            text=[f"Node {i}" for i in range(len(node_coords))],
+            mode="markers",
+            marker_color="#4477aa",
+            marker_line_color="black",
+            marker_line_width=1,
+            marker_size=node_size,
+            customdata=node_features,
+            hovertemplate=(
+                "%{text}<br>x: %{x:.2f}<br>y: %{y:.2f}"
+                + hovertemplate_features
+                + "<extra></extra>"
+            ),
+            name="Nodes",
+        )
+
+        figure.update_layout(**plotly_layout, width=500, height=500)
+
+        figure.update_yaxes(
+            scaleanchor="x",
+            scaleratio=1,
+        )
+
+    return figure
+
+
+def plot_loss_history(loss_file: str | Path):
+    """
+    Plots the training and validation loss history from a pickle file.
+
+    Parameters
+    ----------
+    loss_file : str | Path
+        Path to the pickle file containing the loss history.
+
+    Returns
+    -------
+    figure : go.Figure
+        The Plotly figure containing the loss history plot."""
+    import plotly.graph_objects as go
+
+    with open(loss_file, "rb") as f:
+        loss_history_record = pickle.load(f)
+
+    # Plot the loss history
+    figure = go.Figure()
+    figure.add_scatter(
+        y=loss_history_record["training_loss_history"],
+        mode="lines",
+        name="Training loss",
+        hovertemplate="Epoch: %{x}<br>%{fullData.name}: %{y:.4f}<extra></extra>",
+        line_width=2,
+    )
+
+    figure.add_scatter(
+        y=loss_history_record["validation_loss_history"],
+        mode="lines",
+        name="Validation loss",
+        hovertemplate="Epoch: %{x}<br>%{fullData.name}: %{y:.4f}<extra></extra>",
+        line_width=2,
+        line_dash="dot",
+    )
+    figure.update_layout(
+        **plotly_layout,
+        xaxis_title="Epochs",
+        yaxis_title="Loss",
+        xaxis_range=[0, len(loss_history_record["training_loss_history"]) - 1],
+        legend=dict(
+            yanchor="top",
+            y=0.98,
+            xanchor="right",
+            x=0.98,
+            title_text=None,
+            traceorder="normal",
+        ),
+        width=800,
+        height=400,
+    )
+    return figure
+
+
+def graph_to_pyvista_mesh(graph: GraphData | Data) -> "pv.PolyData":
+    """
+    Converts a graph to a PyVista mesh.
+
+    Parameters
+    ----------
+    graph : GraphData | Data
+        The graph to convert. The cells connectivity must be stored in the
+        graph metadata under the 'cells' key.
+
+    Returns
+    -------
+    mesh : pv.PolyData
+        The PyVista mesh.
+    """
     import pyvista as pv
 
     # Get the mesh vertices, add a third dimension with zeros to make it 3D
     mesh_vertices = np.insert(arr=graph.pos.numpy(), obj=2, values=0, axis=1)
 
-    # Get the raw sample data which define the mesh cells
-    raw_data_file = (
-        Path("data")
-        / graph.metadata["dataset_name"]
-        / f"{graph.metadata['dataset_name']}"
-        f"_sample_{graph.metadata['sample_id']}.pkl"
-    )
-    with open(raw_data_file, "rb") as file:
-        sample = pickle.load(file)
-
     # Extract the cells
-    cells = sample["cells"]
+    try:
+        cells = graph.metadata["cells"]
+    except KeyError:
+        raise ValueError("The graph does not contain cell connectivity information.")
 
     # The cell are already defined as a list of 3 vertices
     # Add the number of vertices to the beginning of each cell to comply with the
@@ -253,11 +547,5 @@ def graph_to_pyvista_mesh(graph):
 
     # Create the mesh
     mesh = pv.PolyData(mesh_vertices, faces=vtk_faces)
-
-    # Add the velocity as point data
-    mesh.point_data["velocity"] = graph.x[:, :2].numpy()
-
-    # Add the pressure as point data
-    mesh.point_data["pressure"] = graph.x[:, 2:3].numpy()
 
     return mesh

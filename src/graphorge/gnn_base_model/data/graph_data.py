@@ -848,7 +848,8 @@ class GraphData:
     # -------------------------------------------------------------------------
     @staticmethod
     def get_edges_indexes_mesh(connected_nodes):
-        """Convert set of mesh connected nodes to edges indexes matrix.
+        """Convert set of mesh connected nodes to undirected edges indexes
+        matrix.
         
         It is assumed that nodes are labeled from 1 to n_nodes, such that
         node 1 and node n_nodes are associated with indexes 0 and n_nodes-1,

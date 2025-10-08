@@ -517,7 +517,7 @@ class GNNEPDBaseModel(torch.nn.Module):
             self.save_model_init_file()
     # -------------------------------------------------------------------------
     @staticmethod
-    def init_model_from_file(model_directory):
+    def init_model_from_file(model_directory, device_type='cpu'):
         """Initialize model from initialization file.
         
         Initialization file is assumed to be stored in the model directory
@@ -527,6 +527,9 @@ class GNNEPDBaseModel(torch.nn.Module):
         ----------
         model_directory : str
             Directory where model is stored.
+
+        device_type : {'cpu', 'cuda'}, default='cpu'
+            Type of device on which torch.Tensor is allocated.
         """
         # Check model directory
         if not os.path.isdir(model_directory):
@@ -549,6 +552,8 @@ class GNNEPDBaseModel(torch.nn.Module):
         model_init_args = model_init_attributes['model_init_args']
         # Update model directory
         model_init_args['model_directory'] = model_directory
+        # Set model device
+        model_init_args['device_type'] = device_type
         # Initialize model
         model = GNNEPDBaseModel(**model_init_args,
                                 is_save_model_init_file=False)
