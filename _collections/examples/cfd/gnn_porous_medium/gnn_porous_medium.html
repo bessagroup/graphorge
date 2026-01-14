@@ -122,7 +122,7 @@
     <span class="o">%</span><span class="k">pip</span> install torch_geometric==2.6.1 -f https://data.pyg.org/whl/torch-2.4.1+cu124.html
     
     <span class="c1"># Install Graphorge</span>
-    <span class="o">%</span><span class="k">git</span> clone https://github.com/bessagroup/graphorge.git
+    <span class="o">!</span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/bessagroup/graphorge.git
     <span class="o">%</span><span class="k">pip</span> install -e ./graphorge
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
@@ -139,9 +139,7 @@
 <p>Imports required to run the notebook:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-<span class="c1"># Standard</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -167,9 +165,7 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># Check if running in Google Colab</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">google.colab</span>
-    <span class="n">utils_path</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;graphorge&quot;</span> <span class="o">/</span> <span class="s2">&quot;benchmarks&quot;</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span>
-    <span class="p">)</span>
+    <span class="n">utils_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;graphorge/benchmarks/utils&quot;</span><span class="p">)</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="n">utils_path</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s2">&quot;utils&quot;</span>
