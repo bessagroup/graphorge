@@ -24,8 +24,8 @@ for path in src_dir:
 project = 'graphorge'
 author = 'Bernardo Ferreira'
 copyright = '2023, Bernardo Ferreira'
-version = '1.0.0'
-release = '1.0.0'
+version = '1.0.1'
+release = '1.0.1'
 
 
 # -- General configuration ----------------------------------------------------
